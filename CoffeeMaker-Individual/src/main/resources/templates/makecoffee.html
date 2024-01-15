@@ -15,7 +15,7 @@
 		var app = angular.module('myApp', []);
 		app.controller('recipesCtrl', function($scope, $http, $q) {
 			$http.get("/api/v1/recipes").then(function(response) {
-				$scope.recipes = response.data;
+				$scope.recipes = response.data.message;
 			});
 
 			$scope.make = function() {
