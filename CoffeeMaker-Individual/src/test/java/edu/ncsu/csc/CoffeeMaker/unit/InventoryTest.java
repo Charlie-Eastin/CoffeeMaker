@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import edu.ncsu.csc.CoffeeMaker.TestConfig;
 import edu.ncsu.csc.CoffeeMaker.models.Inventory;
+import edu.ncsu.csc.CoffeeMaker.models.Recipe;
 import edu.ncsu.csc.CoffeeMaker.services.InventoryService;
 
 @ExtendWith ( SpringExtension.class )
@@ -32,6 +33,32 @@ public class InventoryTest {
         ivt.setSugar( 500 );
 
         inventoryService.save( ivt );
+    }
+
+    @Test
+    @Transactional
+    public void testConsumeInventory () {
+        final Inventory i = inventoryService.getInventory();
+
+        final Recipe recipe = new Recipe();
+        recipe.setName( "Delicious Not-Coffee" );
+        recipe.setChocolate( 10 );
+        recipe.setMilk( 20 );
+        recipe.setSugar( 5 );
+        recipe.setCoffee( 1 );
+
+        recipe.setPrice( 5 );
+
+        i.useIngredients( recipe );
+
+        /*
+         * Make sure that all of the inventory fields are now properly updated
+         */
+
+        Assertions.assertEquals( 490, (int) i.getChocolate() );
+        Assertions.assertEquals( 480, (int) i.getMilk() );
+        Assertions.assertEquals( 495, (int) i.getSugar() );
+        Assertions.assertEquals( 499, (int) i.getCoffee() );
     }
 
     @Test
