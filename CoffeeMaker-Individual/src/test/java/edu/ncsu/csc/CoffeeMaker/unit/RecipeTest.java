@@ -296,6 +296,48 @@ public class RecipeTest {
 
     }
 
+    @Test
+    @Transactional
+    public void testUpdateRecipe () {
+        Assertions.assertEquals( 0, service.findAll().size(), "There should be no Recipes in the CoffeeMaker" );
+
+        final Recipe r1 = createRecipe( "Coffee", 50, 3, 1, 1, 0 );
+        service.save( r1 );
+
+        final Recipe r2 = createRecipe( "Mocha", 60, 4, 2, 7, 6 );
+
+        r1.updateRecipe( r2 );
+
+        service.save( r1 );
+
+        final Recipe retrieved = service.findByName( "Coffee" );
+
+        Assertions.assertEquals( 60, (int) retrieved.getPrice() );
+        Assertions.assertEquals( 4, (int) retrieved.getCoffee() );
+        Assertions.assertEquals( 2, (int) retrieved.getMilk() );
+        Assertions.assertEquals( 7, (int) retrieved.getSugar() );
+        Assertions.assertEquals( 6, (int) retrieved.getChocolate() );
+
+        Assertions.assertEquals( 1, service.count(), "Editing a recipe shouldn't duplicate it" );
+
+        final Recipe r3 = createRecipe( "Coffee", 6, 2, 2, 1, 6 );
+
+        r1.updateRecipe( r3 );
+
+        service.save( r1 );
+
+        final Recipe retrieved2 = service.findByName( "Coffee" );
+
+        Assertions.assertEquals( 6, (int) retrieved2.getPrice() );
+        Assertions.assertEquals( 2, (int) retrieved2.getCoffee() );
+        Assertions.assertEquals( 2, (int) retrieved2.getMilk() );
+        Assertions.assertEquals( 1, (int) retrieved2.getSugar() );
+        Assertions.assertEquals( 6, (int) retrieved2.getChocolate() );
+
+        Assertions.assertEquals( 1, service.count(), "Editing a recipe shouldn't duplicate it" );
+
+    }
+
     private Recipe createRecipe ( final String name, final Integer price, final Integer coffee, final Integer milk,
             final Integer sugar, final Integer chocolate ) {
         final Recipe recipe = new Recipe();

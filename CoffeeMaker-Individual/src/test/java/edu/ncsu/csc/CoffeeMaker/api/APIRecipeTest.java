@@ -1,5 +1,6 @@
 package edu.ncsu.csc.CoffeeMaker.api;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -132,6 +133,57 @@ public class APIRecipeTest {
                 .content( TestUtils.asJsonString( r4 ) ) ).andExpect( status().isInsufficientStorage() );
 
         Assertions.assertEquals( 3, service.count(), "Creating a fourth recipe should not get saved" );
+    }
+
+    /**
+     * Tests the getRecipe() method by adding a recipe into the system and
+     * calling the getRecipe() method to make sure it is in the system. It then
+     * adds another recipe and calls the getRecipe() method to make sure that
+     * recipe was also added to the system without error. It then tries to
+     * retrieve a recipe that was not added to the system to make sure it
+     * returns a not found status.
+     *
+     * @throws Exception
+     */
+    @Test
+    @Transactional
+    public void testGetRecipe () throws Exception {
+        service.deleteAll();
+
+        final Recipe recipe = new Recipe();
+        recipe.setName( "Delicious Not-Coffee" );
+        recipe.setChocolate( 10 );
+        recipe.setMilk( 20 );
+        recipe.setSugar( 5 );
+        recipe.setCoffee( 1 );
+
+        recipe.setPrice( 5 );
+
+        mvc.perform( post( "/api/v1/recipes" ).contentType( MediaType.APPLICATION_JSON )
+                .content( TestUtils.asJsonString( recipe ) ) ).andExpect( status().isOk() );
+
+        Assertions.assertEquals( 1, (int) service.count() );
+
+        mvc.perform( get( "/api/v1/recipes/" + recipe.getName() ) ).andExpect( status().isOk() );
+
+        final Recipe recipe2 = new Recipe();
+        recipe.setName( "Mocha" );
+        recipe.setChocolate( 20 );
+        recipe.setMilk( 10 );
+        recipe.setSugar( 4 );
+        recipe.setCoffee( 2 );
+
+        recipe.setPrice( 2 );
+
+        mvc.perform( post( "/api/v1/recipes" ).contentType( MediaType.APPLICATION_JSON )
+                .content( TestUtils.asJsonString( recipe2 ) ) ).andExpect( status().isOk() );
+
+        Assertions.assertEquals( 2, (int) service.count() );
+
+        mvc.perform( get( "/api/v1/recipes/" + recipe2.getName() ) ).andExpect( status().isOk() );
+
+        final String notAddedRecipe = "NotAddedRecipe";
+        mvc.perform( get( "/api/v1/recipes/" + notAddedRecipe ) ).andExpect( status().isNotFound() );
     }
 
     private Recipe createRecipe ( final String name, final Integer price, final Integer coffee, final Integer milk,

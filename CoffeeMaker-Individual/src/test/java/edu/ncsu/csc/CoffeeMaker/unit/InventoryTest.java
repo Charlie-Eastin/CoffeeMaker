@@ -63,6 +63,48 @@ public class InventoryTest {
 
     @Test
     @Transactional
+    public void testNotEnoughInventory () {
+        final Inventory i = inventoryService.getInventory();
+
+        i.setChocolate( 4 );
+        i.setCoffee( 1 );
+        i.setMilk( 2 );
+        i.setSugar( 3 );
+
+        final Recipe recipe = new Recipe();
+        recipe.setName( "Delicious Not-Coffee" );
+        recipe.setChocolate( 10 );
+        recipe.setMilk( 20 );
+        recipe.setSugar( 5 );
+        recipe.setCoffee( 1 );
+
+        recipe.setPrice( 5 );
+
+        Assertions.assertFalse( i.useIngredients( recipe ) );
+
+        final Recipe recipe2 = new Recipe();
+        recipe2.setName( "Delicious Not-Coffee" );
+        recipe2.setChocolate( 4 );
+        recipe2.setMilk( 3 );
+        recipe2.setSugar( 3 );
+        recipe2.setCoffee( 1 );
+
+        recipe2.setPrice( 5 );
+
+        Assertions.assertFalse( i.useIngredients( recipe2 ) );
+
+        /*
+         * Make sure that all of the inventory fields are now properly updated
+         */
+
+        Assertions.assertEquals( 4, (int) i.getChocolate() );
+        Assertions.assertEquals( 2, (int) i.getMilk() );
+        Assertions.assertEquals( 3, (int) i.getSugar() );
+        Assertions.assertEquals( 1, (int) i.getCoffee() );
+    }
+
+    @Test
+    @Transactional
     public void testAddInventory1 () {
         Inventory ivt = inventoryService.getInventory();
 
@@ -167,6 +209,108 @@ public class InventoryTest {
                     "Trying to update the Inventory with an invalid value for chocolate should result in no changes -- chocolate" );
 
         }
+
+    }
+
+    @Test
+    @Transactional
+    public void checkIngredientsPositiveOnly () {
+        final Inventory ivt = inventoryService.getInventory();
+
+        final int chocolateInt = ivt.checkChocolate( "5" );
+        final int coffeeInt = ivt.checkCoffee( "4" );
+        final int milkInt = ivt.checkMilk( "3" );
+        final int sugarInt = ivt.checkSugar( "2" );
+
+        Assertions.assertEquals( 5, chocolateInt );
+        Assertions.assertEquals( 4, coffeeInt );
+        Assertions.assertEquals( 3, milkInt );
+        Assertions.assertEquals( 2, sugarInt );
+    }
+
+    @Test
+    @Transactional
+    public void checkIngredientsError () {
+        final Inventory ivt = inventoryService.getInventory();
+
+        try {
+
+            final int chocolateInt = ivt.checkChocolate( "-5" );
+        }
+        catch ( final IllegalArgumentException iae ) {
+            Assertions.assertEquals( iae.getMessage(), "Units of chocolate must be a positive integer" );
+        }
+
+        try {
+            final int coffeeInt = ivt.checkCoffee( "-4" );
+        }
+        catch ( final IllegalArgumentException iae ) {
+            Assertions.assertEquals( iae.getMessage(), "Units of coffee must be a positive integer" );
+        }
+
+        try {
+            final int milkInt = ivt.checkMilk( "-3" );
+        }
+        catch ( final IllegalArgumentException iae ) {
+            Assertions.assertEquals( iae.getMessage(), "Units of milk must be a positive integer" );
+        }
+
+        try {
+            final int sugarInt = ivt.checkSugar( "-2" );
+        }
+        catch ( final IllegalArgumentException iae ) {
+            Assertions.assertEquals( iae.getMessage(), "Units of sugar must be a positive integer" );
+        }
+    }
+
+    public void checkCoffee () {
+        final Inventory ivt = inventoryService.getInventory();
+
+        Assertions.assertEquals( 3, (int) ivt.checkCoffee( "3" ), "Trying to validate 3 coffee units." );
+        Assertions.assertEquals( 10, (int) ivt.checkCoffee( "010" ), "Trying to validate 10 coffee units." );
+
+        Assertions.assertEquals( 3, (int) ivt.checkChocolate( "3" ), "Trying to validate 3 chocolate units." );
+        Assertions.assertEquals( 10, (int) ivt.checkChocolate( "010" ), "Trying to validate 10 chocolate units." );
+
+        Assertions.assertEquals( 3, (int) ivt.checkSugar( "3" ), "Trying to validate 3 sugar units." );
+        Assertions.assertEquals( 10, (int) ivt.checkSugar( "010" ), "Trying to validate 10 sugar units." );
+
+        Assertions.assertEquals( 3, (int) ivt.checkMilk( "3" ), "Trying to validate 3 milk units." );
+        Assertions.assertEquals( 10, (int) ivt.checkMilk( "010" ), "Trying to validate 10 milk units." );
+
+        ////////////////////////
+        // Invalid values
+        ///////////////////////
+
+        // Alphabetic values
+
+        final Exception e1 = Assertions.assertThrows( IllegalArgumentException.class,
+                () -> ivt.checkChocolate( "abc" ) );
+        Assertions.assertEquals( e1.getMessage(), "Units of chocolate must be a positive integer" );
+
+        final Exception e2 = Assertions.assertThrows( IllegalArgumentException.class, () -> ivt.checkCoffee( "c" ) );
+        Assertions.assertEquals( e2.getMessage(), "Units of coffee must be a positive integer" );
+
+        final Exception e3 = Assertions.assertThrows( IllegalArgumentException.class, () -> ivt.checkMilk( "abc" ) );
+        Assertions.assertEquals( e3.getMessage(), "Units of milk must be a positive integer" );
+
+        final Exception e4 = Assertions.assertThrows( IllegalArgumentException.class, () -> ivt.checkSugar( "c" ) );
+        Assertions.assertEquals( e4.getMessage(), "Units of sugar must be a positive integer" );
+
+        // Negative values
+
+        final Exception e5 = Assertions.assertThrows( IllegalArgumentException.class,
+                () -> ivt.checkChocolate( "-3" ) );
+        Assertions.assertEquals( e5.getMessage(), "Units of chocolate must be a positive integer" );
+
+        final Exception e6 = Assertions.assertThrows( IllegalArgumentException.class, () -> ivt.checkCoffee( "-3" ) );
+        Assertions.assertEquals( e6.getMessage(), "Units of coffee must be a positive integer" );
+
+        final Exception e7 = Assertions.assertThrows( IllegalArgumentException.class, () -> ivt.checkMilk( "-3" ) );
+        Assertions.assertEquals( e7.getMessage(), "Units of milk must be a positive integer" );
+
+        final Exception e8 = Assertions.assertThrows( IllegalArgumentException.class, () -> ivt.checkSugar( "-3" ) );
+        Assertions.assertEquals( e8.getMessage(), "Units of sugar must be a positive integer" );
 
     }
 
