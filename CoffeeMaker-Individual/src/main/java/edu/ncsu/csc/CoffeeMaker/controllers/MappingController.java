@@ -67,6 +67,19 @@ public class MappingController {
     }
 
     /**
+     * On a GET request to /editrecipe2, the EditRecipeController will return
+     * /src/main/resources/templates/editrecipe2.html.
+     *
+     * @param model
+     *            underlying UI model
+     * @return contents of the page
+     */
+    @GetMapping ( { "/editrecipe2", "/editrecipe2.html" } )
+    public String editRecipe2Form ( final Model model ) {
+        return "editrecipe2";
+    }
+
+    /**
      * Handles a GET request for inventory. The GET request provides a view to
      * the client that includes the list of the current ingredients in the
      * inventory and a form where the client can enter more ingredients to add
