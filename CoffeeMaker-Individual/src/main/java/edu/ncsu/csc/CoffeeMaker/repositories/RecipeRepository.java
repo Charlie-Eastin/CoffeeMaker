@@ -16,7 +16,7 @@ public interface RecipeRepository extends JpaRepository<Recipe, Long> {
     /**
      * Finds a Recipe object with the provided name. Spring will generate code
      * to make this happen.
-     * 
+     *
      * @param name
      *            Name of the recipe
      * @return Found recipe, null if none.

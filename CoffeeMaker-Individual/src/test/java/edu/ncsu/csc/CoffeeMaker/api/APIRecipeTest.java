@@ -1,5 +1,6 @@
 package edu.ncsu.csc.CoffeeMaker.api;
 
+import static org.junit.Assert.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -20,6 +21,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import edu.ncsu.csc.CoffeeMaker.common.TestUtils;
+import edu.ncsu.csc.CoffeeMaker.models.Ingredient;
 import edu.ncsu.csc.CoffeeMaker.models.Recipe;
 import edu.ncsu.csc.CoffeeMaker.services.RecipeService;
 
@@ -56,10 +58,10 @@ public class APIRecipeTest {
         service.deleteAll();
 
         final Recipe r = new Recipe();
-        r.setChocolate( 5 );
-        r.setCoffee( 3 );
-        r.setMilk( 4 );
-        r.setSugar( 8 );
+        assertTrue( r.addIngredient( new Ingredient( "Chocolate", 5 ) ) );
+        assertTrue( r.addIngredient( new Ingredient( "Coffee", 3 ) ) );
+        assertTrue( r.addIngredient( new Ingredient( "Milk", 4 ) ) );
+        assertTrue( r.addIngredient( new Ingredient( "Sugar", 8 ) ) );
         r.setPrice( 10 );
         r.setName( "Mocha" );
 
@@ -76,11 +78,10 @@ public class APIRecipeTest {
 
         final Recipe recipe = new Recipe();
         recipe.setName( "Delicious Not-Coffee" );
-        recipe.setChocolate( 10 );
-        recipe.setMilk( 20 );
-        recipe.setSugar( 5 );
-        recipe.setCoffee( 1 );
-
+        assertTrue( recipe.addIngredient( new Ingredient( "Chocolate", 10 ) ) );
+        assertTrue( recipe.addIngredient( new Ingredient( "Coffee", 20 ) ) );
+        assertTrue( recipe.addIngredient( new Ingredient( "Milk", 5 ) ) );
+        assertTrue( recipe.addIngredient( new Ingredient( "Sugar", 1 ) ) );
         recipe.setPrice( 5 );
 
         mvc.perform( post( "/api/v1/recipes" ).contentType( MediaType.APPLICATION_JSON )
@@ -97,16 +98,30 @@ public class APIRecipeTest {
         /* Tests a recipe with a duplicate name to make sure it's rejected */
 
         Assertions.assertEquals( 0, service.findAll().size(), "There should be no Recipes in the CoffeeMaker" );
-        final String name = "Coffee";
-        final Recipe r1 = createRecipe( name, 50, 3, 1, 1, 0 );
+
+        final Recipe r1 = new Recipe();
+        r1.setName( "Coffee" );
+        assertTrue( r1.addIngredient( new Ingredient( "Chocolate", 10 ) ) );
+        assertTrue( r1.addIngredient( new Ingredient( "Coffee", 20 ) ) );
+        assertTrue( r1.addIngredient( new Ingredient( "Milk", 5 ) ) );
+        assertTrue( r1.addIngredient( new Ingredient( "Sugar", 1 ) ) );
+        r1.setPrice( 5 );
 
         service.save( r1 );
 
-        final Recipe r2 = createRecipe( name, 50, 3, 1, 1, 0 );
+        final Recipe r2 = new Recipe();
+        r2.setName( "Coffee" );
+        assertTrue( r2.addIngredient( new Ingredient( "Chocolate", 10 ) ) );
+        assertTrue( r2.addIngredient( new Ingredient( "Coffee", 20 ) ) );
+        assertTrue( r2.addIngredient( new Ingredient( "Milk", 5 ) ) );
+        assertTrue( r2.addIngredient( new Ingredient( "Sugar", 1 ) ) );
+        r2.setPrice( 5 );
+
         mvc.perform( post( "/api/v1/recipes" ).contentType( MediaType.APPLICATION_JSON )
                 .content( TestUtils.asJsonString( r2 ) ) ).andExpect( status().is4xxClientError() );
 
         Assertions.assertEquals( 1, service.findAll().size(), "There should only one recipe in the CoffeeMaker" );
+
     }
 
     @Test
@@ -117,22 +132,94 @@ public class APIRecipeTest {
 
         Assertions.assertEquals( 0, service.findAll().size(), "There should be no Recipes in the CoffeeMaker" );
 
-        final Recipe r1 = createRecipe( "Coffee", 50, 3, 1, 1, 0 );
+        final Recipe r1 = new Recipe();
+        r1.setName( "Coffee" );
+        assertTrue( r1.addIngredient( new Ingredient( "Chocolate", 10 ) ) );
+        assertTrue( r1.addIngredient( new Ingredient( "Coffee", 20 ) ) );
+        assertTrue( r1.addIngredient( new Ingredient( "Milk", 5 ) ) );
+        assertTrue( r1.addIngredient( new Ingredient( "Sugar", 1 ) ) );
+        r1.setPrice( 5 );
         service.save( r1 );
-        final Recipe r2 = createRecipe( "Mocha", 50, 3, 1, 1, 2 );
+
+        final Recipe r2 = new Recipe();
+        r2.setName( "Mocha" );
+        assertTrue( r2.addIngredient( new Ingredient( "Chocolate", 10 ) ) );
+        assertTrue( r2.addIngredient( new Ingredient( "Coffee", 20 ) ) );
+        assertTrue( r2.addIngredient( new Ingredient( "Milk", 5 ) ) );
+        assertTrue( r2.addIngredient( new Ingredient( "Sugar", 1 ) ) );
+        r2.setPrice( 5 );
         service.save( r2 );
-        final Recipe r3 = createRecipe( "Latte", 60, 3, 2, 2, 0 );
+
+        final Recipe r3 = new Recipe();
+        r3.setName( "Coffee" );
+        assertTrue( r3.addIngredient( new Ingredient( "Chocolate", 10 ) ) );
+        assertTrue( r3.addIngredient( new Ingredient( "Coffee", 20 ) ) );
+        assertTrue( r3.addIngredient( new Ingredient( "Milk", 5 ) ) );
+        assertTrue( r3.addIngredient( new Ingredient( "Sugar", 1 ) ) );
+        r3.setPrice( 5 );
         service.save( r3 );
 
         Assertions.assertEquals( 3, service.count(),
                 "Creating three recipes should result in three recipes in the database" );
 
-        final Recipe r4 = createRecipe( "Hot Chocolate", 75, 0, 2, 1, 2 );
+        final Recipe r4 = new Recipe();
+        r4.setName( "Hot Chocolate" );
+        assertTrue( r4.addIngredient( new Ingredient( "Chocolate", 10 ) ) );
+        assertTrue( r4.addIngredient( new Ingredient( "Coffee", 20 ) ) );
+        assertTrue( r4.addIngredient( new Ingredient( "Milk", 5 ) ) );
+        assertTrue( r4.addIngredient( new Ingredient( "Sugar", 1 ) ) );
+        r4.setPrice( 5 );
 
         mvc.perform( post( "/api/v1/recipes" ).contentType( MediaType.APPLICATION_JSON )
                 .content( TestUtils.asJsonString( r4 ) ) ).andExpect( status().isInsufficientStorage() );
 
-        Assertions.assertEquals( 3, service.count(), "Creating a fourth recipe should not get saved" );
+        Assertions.assertEquals( 3, service.count(), "Insufficient space in recipe book for recipe" );
+    }
+
+    @Test
+    @Transactional
+    public void testDeleteRecipeAPI () throws Exception {
+
+        Assertions.assertEquals( 0, service.findAll().size(), "There should be no Recipes in the CoffeeMaker" );
+
+        final Recipe r1 = new Recipe();
+        r1.setName( "Coffee" );
+        assertTrue( r1.addIngredient( new Ingredient( "Chocolate", 10 ) ) );
+        assertTrue( r1.addIngredient( new Ingredient( "Coffee", 20 ) ) );
+        assertTrue( r1.addIngredient( new Ingredient( "Milk", 5 ) ) );
+        assertTrue( r1.addIngredient( new Ingredient( "Sugar", 1 ) ) );
+        r1.setPrice( 5 );
+
+        service.save( r1 );
+
+        Assertions.assertEquals( 1, service.findAll().size(), "There should only be one recipe in the CoffeeMaker" );
+
+        service.delete( r1 );
+
+        final Recipe r2 = new Recipe();
+        r2.setName( "Hot Chocolate" );
+        assertTrue( r2.addIngredient( new Ingredient( "Chocolate", 10 ) ) );
+        assertTrue( r2.addIngredient( new Ingredient( "Coffee", 20 ) ) );
+        assertTrue( r2.addIngredient( new Ingredient( "Milk", 5 ) ) );
+        assertTrue( r2.addIngredient( new Ingredient( "Sugar", 1 ) ) );
+        r2.setPrice( 5 );
+
+        final Recipe r3 = new Recipe();
+        r3.setName( "Hot Chocolate" );
+        assertTrue( r3.addIngredient( new Ingredient( "Chocolate", 10 ) ) );
+        assertTrue( r3.addIngredient( new Ingredient( "Coffee", 20 ) ) );
+        assertTrue( r3.addIngredient( new Ingredient( "Milk", 5 ) ) );
+        assertTrue( r3.addIngredient( new Ingredient( "Sugar", 1 ) ) );
+        r3.setPrice( 5 );
+
+        service.save( r3 );
+        service.save( r2 );
+
+        Assertions.assertEquals( 2, service.findAll().size(), "There should only be one recipe in the CoffeeMaker" );
+
+        service.deleteAll();
+        Assertions.assertEquals( 0, service.findAll().size(), "There should be no recipes in the CoffeeMaker" );
+
     }
 
     /**
@@ -152,10 +239,11 @@ public class APIRecipeTest {
 
         final Recipe recipe = new Recipe();
         recipe.setName( "Delicious Not-Coffee" );
-        recipe.setChocolate( 10 );
-        recipe.setMilk( 20 );
-        recipe.setSugar( 5 );
-        recipe.setCoffee( 1 );
+
+        assertTrue( recipe.addIngredient( new Ingredient( "Chocolate", 10 ) ) );
+        assertTrue( recipe.addIngredient( new Ingredient( "Coffee", 20 ) ) );
+        assertTrue( recipe.addIngredient( new Ingredient( "Milk", 5 ) ) );
+        assertTrue( recipe.addIngredient( new Ingredient( "Sugar", 1 ) ) );
 
         recipe.setPrice( 5 );
 
@@ -167,13 +255,14 @@ public class APIRecipeTest {
         mvc.perform( get( "/api/v1/recipes/" + recipe.getName() ) ).andExpect( status().isOk() );
 
         final Recipe recipe2 = new Recipe();
-        recipe.setName( "Mocha" );
-        recipe.setChocolate( 20 );
-        recipe.setMilk( 10 );
-        recipe.setSugar( 4 );
-        recipe.setCoffee( 2 );
+        recipe2.setName( "Mocha" );
 
-        recipe.setPrice( 2 );
+        assertTrue( recipe2.addIngredient( new Ingredient( "Chocolate", 20 ) ) );
+        assertTrue( recipe2.addIngredient( new Ingredient( "Coffee", 2 ) ) );
+        assertTrue( recipe2.addIngredient( new Ingredient( "Milk", 10 ) ) );
+        assertTrue( recipe2.addIngredient( new Ingredient( "Sugar", 4 ) ) );
+
+        recipe2.setPrice( 2 );
 
         mvc.perform( post( "/api/v1/recipes" ).contentType( MediaType.APPLICATION_JSON )
                 .content( TestUtils.asJsonString( recipe2 ) ) ).andExpect( status().isOk() );
@@ -184,19 +273,6 @@ public class APIRecipeTest {
 
         final String notAddedRecipe = "NotAddedRecipe";
         mvc.perform( get( "/api/v1/recipes/" + notAddedRecipe ) ).andExpect( status().isNotFound() );
-    }
-
-    private Recipe createRecipe ( final String name, final Integer price, final Integer coffee, final Integer milk,
-            final Integer sugar, final Integer chocolate ) {
-        final Recipe recipe = new Recipe();
-        recipe.setName( name );
-        recipe.setPrice( price );
-        recipe.setCoffee( coffee );
-        recipe.setMilk( milk );
-        recipe.setSugar( sugar );
-        recipe.setChocolate( chocolate );
-
-        return recipe;
     }
 
 }

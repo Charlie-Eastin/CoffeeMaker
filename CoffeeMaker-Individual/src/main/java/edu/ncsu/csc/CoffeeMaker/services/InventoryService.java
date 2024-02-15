@@ -1,5 +1,6 @@
 package edu.ncsu.csc.CoffeeMaker.services;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.transaction.Transactional;
@@ -8,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Component;
 
+import edu.ncsu.csc.CoffeeMaker.models.Ingredient;
 import edu.ncsu.csc.CoffeeMaker.models.Inventory;
 import edu.ncsu.csc.CoffeeMaker.repositories.InventoryRepository;
 
@@ -47,8 +49,9 @@ public class InventoryService extends Service<Inventory, Long> {
             return inventoryList.get( 0 );
         }
         else {
+            final List<Ingredient> list = new LinkedList<Ingredient>();
             // initialize the inventory with 0 of everything
-            final Inventory i = new Inventory( 0, 0, 0, 0 );
+            final Inventory i = new Inventory( list );
             save( i );
             return i;
         }
