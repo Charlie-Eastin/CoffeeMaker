@@ -275,4 +275,66 @@ public class APIRecipeTest {
         mvc.perform( get( "/api/v1/recipes/" + notAddedRecipe ) ).andExpect( status().isNotFound() );
     }
 
+    /**
+     * Tests the editRecipe() method by adding a recipe into the system and
+     * calling the editRecipe() method to with another recipe to make sure it
+     * has been updated.
+     *
+     * @throws Exception
+     */
+    @Test
+    @Transactional
+    public void testEditRecipe () throws Exception {
+        service.deleteAll();
+
+        final Recipe recipe = new Recipe();
+        recipe.setName( "Delicious Not-Coffee" );
+
+        assertTrue( recipe.addIngredient( new Ingredient( "Chocolate", 10 ) ) );
+        assertTrue( recipe.addIngredient( new Ingredient( "Coffee", 20 ) ) );
+        assertTrue( recipe.addIngredient( new Ingredient( "Milk", 5 ) ) );
+        assertTrue( recipe.addIngredient( new Ingredient( "Sugar", 1 ) ) );
+
+        recipe.setPrice( 5 );
+
+        service.save( recipe );
+
+        final String name = "Delicious Not-Coffee";
+
+        final Recipe recipe2 = new Recipe();
+        recipe2.setName( "Mocha" );
+
+        assertTrue( recipe2.addIngredient( new Ingredient( "Chocolate", 20 ) ) );
+        assertTrue( recipe2.addIngredient( new Ingredient( "Coffee", 2 ) ) );
+        assertTrue( recipe2.addIngredient( new Ingredient( "Milk", 10 ) ) );
+        assertTrue( recipe2.addIngredient( new Ingredient( "Sugar", 4 ) ) );
+
+        mvc.perform( post( String.format( "/api/v1/recipes/%s", name ) ).contentType( MediaType.APPLICATION_JSON )
+                .content( TestUtils.asJsonString( recipe2 ) ) ).andExpect( status().isOk() );
+
+        Assertions.assertEquals( 1, (int) service.count() );
+
+        Assertions.assertEquals( 20, service.findByName( "Mocha" ).getIngredients().get( 0 ).getAmount() );
+        Assertions.assertEquals( 2, service.findByName( "Mocha" ).getIngredients().get( 1 ).getAmount() );
+        Assertions.assertEquals( 10, service.findByName( "Mocha" ).getIngredients().get( 2 ).getAmount() );
+        Assertions.assertEquals( 4, service.findByName( "Mocha" ).getIngredients().get( 3 ).getAmount() );
+
+        // mvc.perform( get( "/api/v1/recipes/" + recipe.getName() )
+        // ).andExpect( status().isOk() );
+
+        // mvc.perform( post( "/api/v1/recipes" ).contentType(
+        // MediaType.APPLICATION_JSON )
+        // .content( TestUtils.asJsonString( recipe2 ) ) ).andExpect(
+        // status().isOk() );
+        //
+        // Assertions.assertEquals( 2, (int) service.count() );
+        //
+        // mvc.perform( get( "/api/v1/recipes/" + recipe2.getName() )
+        // ).andExpect( status().isOk() );
+        //
+        // final String notAddedRecipe = "NotAddedRecipe";
+        // mvc.perform( get( "/api/v1/recipes/" + notAddedRecipe ) ).andExpect(
+        // status().isNotFound() );
+    }
+
 }
