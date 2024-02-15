@@ -357,64 +357,50 @@ public class RecipeTest {
         assertEquals( service.findById( r1.getId() ), r1 );
     }
 
-    // @Test
-    // @Transactional
-    // public void testUpdateRecipe () {
-    // Assertions.assertEquals( 0, service.findAll().size(), "There should be no
-    // Recipes in the CoffeeMaker" );
-    //
-    // final Recipe r1 = createRecipe( "Coffee", 50, new Ingredient( "Coffee", 3
-    // ), new Ingredient( "Milk", 1 ),
-    // new Ingredient( "Sugar", 1 ), new Ingredient( "Chocolate", 0 ) );
-    // service.save( r1 );
-    //
-    // final Recipe r2 = createRecipe( "Mocha", 60, new Ingredient( "Coffee", 4
-    // ), new Ingredient( "Milk", 2 ),
-    // new Ingredient( "Sugar", 7 ), new Ingredient( "Chocolate", 6 ) );
-    //
-    // r1.updateRecipe( r2 );
-    //
-    // service.save( r1 );
-    //
-    // final Recipe retrieved = service.findByName( "Coffee" );
-    //
-    // Assertions.assertEquals( 60, (int) retrieved.getPrice() );
-    // Assertions.assertEquals( 4, retrieved.getIngredients().get( 0
-    // ).getAmount() );
-    // Assertions.assertEquals( 2, retrieved.getIngredients().get( 1
-    // ).getAmount() );
-    // Assertions.assertEquals( 7, retrieved.getIngredients().get( 2
-    // ).getAmount() );
-    // Assertions.assertEquals( 6, retrieved.getIngredients().get( 3
-    // ).getAmount() );
-    //
-    // Assertions.assertEquals( 1, service.count(), "Editing a recipe shouldn't
-    // duplicate it" );
-    //
-    // final Recipe r3 = createRecipe( "Coffee", 6, new Ingredient( "Coffee", 2
-    // ), new Ingredient( "Milk", 2 ),
-    // new Ingredient( "Sugar", 1 ), new Ingredient( "Chocolate", 6 ) );
-    //
-    // r1.updateRecipe( r3 );
-    //
-    // service.save( r1 );
-    //
-    // final Recipe retrieved2 = service.findByName( "Coffee" );
-    //
-    // Assertions.assertEquals( 6, (int) retrieved2.getPrice() );
-    // Assertions.assertEquals( 2, retrieved2.getIngredients().get( 0
-    // ).getAmount() );
-    // Assertions.assertEquals( 2, retrieved2.getIngredients().get( 1
-    // ).getAmount() );
-    // Assertions.assertEquals( 1, retrieved2.getIngredients().get( 2
-    // ).getAmount() );
-    // Assertions.assertEquals( 6, retrieved2.getIngredients().get( 3
-    // ).getAmount() );
-    //
-    // Assertions.assertEquals( 1, service.count(), "Editing a recipe shouldn't
-    // duplicate it" );
-    //
-    // }
+    @Test
+    @Transactional
+    public void testUpdateRecipe () {
+        Assertions.assertEquals( 0, service.findAll().size(), "There should be no Recipes in the CoffeeMaker" );
+
+        final Recipe r1 = createRecipe( "Coffee", 50, new Ingredient( "Coffee", 3 ), new Ingredient( "Milk", 1 ),
+                new Ingredient( "Sugar", 1 ), new Ingredient( "Chocolate", 0 ) );
+        service.save( r1 );
+
+        final Recipe r2 = createRecipe( "Mocha", 60, new Ingredient( "Coffee", 4 ), new Ingredient( "Milk", 2 ),
+                new Ingredient( "Sugar", 7 ), new Ingredient( "Chocolate", 6 ) );
+
+        r1.editRecipe( r2 );
+
+        service.save( r1 );
+
+        final Recipe retrieved = service.findByName( "Mocha" );
+
+        Assertions.assertEquals( 60, (int) retrieved.getPrice() );
+        Assertions.assertEquals( 4, retrieved.getIngredients().get( 0 ).getAmount() );
+        Assertions.assertEquals( 2, retrieved.getIngredients().get( 1 ).getAmount() );
+        Assertions.assertEquals( 7, retrieved.getIngredients().get( 2 ).getAmount() );
+        Assertions.assertEquals( 6, retrieved.getIngredients().get( 3 ).getAmount() );
+
+        Assertions.assertEquals( 1, service.count(), "Editing a recipe shouldn't duplicate it" );
+
+        final Recipe r3 = createRecipe( "Coffee", 6, new Ingredient( "Coffee", 2 ), new Ingredient( "Milk", 2 ),
+                new Ingredient( "Sugar", 1 ), new Ingredient( "Chocolate", 6 ) );
+
+        r1.editRecipe( r3 );
+
+        service.save( r1 );
+
+        final Recipe retrieved2 = service.findByName( "Coffee" );
+
+        Assertions.assertEquals( 6, (int) retrieved2.getPrice() );
+        Assertions.assertEquals( 2, retrieved2.getIngredients().get( 0 ).getAmount() );
+        Assertions.assertEquals( 2, retrieved2.getIngredients().get( 1 ).getAmount() );
+        Assertions.assertEquals( 1, retrieved2.getIngredients().get( 2 ).getAmount() );
+        Assertions.assertEquals( 6, retrieved2.getIngredients().get( 3 ).getAmount() );
+
+        Assertions.assertEquals( 1, service.count(), "Editing a recipe shouldn't duplicate it" );
+
+    }
 
     @SuppressWarnings ( "unlikely-arg-type" )
     @Test
