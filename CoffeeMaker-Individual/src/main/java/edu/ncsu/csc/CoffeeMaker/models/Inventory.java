@@ -26,7 +26,7 @@ public class Inventory extends DomainObject {
     private Long     id;
 
     @OneToMany ( cascade = CascadeType.ALL, fetch = FetchType.EAGER )
-    List<Ingredient> ingredientList;
+    List<Ingredient> ingredients;
 
     /**
      * Empty constructor for Hibernate
@@ -49,15 +49,15 @@ public class Inventory extends DomainObject {
      *            amt of chocolate
      */
     public Inventory ( final List<Ingredient> list ) {
-        ingredientList = new LinkedList<Ingredient>( list );
+        ingredients = new LinkedList<Ingredient>( list );
     }
 
     public void setAmount ( final int id, final int amount ) {
-        this.ingredientList.get( id ).setAmount( amount );
+        this.ingredients.get( id ).setAmount( amount );
     }
 
     public List<Ingredient> getIngredients () {
-        return ingredientList;
+        return ingredients;
     }
 
     /**
@@ -89,10 +89,10 @@ public class Inventory extends DomainObject {
      */
     public boolean enoughIngredients ( final Recipe r ) {
         final List<Ingredient> list = r.getIngredients();
-        for ( int i = 0; i < ingredientList.size(); i++ ) {
+        for ( int i = 0; i < ingredients.size(); i++ ) {
             for ( int j = 0; j < list.size(); j++ ) {
-                if ( ingredientList.get( i ).getName().equals( list.get( j ).getName() ) ) {
-                    if ( ingredientList.get( i ).getAmount() < list.get( j ).getAmount() ) {
+                if ( ingredients.get( i ).getName().equals( list.get( j ).getName() ) ) {
+                    if ( ingredients.get( i ).getAmount() < list.get( j ).getAmount() ) {
                         return false;
                     }
                 }
@@ -112,10 +112,10 @@ public class Inventory extends DomainObject {
     public boolean useIngredients ( final Recipe r ) {
         if ( enoughIngredients( r ) ) {
             final List<Ingredient> list = r.getIngredients();
-            for ( int i = 0; i < ingredientList.size(); i++ ) {
+            for ( int i = 0; i < ingredients.size(); i++ ) {
                 for ( int j = 0; j < list.size(); j++ ) {
-                    if ( ingredientList.get( i ).getName().equals( list.get( j ).getName() ) ) {
-                        setAmount( i, ingredientList.get( i ).getAmount() - list.get( j ).getAmount() );
+                    if ( ingredients.get( i ).getName().equals( list.get( j ).getName() ) ) {
+                        setAmount( i, ingredients.get( i ).getAmount() - list.get( j ).getAmount() );
                     }
                 }
             }
@@ -135,21 +135,34 @@ public class Inventory extends DomainObject {
      * @return true if successful, false if not
      */
     public boolean addIngredients ( final List<Ingredient> list ) {
+        if ( list == null ) {
+            return false;
+        }
         for ( int i = 0; i < list.size(); i++ ) {
             if ( list.get( i ).getAmount() < 0 ) {
                 throw new IllegalArgumentException( "Amount cannot be negative" );
             }
         }
 
-        for ( int i = 0; i < ingredientList.size(); i++ ) {
-            for ( int j = 0; j < list.size(); j++ ) {
-                if ( ingredientList.get( i ).getName().equals( list.get( j ).getName() ) ) {
-                    setAmount( i, ingredientList.get( i ).getAmount() + list.get( j ).getAmount() );
+        for ( int i = 0; i < list.size(); i++ ) {
+            boolean found = false;
+            for ( int j = 0; j < ingredients.size(); j++ ) {
+                if ( list.get( i ).getName().equals( ingredients.get( j ).getName() ) ) {
+                    setAmount( i, list.get( i ).getAmount() + ingredients.get( j ).getAmount() );
+                    found = true;
+                    continue;
                 }
+            }
+            if ( found == false ) {
+                ingredients.add( list.get( i ) );
             }
         }
 
         return true;
+    }
+
+    public void setIngredients ( final List<Ingredient> ingredients ) {
+        this.ingredients = ingredients;
     }
 
     /**
@@ -160,23 +173,17 @@ public class Inventory extends DomainObject {
      * @return
      */
     public boolean setIngredient ( final String name, final int amount ) {
-        // for ( int i = 0; i < ingredientList.size(); i++ ) {
-        // if ( ingredientList.get( i ).getIngredient().equals( name ) ) {
-        // ingredientList.get( i ).setAmount( amount );
-        // return true;
-        // }
-        // }
-        // return false;
+
         if ( amount < 0 ) {
             return false;
         }
-        for ( int i = 0; i < ingredientList.size(); i++ ) {
-            if ( ingredientList.get( i ).getName().equals( name ) ) {
-                ingredientList.get( i ).setAmount( amount );
+        for ( int i = 0; i < ingredients.size(); i++ ) {
+            if ( ingredients.get( i ).getName().equals( name ) ) {
+                ingredients.get( i ).setAmount( amount );
                 return true;
             }
         }
-        ingredientList.add( new Ingredient( name, amount ) );
+        ingredients.add( new Ingredient( name, amount ) );
         return true;
     }
 
@@ -188,8 +195,8 @@ public class Inventory extends DomainObject {
     @Override
     public String toString () {
         final StringBuffer buf = new StringBuffer();
-        for ( int i = 0; i < ingredientList.size(); i++ ) {
-            buf.append( ingredientList.get( i ).getName() + ": " + ingredientList.get( i ).getAmount() + "\n" );
+        for ( int i = 0; i < ingredients.size(); i++ ) {
+            buf.append( ingredients.get( i ).getName() + ": " + ingredients.get( i ).getAmount() + "\n" );
         }
         return buf.toString();
     }

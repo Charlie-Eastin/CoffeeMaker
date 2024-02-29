@@ -1,4 +1,3 @@
-
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -7,11 +6,11 @@
 input.ng-valid {
 	background-color: lightgreen;
 }
-
+ 
 input.ng-dirty.ng-invalid-required,input.ng-dirty.ng-invalid-number {
 	background-color: red;
 }
-
+ 
 input.ng-dirty.ng-invalid-min {
 	background-color: red;
 }
@@ -22,87 +21,129 @@ input.ng-dirty.ng-invalid-min {
 <body>
 	<script
 		src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.js"></script>
-
+ 
 	<script>
 		/*<![CDATA[*/
 		var app = angular.module('myApp', []);
 		app.controller('addRecipeCtrl', function($scope, $http, $q) {
 			console.log("Hit!");
-
-			$scope.reset = function() {
-				$scope.recipe = {
-					name : '',
-					price : '',
-					coffee : '',
-					milk : '',
-					sugar : '',
-					chocolate : ''
-				};
-				if (undefined != $scope.addRecipeForm) {
-					$scope.addRecipeForm.$setPristine(); // reset Form
-				}
-			}
-
+ 
+			$scope.selectedRecipe = null;
+			
+			$scope.recipes = [
+					{name: '', price: '', ingredients:[{name: '', amount: 0}]}											
+				];
+ 
 			$scope.submit = function() {
-				$scope.addRecipe();
-
-				$scope.reset();
+				$scope.editRecipe();
 			}
-
-			$scope.addRecipe = function() {
-				$scope.success = false;
-				$scope.failure = false;
-
-				$http.post("/api/v1/recipes", $scope.recipe).then(
-						function(success) {
-							$scope.success = true;
-							$scope.failure = false;
-						}, function(rejection) {
-							console.error("Error while adding recipe");
-						});
+			
+			$scope.editRecipe = function() {
+				$http.post("api/v1/recipes/" + $scope.selectedRecipe.name, $scope.selectedRecipe).then(
+						function(response) {
+							console.log(response.data)														
+						}, function(rejection){
+							console.log("Error while getting recipes")
+						})
 			}
-
-			$scope.reset();
-
+ 			
+			<!--  Asked chat GPT will help for adding an ingredient -->	
+			$scope.addIngredient = function() {
+				if ($scope.selectedRecipe) {
+		            $scope.selectedRecipe.ingredients.push({ name: '', amount: 0 });
+		        } else {
+		            alert("Please select a recipe first.");
+		        }
+			}
+			
+			$scope.getRecipes = function() {
+				$http.get("api/v1/recipes").then(
+						function(response) {
+							console.log(response.data)
+							$scope.recipes = response.data;							
+							console.log($scope.recipes[0]);
+							
+						}, function(rejection){
+							console.log("Error while getting recipes")
+						})
+			}
+ 			
+			$scope.getRecipes();
+ 
 		});
 		/*]]>*/
 	</script>
+ 
+	<div ng-app="myApp" class="generic-container ng-cloak" ng-controller="addRecipeCtrl as ctrl">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <span class="lead">Edit Recipe</span>
+        </div>
 
-	<div ng-app="myApp" class="generic-container ng-cloak"
-		ng-controller="addRecipeCtrl as ctrl">
-		<div class="panel panel-default">
-			<div class="panel-heading">
-				<span class="lead">Edit Recipe</span>
-			</div>
+        <div class="formcontainer">
+            <form ng-submit="submit()" name="addRecipeForm" class="form-horizontal">
+                <li ng-repeat="recipe in recipes">
+                    <label>{{recipe.name}}
+                        <input type="radio" ng-model="$parent.selectedRecipe" ng-value="recipe" name="name" required />
+                    </label>
+                </li>
+                           	
 
-			<div class="formcontainer">
-				<form ng-submit="submit()" name="addRecipeForm"
-					class="form-horizontal">
-
-                    <div class="row">
-						<div class="form-group col-md-12">
-							<div class="col-md-7">
-                            <ul>
-							<li>	<a href="/Recipe1">Recipe 1</a> </li>
-                            <li>	<a href="/Recipe2">Recipe 2</a> </li>
-                            <li>	<a href="/Recipe3">Recipe 3</a> </li>
-                            </ul>
-                         
+		        <div class="row" ng-repeat="ingredient in selectedRecipe.ingredients track by $index">					
+					<div class="form-group col-md-12">						
+							<div class="col-md-2">
+								<input type="text" ng-model="ingredient.name" name="{{ingredient.name}}" 
+									class ="form-control input-sm" 
+									placeholder="Enter ingredient"/>							
 							</div>
-							
+							<div class="col-md-7">
+								<input type="number" ng-model="ingredient.amount" name="{{ingredient.name}}" 
+									class ="form-control input-sm" 
+									placeholder="Enter amount of {{ingredient.name}}"
+									required min="0"/>								
+							</div>
+							<!-- GENERATIVE AI WAS USED- asked ChatGPT how to add an 'X' icon -->
+							<div class="col-md-1">
+				            <button type = "button" ng-click="removeIngredient($index)" 
+								class="btn btn-danger btn-sm"
+								style="background-color: transparent; border: 0px;">		                
+					            <span class="fa-stack">
+					                <i class="fas fa-circle fa-stack-2x text-danger"></i>
+					                <i class="fas fa-times fa-stack-1x fa-inverse"></i>
+					            </span>
+				            </button>
+				        </div>
+				        </div>
+		    </div>
+		    
+		    <div class="form-actions">
+				        <button type="button" id="addIngredientButton" ng-click="addIngredient()"
+				                class="btn btn-info btn-sm"
+				                style="background-color: grey; color: black;">
+				                Add Ingredient <strong style="font-weight: bold;">+</strong>
+				        </button>
+		    </div>
+		    
+		    <div class="row">
+						<div class="form-actions floatRight">
+							<input type="submit" value="Submit" 
+				                class="btn btn-primary btn-sm" 
+				                ng-disabled="addRecipeForm.$invalid" 
+				                style="background-color: black; color: white;" />
+				        <button type="button" ng-click="reset()"
+				                class="btn btn-danger btn-sm"
+				                ng-disabled="addRecipeForm.$pristine">Reset Form</button>
 						</div>
-					</div>																										
-					
-				</form>
-			</div>
-			<div ng-show="success">Recipe Created</div>
-			<div ng-show="failure">Error while adding recipe.</div>
-		</div>
+					</div>
+		    
+		    </form>
+        </div>
 
-		<a href="/index">Home</a>
-	</div>
+    <a href="/index">Home</a>
+</div>
 
-
-
+ 
+ 
+ 
 </body>
 </html>

@@ -1,5 +1,7 @@
 package edu.ncsu.csc.CoffeeMaker.controllers;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -8,6 +10,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import edu.ncsu.csc.CoffeeMaker.models.Ingredient;
 import edu.ncsu.csc.CoffeeMaker.models.Inventory;
 import edu.ncsu.csc.CoffeeMaker.services.InventoryService;
 
@@ -57,7 +60,8 @@ public class APIInventoryController extends APIController {
     @PutMapping ( BASE_PATH + "/inventory" )
     public ResponseEntity updateInventory ( @RequestBody final Inventory inventory ) {
         final Inventory inventoryCurrent = service.getInventory();
-        inventoryCurrent.addIngredients( inventory.getIngredients() );
+        final List<Ingredient> list = inventory.getIngredients();
+        inventoryCurrent.setIngredients( list );
         service.save( inventoryCurrent );
         return new ResponseEntity( inventoryCurrent, HttpStatus.OK );
     }

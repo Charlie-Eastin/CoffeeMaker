@@ -1,0 +1,195 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<!-- GENERATIVE AI WAS USED- asked ChatGPT how to add an 'X' icon -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<head>
+<title>Inventory</title>
+<link rel="stylesheet" href="css/bootstrap.css" />
+<link rel="stylesheet" href="css/app.css" />
+<style>
+input.ng-valid {
+	background-color: lightgreen;
+}
+
+input.ng-dirty.ng-invalid-required,input.ng-dirty.ng-invalid-number {
+	background-color: red;
+}
+
+input.ng-dirty.ng-invalid-min {
+	background-color: red;
+}
+
+.update-inventory-panel {
+        background-color: lightgrey;
+}
+
+.grey-header {
+        background-color: grey;
+}
+</style>
+<script
+	src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.js"></script>
+</head>
+
+<body>
+
+
+	<script>
+		/*<![CDATA[*/
+		var app = angular.module('myApp', []);
+		app.controller('inventoryCtrl', function($scope, $http) {
+			$scope.inventory = {
+				ingredients: [
+					{name: 'Coffee', amount: 0},
+					{name: 'Milk', amount: 0},
+					{name: 'Sugar', amount: 0},
+					{name: 'Chocolate', amount: 0}
+					
+				]
+			};
+
+			$scope.getInventory = function() {
+				$http.get("/api/v1/inventory").then(function(response) {
+					console.log(response.data);
+					$scope.inventory = response.data;
+				}, function(rejection) {
+					console.error("Error while getting Inventory");
+				})
+			}
+
+			$scope.addIngredient = function() {
+				$scope.inventory.ingredients.push({ name: '', amount: 0});
+			}
+			
+			$scope.removeIngredient = function(index) {
+			    $scope.inventory.ingredients.splice(index, 1);
+				
+			};
+			
+			$scope.updateInventory = function() {
+				$scope.success = false;
+				$scope.failure = false;
+
+				$http.put("/api/v1/inventory", $scope.inventory).then(
+						function(response) {
+							$scope.getInventory();
+
+						}, function(rejection) {
+							$scope.failure = true;
+							$scope.success = false;
+							console.error("Error while updating Inventory!");
+						});
+				$scope.success = !($scope.failure);
+			}
+
+			$scope.submit = function() {
+				console.log($scope.inventory)
+				$scope.updateInventory();
+				$scope.reset();
+			}
+
+			$scope.getInventory();
+
+			$scope.reset = function() {
+				$scope.inventory = {
+					ingredients: [
+						{name: 'Coffee', amount: 0},
+						{name: 'Milk', amount: 0},
+						{name: 'Sugar', amount: 0},
+						{name: 'Chocolate', amount: 0}
+						
+					]
+				};
+
+				if (undefined != $scope.addInventoryForm) {
+					$scope.addInventoryForm.$setPristine(); //reset Form
+				}
+			}
+
+			$scope.reset();
+
+		});
+		/*]]>*/
+	</script>
+
+
+
+	<div class="generic-container ng-cloak" ng-app="myApp"
+		ng-controller="inventoryCtrl as ctrl">
+		<div class="panel panel-default">
+			<div class="panel-heading grey-header">
+				<span class="lead">View Inventory</span>
+			</div>
+			
+			<div ng-repeat="ingredient in inventory.ingredients">
+       		 	{{ingredient.name}}: {{ingredient.amount}}<br />
+    		</div>
+
+
+			<div class="panel-heading grey-header">
+				<span class="lead">Update Inventory Form </span>
+			</div>
+			<div class="formcontainer">
+				<form ng-submit="submit()" name="addInventoryForm"
+					class="form-horizontal">
+					<div class="row" ng-repeat="ingredient in inventory.ingredients track by $index">
+						<div class="form-group col-md-12">
+							
+							<div class="col-md-2">
+								<input type="text" ng-model="ingredient.name" name="{{ingredient.name}}" 
+									class ="form-control input-sm" 
+									placeholder="Enter ingredient"/>							
+							</div>
+							<div class="col-md-7">
+								<input type="number" ng-model="ingredient.amount" name="{{ingredient.name}}" 
+									class ="form-control input-sm" 
+									placeholder="Enter amount of {{ingredient.name}}"
+									required min="0"/>								
+							</div>
+							<!-- GENERATIVE AI WAS USED- asked ChatGPT how to add an 'X' icon -->
+							<div class="col-md-1">
+				            <button type = "button" ng-click="removeIngredient($index)" 
+								class="btn btn-danger btn-sm"
+								style="background-color: transparent; border: 0px;">		                
+					            <span class="fa-stack">
+					                <i class="fas fa-circle fa-stack-2x text-danger"></i>
+					                <i class="fas fa-times fa-stack-1x fa-inverse"></i>
+					            </span>
+				            </button>
+				        </div>
+						</div>
+					</div>	
+					
+				    <div class="form-actions">
+				        <button type="button" id="addIngredientButton" ng-click="addIngredient()"
+				                class="btn btn-info btn-sm"
+				                style="background-color: grey; color: black;">
+				                Add Ingredient <strong style="font-weight: bold;">+</strong>
+				        </button>
+				    </div>
+
+
+					<div class="row">
+						<div class="form-actions floatRight">
+							<input type="submit" value="Submit" 
+				                class="btn btn-primary btn-sm" 
+				                ng-disabled="addRecipeForm.$invalid" 
+				                style="background-color: black; color: white;" />
+				        <button type="button" ng-click="reset()"
+				                class="btn btn-danger btn-sm"
+				                ng-disabled="addRecipeForm.$pristine">Reset Form</button>
+						</div>
+					</div>
+				</form>
+			</div>
+			<div ng-show="success">Inventory Successfully Updated</div>
+			<div ng-show="failure">Error while updating inventory.</div>
+		</div>
+
+		<a href="/index">Home</a>
+	</div>
+
+
+
+</body>
+</html>

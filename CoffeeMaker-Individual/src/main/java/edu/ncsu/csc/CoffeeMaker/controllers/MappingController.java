@@ -35,9 +35,9 @@ public class MappingController {
      *            underlying UI model
      * @return contents of the page
      */
-    @GetMapping ( { "/recipe", "/recipe.html" } )
+    @GetMapping ( { "/addrecipe", "/addrecipe.html" } )
     public String addRecipePage ( final Model model ) {
-        return "recipe";
+        return "addrecipe";
     }
 
     /**
@@ -104,9 +104,9 @@ public class MappingController {
      *            underlying UI model
      * @return contents of the page
      */
-    @GetMapping ( { "/inventory2", "/inventory2.html" } )
-    public String inventory2Form ( final Model model ) {
-        return "inventory2";
+    @GetMapping ( { "/updateInventory", "/updateInventory.html" } )
+    public String updateInventoryForm ( final Model model ) {
+        return "updateInventory";
     }
 
     /**

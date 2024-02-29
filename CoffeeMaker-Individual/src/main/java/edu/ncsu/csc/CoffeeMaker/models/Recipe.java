@@ -71,44 +71,6 @@ public class Recipe extends DomainObject {
     }
 
     /**
-     * Updates the fields to be equal to the passed Recipe
-     *
-     * @param r
-     *            with updated fields
-     */
-    public void editRecipe ( final Recipe r ) {
-        /**
-         * GENERATIVE AI WAS USED- used ChatGPT to create an updateRecipe method
-         */
-        setName( r.getName() );
-        setPrice( r.getPrice() );
-        // Temporarily stor;e the current ingredients for easy removal check
-        // later
-        final List<Ingredient> currentIngredients = new LinkedList<>( this.ingredients );
-
-        // Iterate through the ingredients of the recipe `r`
-        for ( final Ingredient ingredient : r.ingredients ) {
-            // Try to add the ingredient, if it returns false, the ingredient
-            // already exists and should be updated
-            if ( !addIngredient( ingredient ) ) {
-                // If the ingredient exists, update its details
-                for ( int i = 0; i < ingredients.size(); i++ ) {
-                    if ( ingredients.get( i ).getName().equals( ingredient.getName() ) ) {
-                        ingredients.get( i ).setAmount( ingredient.getAmount() );
-                    }
-                }
-            }
-            // After attempting to add or updating, remove it from the temporary
-            // list as it's confirmed to be in both recipes
-            currentIngredients.removeIf( i -> i.getName().equals( ingredient.getName() ) );
-        }
-
-        // Remove any ingredients that are left in `currentIngredients` as they
-        // are not in the new recipe
-        this.ingredients.removeAll( currentIngredients );
-    }
-
-    /**
      * Get the ID of the Recipe
      *
      * @return the ID

@@ -63,6 +63,17 @@ public class APIRecipeController extends APIController {
                 : new ResponseEntity( recipe, HttpStatus.OK );
     }
 
+    @PostMapping ( BASE_PATH + "/recipes/{name}" )
+    public ResponseEntity editRecipe ( @PathVariable ( "name" ) final String name, @RequestBody final Recipe recipe ) {
+        if ( service.findByName( name ) == null ) {
+            return new ResponseEntity( errorResponse( "Recipe not found " + recipe.getName() ), HttpStatus.CONFLICT );
+        }
+        final Recipe recipe2 = service.findByName( name );
+        service.delete( recipe2 );
+        service.save( recipe );
+        return new ResponseEntity( successResponse( recipe.getName() + " successfully edited" ), HttpStatus.OK );
+    }
+
     /**
      * REST API method to provide POST access to the Recipe model. This is used
      * to create a new Recipe by automatically converting the JSON RequestBody
@@ -87,33 +98,6 @@ public class APIRecipeController extends APIController {
             return new ResponseEntity(
                     errorResponse( "Insufficient space in recipe book for recipe " + recipe.getName() ),
                     HttpStatus.INSUFFICIENT_STORAGE );
-        }
-
-    }
-
-    /**
-     * REST API method to provide POST access to the Recipe model. This is used
-     * to create a new Recipe by automatically converting the JSON RequestBody
-     * provided to a Recipe object. Invalid JSON will fail.
-     *
-     * @param recipe
-     *            The valid Recipe to be saved.
-     * @return ResponseEntity indicating success if the Recipe could be saved to
-     *         the inventory, or an error if it could not be
-     */
-    @PostMapping ( BASE_PATH + "/recipes/{name}" )
-    public ResponseEntity editRecipe ( @PathVariable ( "name" ) final String name, @RequestBody final Recipe recipe2 ) {
-        if ( null == service.findByName( name ) ) {
-            return new ResponseEntity( errorResponse( "Recipe with the name " + name + " does not exist" ),
-                    HttpStatus.CONFLICT );
-        }
-        if ( recipe2 != null ) {
-            service.delete( service.findByName( name ) );
-            service.save( recipe2 );
-            return new ResponseEntity( successResponse( name + " successfully updated" ), HttpStatus.OK );
-        }
-        else {
-            return new ResponseEntity( errorResponse( "Error in reading recipe" ), HttpStatus.INSUFFICIENT_STORAGE );
         }
 
     }
