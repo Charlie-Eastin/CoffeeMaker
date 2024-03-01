@@ -1,6 +1,7 @@
 package edu.ncsu.csc.CoffeeMaker.api;
 
 import static org.junit.Assert.assertEquals;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -103,7 +104,7 @@ public class APIIngredientTest {
 
     @Test
     @Transactional
-    public void testDeleteIngredientAPI () throws Exception {
+    public void testDeleteIngredient () throws Exception {
 
         Assertions.assertEquals( 0, service.findAll().size(), "There should be no Ingredients in the CoffeeMaker" );
 
@@ -127,6 +128,24 @@ public class APIIngredientTest {
 
         service.deleteAll();
         Assertions.assertEquals( 0, service.findAll().size(), "There should be no Ingredients in the CoffeeMaker" );
+
+    }
+
+    @Test
+    @Transactional
+    public void testDeleteIngredientAPI () throws Exception {
+
+        Assertions.assertEquals( 0, service.findAll().size(), "There should be no Ingredients in the CoffeeMaker" );
+
+        final Ingredient r1 = new Ingredient( "Coffee", 1 );
+
+        service.save( r1 );
+
+        Assertions.assertEquals( 1, service.findAll().size(),
+                "There should only be one Ingredient in the CoffeeMaker" );
+
+        mvc.perform( delete( "/api/v1/ingredients/Coffee" ).contentType( MediaType.APPLICATION_JSON )
+                .content( TestUtils.asJsonString( r1 ) ) ).andExpect( status().isOk() );
 
     }
 
@@ -156,24 +175,30 @@ public class APIIngredientTest {
 
         mvc.perform( get( "/api/v1/ingredients/" + Ingredient.getName() ) ).andExpect( status().isOk() );
 
-        // final Ingredient Ingredient2 = new Ingredient( "Milk", 2 );
-        //
-        // assertEquals( "Milk", Ingredient2.getIngredient() );
-        // assertEquals( 2, Ingredient2.getAmount() );
-        //
-        // mvc.perform( post( "/api/v1/ingredients" ).contentType(
-        // MediaType.APPLICATION_JSON )
-        // .content( TestUtils.asJsonString( Ingredient2 ) ) ).andExpect(
-        // status().isOk() );
-        //
-        // Assertions.assertEquals( 2, (int) service.count() );
-        //
-        // mvc.perform( get( "/api/v1/ingredients/" +
-        // Ingredient2.getIngredient() ) ).andExpect( status().isOk() );
-        //
-        // final String notAddedIngredient = "NotAddedIngredient";
-        // mvc.perform( get( "/api/v1/ingredients/" + notAddedIngredient )
-        // ).andExpect( status().isNotFound() );
+    }
+
+    @Test
+    @Transactional
+    public void testGetIngredients () throws Exception {
+        service.deleteAll();
+
+        final Ingredient Ingredient = new Ingredient( "Coffee", 1 );
+        final Ingredient Ingredient2 = new Ingredient( "Tea", 1 );
+        assertEquals( "Coffee", Ingredient.getName() );
+        assertEquals( 1, Ingredient.getAmount() );
+        assertEquals( "Tea", Ingredient2.getName() );
+        assertEquals( 1, Ingredient2.getAmount() );
+
+        mvc.perform( post( "/api/v1/ingredients" ).contentType( MediaType.APPLICATION_JSON )
+                .content( TestUtils.asJsonString( Ingredient ) ) ).andExpect( status().isOk() );
+
+        mvc.perform( post( "/api/v1/ingredients" ).contentType( MediaType.APPLICATION_JSON )
+                .content( TestUtils.asJsonString( Ingredient2 ) ) ).andExpect( status().isOk() );
+
+        Assertions.assertEquals( 2, (int) service.count() );
+
+        mvc.perform( get( "/api/v1/ingredients" ) ).andExpect( status().isOk() );
+
     }
 
 }

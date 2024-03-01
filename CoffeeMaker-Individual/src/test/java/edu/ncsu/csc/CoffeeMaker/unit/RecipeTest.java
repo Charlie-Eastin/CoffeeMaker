@@ -362,11 +362,11 @@ public class RecipeTest {
     public void testUpdateRecipe () {
         Assertions.assertEquals( 0, service.findAll().size(), "There should be no Recipes in the CoffeeMaker" );
 
-        final Recipe r1 = createRecipe( "Coffee", 50, new Ingredient( "Coffee", 3 ), new Ingredient( "Milk", 1 ),
+        final Recipe r1 = createRecipe( "Mocha", 50, new Ingredient( "Coffee", 3 ), new Ingredient( "Milk", 1 ),
                 new Ingredient( "Sugar", 1 ), new Ingredient( "Chocolate", 0 ) );
         service.save( r1 );
 
-        final Recipe r2 = createRecipe( "Mocha", 60, new Ingredient( "Coffee", 4 ), new Ingredient( "Milk", 2 ),
+        final Recipe r2 = createRecipe( "Coffee", 60, new Ingredient( "Coffee", 4 ), new Ingredient( "Milk", 2 ),
                 new Ingredient( "Sugar", 7 ), new Ingredient( "Chocolate", 6 ) );
 
         r1.editRecipe( r2 );
@@ -390,7 +390,7 @@ public class RecipeTest {
 
         service.save( r1 );
 
-        final Recipe retrieved2 = service.findByName( "Coffee" );
+        final Recipe retrieved2 = service.findByName( "Mocha" );
 
         Assertions.assertEquals( 6, (int) retrieved2.getPrice() );
         Assertions.assertEquals( 2, retrieved2.getIngredients().get( 0 ).getAmount() );
@@ -399,6 +399,14 @@ public class RecipeTest {
         Assertions.assertEquals( 6, retrieved2.getIngredients().get( 3 ).getAmount() );
 
         Assertions.assertEquals( 1, service.count(), "Editing a recipe shouldn't duplicate it" );
+
+        try {
+            r1.editRecipe( null );
+            Assertions.fail( "Should have thrown an error" );
+        }
+        catch ( final NullPointerException e ) {
+            Assertions.assertEquals( "Recipe cannot be null", e.getMessage() );
+        }
 
     }
 

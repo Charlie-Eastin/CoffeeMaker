@@ -25,17 +25,17 @@ public class Recipe extends DomainObject {
     /** Recipe id */
     @Id
     @GeneratedValue
-    private Long                   id;
+    private Long             id;
 
     /** Recipe name */
-    private String                 name;
+    private String           name;
 
     /** Recipe price */
     @Min ( 0 )
-    private Integer                price;
+    private Integer          price;
 
     @OneToMany ( cascade = CascadeType.ALL, fetch = FetchType.EAGER )
-    private final List<Ingredient> ingredients;
+    private List<Ingredient> ingredients;
 
     /**
      * Creates a default recipe for the coffee maker.
@@ -68,6 +68,15 @@ public class Recipe extends DomainObject {
                 ingredients.get( i ).setAmount( ingredient.getAmount() );
             }
         }
+    }
+
+    public void editRecipe ( final Recipe recipe ) {
+        if ( recipe == null ) {
+            throw new NullPointerException( "Recipe cannot be null" );
+        }
+        this.setPrice( recipe.getPrice() );
+
+        this.ingredients = new LinkedList<Ingredient>( recipe.getIngredients() );
     }
 
     /**

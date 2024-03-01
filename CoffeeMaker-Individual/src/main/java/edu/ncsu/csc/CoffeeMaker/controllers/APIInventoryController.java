@@ -61,7 +61,13 @@ public class APIInventoryController extends APIController {
     public ResponseEntity updateInventory ( @RequestBody final Inventory inventory ) {
         final Inventory inventoryCurrent = service.getInventory();
         final List<Ingredient> list = inventory.getIngredients();
-        inventoryCurrent.setIngredients( list );
+        try {
+            inventoryCurrent.setIngredients( list );
+        }
+        catch ( final IllegalArgumentException e ) {
+            return new ResponseEntity( errorResponse( "Duplicate ingredients not allowed" ), HttpStatus.CONFLICT );
+        }
+
         service.save( inventoryCurrent );
         return new ResponseEntity( inventoryCurrent, HttpStatus.OK );
     }

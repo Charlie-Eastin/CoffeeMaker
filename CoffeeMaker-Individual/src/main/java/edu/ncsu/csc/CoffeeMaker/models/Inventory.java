@@ -89,13 +89,21 @@ public class Inventory extends DomainObject {
      */
     public boolean enoughIngredients ( final Recipe r ) {
         final List<Ingredient> list = r.getIngredients();
-        for ( int i = 0; i < ingredients.size(); i++ ) {
-            for ( int j = 0; j < list.size(); j++ ) {
-                if ( ingredients.get( i ).getName().equals( list.get( j ).getName() ) ) {
-                    if ( ingredients.get( i ).getAmount() < list.get( j ).getAmount() ) {
+        for ( int i = 0; i < list.size(); i++ ) {
+            boolean found = false;
+
+            for ( int j = 0; j < ingredients.size(); j++ ) {
+                if ( list.get( i ).getName().equals( ingredients.get( j ).getName() ) ) {
+                    found = true;
+                    if ( ingredients.get( j ).getAmount() < list.get( i ).getAmount() ) {
                         return false;
                     }
                 }
+            }
+            System.out.println( found );
+            System.out.println( ingredients.get( i ) );
+            if ( found == false ) {
+                return false;
             }
         }
         return true;
@@ -111,6 +119,7 @@ public class Inventory extends DomainObject {
      */
     public boolean useIngredients ( final Recipe r ) {
         if ( enoughIngredients( r ) ) {
+            System.out.println( "\n\n\n\n MADE IT \n\n\n" );
             final List<Ingredient> list = r.getIngredients();
             for ( int i = 0; i < ingredients.size(); i++ ) {
                 for ( int j = 0; j < list.size(); j++ ) {
@@ -122,6 +131,7 @@ public class Inventory extends DomainObject {
             return true;
         }
         else {
+            System.out.println( "\n\n\n\n WA WA WA \n\n\n" );
             return false;
         }
     }
@@ -162,6 +172,16 @@ public class Inventory extends DomainObject {
     }
 
     public void setIngredients ( final List<Ingredient> ingredients ) {
+        for ( int i = 0; i < ingredients.size(); i++ ) {
+            for ( int j = 0; j < ingredients.size(); j++ ) {
+                System.out.println( ingredients.get( i ) + " " + ingredients.get( j ) );
+                if ( ingredients.get( i ).getName().equals( ingredients.get( j ).getName() ) && i != j
+                        && ingredients.get( i ).getId() != null && ingredients.get( j ).getId() != null ) {
+
+                    throw new IllegalArgumentException( "Duplicate Ingredient" );
+                }
+            }
+        }
         this.ingredients = ingredients;
     }
 

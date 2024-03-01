@@ -41,11 +41,21 @@ input.ng-dirty.ng-invalid-min {
 			$scope.editRecipe = function() {
 				$http.post("api/v1/recipes/" + $scope.selectedRecipe.name, $scope.selectedRecipe).then(
 						function(response) {
-							console.log(response.data)														
+							console.log(response.data)	
+							$scope.failure = false;
+							$scope.success = true;
 						}, function(rejection){
 							console.log("Error while getting recipes")
+							$scope.failure = true;
+							$scope.success = false;
+							$scope.getRecipes();
 						})
 			}
+			
+			$scope.removeIngredient = function(index) {
+			    $scope.selectedRecipe.ingredients.splice(index, 1);
+				
+			};
  			
 			<!--  Asked chat GPT will help for adding an ingredient -->	
 			$scope.addIngredient = function() {
@@ -87,8 +97,20 @@ input.ng-dirty.ng-invalid-min {
                         <input type="radio" ng-model="$parent.selectedRecipe" ng-value="recipe" name="name" required />
                     </label>
                 </li>
-                           	
-
+             <br>
+             <br>              	
+			<div class="row" ng-show="selectedRecipe">					
+					<div class="form-group col-md-12">						
+							<label class="col-md-2 control-lable" for="file">Price</label>
+							<div class="col-md-7">
+								<input type="number" ng-model="selectedRecipe.price" name="price" 
+									class ="form-control input-sm" 
+									placeholder="Enter price of recipe"
+									required min="0"/>								
+							</div>
+					</div>
+			</div>
+				
 		        <div class="row" ng-repeat="ingredient in selectedRecipe.ingredients track by $index">					
 					<div class="form-group col-md-12">						
 							<div class="col-md-2">
@@ -137,6 +159,8 @@ input.ng-dirty.ng-invalid-min {
 					</div>
 		    
 		    </form>
+		    <div ng-show="success">Recipe Successfully Updated</div>
+			<div ng-show="failure">Error while updating recipe.</div>
         </div>
 
     <a href="/index">Home</a>

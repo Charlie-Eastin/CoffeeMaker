@@ -68,6 +68,10 @@ public class APIRecipeController extends APIController {
         if ( service.findByName( name ) == null ) {
             return new ResponseEntity( errorResponse( "Recipe not found " + recipe.getName() ), HttpStatus.CONFLICT );
         }
+        if ( recipe.getIngredients().size() == 0 ) {
+            return new ResponseEntity( errorResponse( "Recipe cannot have ingredients size of 0" ),
+                    HttpStatus.CONFLICT );
+        }
         final Recipe recipe2 = service.findByName( name );
         service.delete( recipe2 );
         service.save( recipe );
@@ -90,7 +94,7 @@ public class APIRecipeController extends APIController {
             return new ResponseEntity( errorResponse( "Recipe with the name " + recipe.getName() + " already exists" ),
                     HttpStatus.CONFLICT );
         }
-        if ( service.findAll().size() < 3 ) {
+        if ( service.findAll().size() < 3 && recipe.getIngredients().size() > 0 ) {
             service.save( recipe );
             return new ResponseEntity( successResponse( recipe.getName() + " successfully created" ), HttpStatus.OK );
         }

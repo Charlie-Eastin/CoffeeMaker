@@ -3,6 +3,8 @@ package edu.ncsu.csc.CoffeeMaker;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import javax.transaction.Transactional;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,6 +32,7 @@ public class GenerateRecipeWithIngredients {
     }
 
     @Test
+    @Transactional
     public void createRecipe () {
         final Recipe r1 = new Recipe();
         r1.setName( "Delicious Coffee" );

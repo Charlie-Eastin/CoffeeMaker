@@ -37,8 +37,6 @@ input.ng-dirty.ng-invalid-min {
 					name: '',
 					price: '',
 					ingredients: [
-						{name: 'Coffee', amount: 0},
-						{name: 'Milk', amount: 0}
 					]
 				};
 				if (undefined != $scope.addRecipeForm) {
@@ -123,6 +121,8 @@ input.ng-dirty.ng-invalid-min {
 							$scope.addRecipeForm.$setPristine();
 						}, function(rejection) {
 							console.error("Error while adding recipe");
+							$scope.success = false;
+							$scope.failure = true;
 						});
 			}
 

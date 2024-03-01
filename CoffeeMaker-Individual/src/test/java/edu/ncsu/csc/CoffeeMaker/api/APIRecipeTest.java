@@ -319,22 +319,9 @@ public class APIRecipeTest {
         Assertions.assertEquals( 10, service.findByName( "Mocha" ).getIngredients().get( 2 ).getAmount() );
         Assertions.assertEquals( 4, service.findByName( "Mocha" ).getIngredients().get( 3 ).getAmount() );
 
-        // mvc.perform( get( "/api/v1/recipes/" + recipe.getName() )
-        // ).andExpect( status().isOk() );
+        mvc.perform( post( String.format( "/api/v1/recipes/random" ) ).contentType( MediaType.APPLICATION_JSON )
+                .content( TestUtils.asJsonString( recipe2 ) ) ).andExpect( status().isConflict() );
 
-        // mvc.perform( post( "/api/v1/recipes" ).contentType(
-        // MediaType.APPLICATION_JSON )
-        // .content( TestUtils.asJsonString( recipe2 ) ) ).andExpect(
-        // status().isOk() );
-        //
-        // Assertions.assertEquals( 2, (int) service.count() );
-        //
-        // mvc.perform( get( "/api/v1/recipes/" + recipe2.getName() )
-        // ).andExpect( status().isOk() );
-        //
-        // final String notAddedRecipe = "NotAddedRecipe";
-        // mvc.perform( get( "/api/v1/recipes/" + notAddedRecipe ) ).andExpect(
-        // status().isNotFound() );
     }
 
 }

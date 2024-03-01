@@ -187,54 +187,6 @@ public class TestDatabaseInteraction {
         assertEquals( 0, dbRecipes.size() );
     }
 
-    // /*
-    // * Tests the updateRecipes function
-    // */
-    // @Test
-    // @Transactional
-    // public void testUpdateRecipes () {
-    // final Recipe r = new Recipe();
-    // final Recipe r2 = new Recipe();
-    //
-    // r.setName( "Recipe1" );
-    // r.setPrice( 5 );
-    // assertTrue( r.addIngredient( new Ingredient( "Chocolate", 5 ) ) );
-    // assertTrue( r.addIngredient( new Ingredient( "Milk", 5 ) ) );
-    // assertTrue( r.addIngredient( new Ingredient( "Sugar", 5 ) ) );
-    // assertTrue( r.addIngredient( new Ingredient( "Coffee", 5 ) ) );
-    //
-    // recipeService.save( r );
-    // final List<Recipe> dbRecipes = recipeService.findAll();
-    //
-    // Recipe dbRecipe = dbRecipes.get( 0 );
-    //
-    // assertEquals( r.getName(), dbRecipe.getName() );
-    // assertEquals( r.getIngredients(), dbRecipe.getIngredients() );
-    // assertEquals( r.getPrice(), dbRecipe.getPrice() );
-    //
-    // r2.setName( "Recipe2" );
-    // r2.setPrice( 6 );
-    // assertTrue( r2.addIngredient( new Ingredient( "Chocolate", 6 ) ) );
-    // assertTrue( r2.addIngredient( new Ingredient( "Milk", 6 ) ) );
-    // assertTrue( r2.addIngredient( new Ingredient( "Sugar", 6 ) ) );
-    // assertTrue( r2.addIngredient( new Ingredient( "Coffee", 6 ) ) );
-    // recipeService.save( r2 );
-    //
-    // r.updateRecipe( r2 );
-    //
-    // dbRecipe = dbRecipes.get( 0 );
-    //
-    // assertEquals( r2.getIngredients().get( 0 ).getName(),
-    // dbRecipe.getIngredients().get( 0 ).getName() );
-    // assertEquals( r2.getPrice(), dbRecipe.getPrice() );
-    // }
-
-    /**
-     * testFindByID() tests the findByID() method in the Service class by saving
-     * a new recipe into the system and then calling the recipeService.findByID
-     * method. It also checks that the method returns null when calling
-     * findByID(null).
-     */
     @Test
     @Transactional
     public void testFindByID () {
