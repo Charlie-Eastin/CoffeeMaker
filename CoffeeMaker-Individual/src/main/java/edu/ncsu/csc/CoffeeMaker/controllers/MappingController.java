@@ -35,9 +35,9 @@ public class MappingController {
      *            underlying UI model
      * @return contents of the page
      */
-    @GetMapping ( { "/recipe", "/recipe.html" } )
+    @GetMapping ( { "/addrecipe", "/addrecipe.html" } )
     public String addRecipePage ( final Model model ) {
-        return "recipe";
+        return "addrecipe";
     }
 
     /**
@@ -92,6 +92,21 @@ public class MappingController {
     @GetMapping ( { "/inventory", "/inventory.html" } )
     public String inventoryForm ( final Model model ) {
         return "inventory";
+    }
+
+    /**
+     * Handles a GET request for inventory. The GET request provides a view to
+     * the client that includes the list of the current ingredients in the
+     * inventory and a form where the client can enter more ingredients to add
+     * to the inventory.
+     *
+     * @param model
+     *            underlying UI model
+     * @return contents of the page
+     */
+    @GetMapping ( { "/updateInventory", "/updateInventory.html" } )
+    public String updateInventoryForm ( final Model model ) {
+        return "updateInventory";
     }
 
     /**

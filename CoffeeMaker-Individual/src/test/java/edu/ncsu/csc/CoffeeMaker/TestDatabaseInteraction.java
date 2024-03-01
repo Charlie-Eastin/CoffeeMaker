@@ -1,7 +1,7 @@
 package edu.ncsu.csc.CoffeeMaker;
 
+import static org.junit.Assert.assertNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
@@ -16,6 +16,7 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import edu.ncsu.csc.CoffeeMaker.models.Ingredient;
 import edu.ncsu.csc.CoffeeMaker.models.Recipe;
 import edu.ncsu.csc.CoffeeMaker.services.RecipeService;
 
@@ -41,16 +42,17 @@ public class TestDatabaseInteraction {
     @Test
     @Transactional
     public void testRecipes () {
-        final Recipe r = new Recipe();
+        final Recipe r1 = new Recipe();
+        r1.setName( "Recipe1" );
 
-        r.setName( "Recipe1" );
-        r.setChocolate( 5 );
-        r.setMilk( 5 );
-        r.setSugar( 5 );
-        r.setCoffee( 5 );
-        r.setPrice( 5 );
+        r1.setPrice( 50 );
 
-        recipeService.save( r );
+        assertTrue( r1.addIngredient( new Ingredient( "Coffee", 10 ) ) );
+        assertTrue( r1.addIngredient( new Ingredient( "Pumpkin Spice", 3 ) ) );
+        assertTrue( r1.addIngredient( new Ingredient( "Milk", 2 ) ) );
+        assertTrue( r1.addIngredient( new Ingredient( "Tea", 6 ) ) );
+
+        recipeService.save( r1 );
 
         final List<Recipe> dbRecipes = recipeService.findAll();
 
@@ -58,96 +60,148 @@ public class TestDatabaseInteraction {
 
         final Recipe dbRecipe = dbRecipes.get( 0 );
 
-        assertEquals( r.getName(), dbRecipe.getName() );
-        assertEquals( r.getChocolate(), dbRecipe.getChocolate() );
-        assertEquals( r.getMilk(), dbRecipe.getMilk() );
-        assertEquals( r.getSugar(), dbRecipe.getSugar() );
-        assertEquals( r.getCoffee(), dbRecipe.getCoffee() );
-        assertEquals( r.getPrice(), dbRecipe.getPrice() );
+        assertEquals( r1.getName(), dbRecipe.getName() );
+        assertEquals( r1.getIngredients(), dbRecipe.getIngredients() );
+        assertEquals( r1.getPrice(), dbRecipe.getPrice() );
 
-        assertEquals( recipeService.findByName( "Recipe1" ), r );
+        assertEquals( recipeService.findByName( "Recipe1" ), r1 );
 
         dbRecipe.setPrice( 15 );
-        dbRecipe.setSugar( 12 );
+        dbRecipe.setIngredient( new Ingredient( "Coffee", 3 ) );
         recipeService.save( dbRecipe );
 
         assertEquals( 1, recipeService.count() );
 
-        assertEquals( r.getPrice(), 15 );
-        assertEquals( r.getSugar(), 12 );
-        assertEquals( 12, (int) recipeService.findAll().get( 0 ).getSugar() );
-    }
-
-    /*
-     * Tests the updateRecipes function
-     */
-    @Test
-    @Transactional
-    public void testUpdateRecipes () {
-        final Recipe r = new Recipe();
-        final Recipe r2 = new Recipe();
-
-        r.setName( "Recipe1" );
-        r.setChocolate( 5 );
-        r.setMilk( 5 );
-        r.setSugar( 5 );
-        r.setCoffee( 5 );
-        r.setPrice( 5 );
-
-        recipeService.save( r );
-        final List<Recipe> dbRecipes = recipeService.findAll();
-
-        Recipe dbRecipe = dbRecipes.get( 0 );
-
-        assertEquals( r.getName(), dbRecipe.getName() );
-        assertEquals( r.getChocolate(), dbRecipe.getChocolate() );
-        assertEquals( r.getMilk(), dbRecipe.getMilk() );
-        assertEquals( r.getSugar(), dbRecipe.getSugar() );
-        assertEquals( r.getCoffee(), dbRecipe.getCoffee() );
-        assertEquals( r.getPrice(), dbRecipe.getPrice() );
-
-        r2.setName( "Recipe2" );
-        r2.setChocolate( 6 );
-        r2.setMilk( 6 );
-        r2.setSugar( 6 );
-        r2.setCoffee( 6 );
-        r2.setPrice( 6 );
-
-        r.updateRecipe( r2 );
-
-        dbRecipe = dbRecipes.get( 0 );
-
-        assertEquals( r2.getChocolate(), dbRecipe.getChocolate() );
-        assertEquals( r2.getMilk(), dbRecipe.getMilk() );
-        assertEquals( r2.getSugar(), dbRecipe.getSugar() );
-        assertEquals( r2.getCoffee(), dbRecipe.getCoffee() );
-        assertEquals( r2.getPrice(), dbRecipe.getPrice() );
+        assertEquals( r1.getPrice(), 15 );
+        assertEquals( r1.getIngredients().get( 0 ).getAmount(), 3 );
+        assertEquals( 3, recipeService.findAll().get( 0 ).getIngredients().get( 0 ).getAmount() );
     }
 
     /**
-     * testFindByID() tests the findByID() method in the Service class by saving
-     * a new recipe into the system and then calling the recipeService.findByID
-     * method. It also checks that the method returns null when calling
-     * findByID(null).
+     * Tests the delete function in the recipes class
      */
+    @Test
+    @Transactional
+    public void testDelete () {
+        final Recipe r = new Recipe();
+        final Recipe r2 = new Recipe();
+        final Recipe r3 = new Recipe();
+
+        // Represents recipe 1
+        r.setName( "Recipe1" );
+        r.setPrice( 5 );
+        assertTrue( r.addIngredient( new Ingredient( "Coffee", 10 ) ) );
+        assertTrue( r.addIngredient( new Ingredient( "Pumpkin Spice", 3 ) ) );
+        assertTrue( r.addIngredient( new Ingredient( "Milk", 2 ) ) );
+        assertTrue( r.addIngredient( new Ingredient( "Tea", 6 ) ) );
+
+        // Represents recipe 2
+        r2.setName( "Recipe2" );
+        r2.setPrice( 5 );
+        assertTrue( r2.addIngredient( new Ingredient( "Coffee", 10 ) ) );
+        assertTrue( r2.addIngredient( new Ingredient( "Pumpkin Spice", 3 ) ) );
+        assertTrue( r2.addIngredient( new Ingredient( "Milk", 2 ) ) );
+        assertTrue( r2.addIngredient( new Ingredient( "Tea", 6 ) ) );
+
+        // Represents recipe 3
+        r3.setName( "Recipe3" );
+        r3.setPrice( 5 );
+        assertTrue( r3.addIngredient( new Ingredient( "Coffee", 10 ) ) );
+        assertTrue( r3.addIngredient( new Ingredient( "Pumpkin Spice", 3 ) ) );
+        assertTrue( r3.addIngredient( new Ingredient( "Milk", 2 ) ) );
+        assertTrue( r3.addIngredient( new Ingredient( "Tea", 6 ) ) );
+
+        // Saves each recipe to recipe service
+        recipeService.save( r );
+        recipeService.save( r2 );
+        recipeService.save( r3 );
+
+        // Finds all the recipes and adds them to dbRecipes
+        List<Recipe> dbRecipes = recipeService.findAll();
+
+        // Ensures there are 3 recipes
+        assertEquals( 3, dbRecipes.size() );
+
+        // Deletes the first recipe
+        recipeService.delete( r );
+
+        // Gets all the recipes again
+        dbRecipes = recipeService.findAll();
+
+        // Ensures there are 2 recipes
+        assertEquals( 2, dbRecipes.size() );
+
+    }
+
+    /**
+     * Tests the delete function in the recipes class
+     */
+    @Test
+    @Transactional
+    public void testDeleteAll () {
+        final Recipe r = new Recipe();
+        final Recipe r2 = new Recipe();
+        final Recipe r3 = new Recipe();
+
+        // Represents recipe 1
+        r.setName( "Recipe1" );
+        r.setPrice( 5 );
+        assertTrue( r.addIngredient( new Ingredient( "Coffee", 10 ) ) );
+        assertTrue( r.addIngredient( new Ingredient( "Pumpkin Spice", 3 ) ) );
+        assertTrue( r.addIngredient( new Ingredient( "Milk", 2 ) ) );
+        assertTrue( r.addIngredient( new Ingredient( "Tea", 6 ) ) );
+
+        // Represents recipe 2
+        r2.setName( "Recipe2" );
+        r2.setPrice( 5 );
+        assertTrue( r2.addIngredient( new Ingredient( "Coffee", 10 ) ) );
+        assertTrue( r2.addIngredient( new Ingredient( "Pumpkin Spice", 3 ) ) );
+        assertTrue( r2.addIngredient( new Ingredient( "Milk", 2 ) ) );
+        assertTrue( r2.addIngredient( new Ingredient( "Tea", 6 ) ) );
+
+        // Represents recipe 3
+        r3.setName( "Recipe3" );
+        r3.setPrice( 5 );
+        assertTrue( r3.addIngredient( new Ingredient( "Coffee", 10 ) ) );
+        assertTrue( r3.addIngredient( new Ingredient( "Pumpkin Spice", 3 ) ) );
+        assertTrue( r3.addIngredient( new Ingredient( "Milk", 2 ) ) );
+        assertTrue( r3.addIngredient( new Ingredient( "Tea", 6 ) ) );
+
+        // Saves each recipe to recipe service
+        recipeService.save( r );
+        recipeService.save( r2 );
+        recipeService.save( r3 );
+
+        List<Recipe> dbRecipes = recipeService.findAll();
+
+        assertEquals( 3, dbRecipes.size() );
+
+        dbRecipes = recipeService.findAll();
+
+        // Deletes all the recipes
+        recipeService.deleteAll();
+
+        dbRecipes = recipeService.findAll();
+
+        // Ensures there are 0 recipes now
+        assertEquals( 0, dbRecipes.size() );
+    }
+
     @Test
     @Transactional
     public void testFindByID () {
         final Recipe r = new Recipe();
         r.setName( "Mocha" );
-        r.setChocolate( 15 );
-        r.setMilk( 20 );
-        r.setSugar( 10 );
-        r.setCoffee( 10 );
+        assertTrue( r.addIngredient( new Ingredient( "Chocolate", 15 ) ) );
+        assertTrue( r.addIngredient( new Ingredient( "Milk", 20 ) ) );
+        assertTrue( r.addIngredient( new Ingredient( "Sugar", 10 ) ) );
+        assertTrue( r.addIngredient( new Ingredient( "Coffee", 10 ) ) );
         r.setPrice( 20 );
         recipeService.save( r );
 
         final Recipe foundRecipe = recipeService.findById( r.getId() );
         assertEquals( r.getName(), foundRecipe.getName() );
-        assertEquals( r.getChocolate(), foundRecipe.getChocolate() );
-        assertEquals( r.getMilk(), foundRecipe.getMilk() );
-        assertEquals( r.getSugar(), foundRecipe.getSugar() );
-        assertEquals( r.getCoffee(), foundRecipe.getCoffee() );
+        assertEquals( r.getIngredients().get( 0 ).getName(), foundRecipe.getIngredients().get( 0 ).getName() );
         assertEquals( r.getPrice(), foundRecipe.getPrice() );
 
         final Recipe nullRecipe = recipeService.findById( null );
@@ -165,10 +219,10 @@ public class TestDatabaseInteraction {
     public void testExistsByID () {
         final Recipe r = new Recipe();
         r.setName( "Mocha" );
-        r.setChocolate( 15 );
-        r.setMilk( 20 );
-        r.setSugar( 10 );
-        r.setCoffee( 10 );
+        assertTrue( r.addIngredient( new Ingredient( "Chocolate", 15 ) ) );
+        assertTrue( r.addIngredient( new Ingredient( "Milk", 20 ) ) );
+        assertTrue( r.addIngredient( new Ingredient( "Sugar", 10 ) ) );
+        assertTrue( r.addIngredient( new Ingredient( "Coffee", 10 ) ) );
         r.setPrice( 20 );
         recipeService.save( r );
 

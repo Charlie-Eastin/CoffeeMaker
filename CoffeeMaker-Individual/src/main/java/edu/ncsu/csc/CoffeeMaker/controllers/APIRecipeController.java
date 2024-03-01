@@ -63,6 +63,21 @@ public class APIRecipeController extends APIController {
                 : new ResponseEntity( recipe, HttpStatus.OK );
     }
 
+    @PostMapping ( BASE_PATH + "/recipes/{name}" )
+    public ResponseEntity editRecipe ( @PathVariable ( "name" ) final String name, @RequestBody final Recipe recipe ) {
+        if ( service.findByName( name ) == null ) {
+            return new ResponseEntity( errorResponse( "Recipe not found " + recipe.getName() ), HttpStatus.CONFLICT );
+        }
+        if ( recipe.getIngredients().size() == 0 ) {
+            return new ResponseEntity( errorResponse( "Recipe cannot have ingredients size of 0" ),
+                    HttpStatus.CONFLICT );
+        }
+        final Recipe recipe2 = service.findByName( name );
+        service.delete( recipe2 );
+        service.save( recipe );
+        return new ResponseEntity( successResponse( recipe.getName() + " successfully edited" ), HttpStatus.OK );
+    }
+
     /**
      * REST API method to provide POST access to the Recipe model. This is used
      * to create a new Recipe by automatically converting the JSON RequestBody
@@ -79,7 +94,7 @@ public class APIRecipeController extends APIController {
             return new ResponseEntity( errorResponse( "Recipe with the name " + recipe.getName() + " already exists" ),
                     HttpStatus.CONFLICT );
         }
-        if ( service.findAll().size() < 3 ) {
+        if ( service.findAll().size() < 3 && recipe.getIngredients().size() > 0 ) {
             service.save( recipe );
             return new ResponseEntity( successResponse( recipe.getName() + " successfully created" ), HttpStatus.OK );
         }
