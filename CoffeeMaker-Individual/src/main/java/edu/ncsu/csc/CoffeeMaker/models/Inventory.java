@@ -100,8 +100,6 @@ public class Inventory extends DomainObject {
                     }
                 }
             }
-            System.out.println( found );
-            System.out.println( ingredients.get( i ) );
             if ( found == false ) {
                 return false;
             }
@@ -119,7 +117,6 @@ public class Inventory extends DomainObject {
      */
     public boolean useIngredients ( final Recipe r ) {
         if ( enoughIngredients( r ) ) {
-            System.out.println( "\n\n\n\n MADE IT \n\n\n" );
             final List<Ingredient> list = r.getIngredients();
             for ( int i = 0; i < ingredients.size(); i++ ) {
                 for ( int j = 0; j < list.size(); j++ ) {
@@ -131,7 +128,6 @@ public class Inventory extends DomainObject {
             return true;
         }
         else {
-            System.out.println( "\n\n\n\n WA WA WA \n\n\n" );
             return false;
         }
     }
@@ -174,10 +170,7 @@ public class Inventory extends DomainObject {
     public void setIngredients ( final List<Ingredient> ingredients ) {
         for ( int i = 0; i < ingredients.size(); i++ ) {
             for ( int j = 0; j < ingredients.size(); j++ ) {
-                System.out.println( ingredients.get( i ) + " " + ingredients.get( j ) );
-                if ( ingredients.get( i ).getName().equals( ingredients.get( j ).getName() ) && i != j
-                        && ingredients.get( i ).getId() != null && ingredients.get( j ).getId() != null ) {
-
+                if ( ingredients.get( i ).getName().equals( ingredients.get( j ).getName() ) && i != j ) {
                     throw new IllegalArgumentException( "Duplicate Ingredient" );
                 }
             }

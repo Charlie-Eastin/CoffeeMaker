@@ -62,6 +62,17 @@ public class Recipe extends DomainObject {
         return true;
     }
 
+    public boolean noDuplicates () {
+        for ( int i = 0; i < ingredients.size(); i++ ) {
+            for ( int j = 0; j < ingredients.size(); j++ ) {
+                if ( ingredients.get( i ).getName().equals( ingredients.get( j ).getName() ) && j != i ) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
     public void setIngredient ( final Ingredient ingredient ) {
         for ( int i = 0; i < ingredients.size(); i++ ) {
             if ( ingredients.get( i ).getName().equals( ingredient.getName() ) ) {

@@ -72,6 +72,10 @@ public class APIRecipeController extends APIController {
             return new ResponseEntity( errorResponse( "Recipe cannot have ingredients size of 0" ),
                     HttpStatus.CONFLICT );
         }
+        if ( !recipe.noDuplicates() ) {
+            return new ResponseEntity( errorResponse( "Recipe cannot have duplicate ingredients" ),
+                    HttpStatus.CONFLICT );
+        }
         final Recipe recipe2 = service.findByName( name );
         service.delete( recipe2 );
         service.save( recipe );
@@ -94,7 +98,7 @@ public class APIRecipeController extends APIController {
             return new ResponseEntity( errorResponse( "Recipe with the name " + recipe.getName() + " already exists" ),
                     HttpStatus.CONFLICT );
         }
-        if ( service.findAll().size() < 3 && recipe.getIngredients().size() > 0 ) {
+        if ( service.findAll().size() < 3 && recipe.getIngredients().size() > 0 && recipe.noDuplicates() ) {
             service.save( recipe );
             return new ResponseEntity( successResponse( recipe.getName() + " successfully created" ), HttpStatus.OK );
         }
