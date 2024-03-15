@@ -1,0 +1,21 @@
+Endpoint 1: Edit a recipe
+	Function name: addIngredient(String name)
+	Route: PUT api/v1/recipes/{name}
+	Description: This endpoint allows for a recipe to be edited 
+	If the recipe is invalid (the ingredients of the recipe are less than 0) or the recipe cannot be found,
+	an error message is printed and the ingredient is not added.
+	Data Details:
+		If we make a request, PUT api/v1/ingredients/recipe1 and pass in the following:
+		Input (JSON): 
+		{ 
+			'sugar': 1,
+			'milk': 2,
+			'coffee': 3,
+			'chocolate': 4
+		}
+		Output (JSON): 
+		{
+			'status': success
+		}
+		We would expect the API to return a 200/OK and the JSON returned above. 
+	
