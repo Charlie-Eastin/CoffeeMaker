@@ -3,7 +3,7 @@ spring:
     driver-class-name: com.mysql.jdbc.Driver
     url: jdbc:mysql://localhost:3306/CoffeeMaker?createDatabaseIfNotExist=true&allowPublicKeyRetrieval=true&serverTimezone=EST
     username: root
-    password: 
+    password:
     hikari:
       idleTimeout: 500
       connectionTimeout: 15000 
