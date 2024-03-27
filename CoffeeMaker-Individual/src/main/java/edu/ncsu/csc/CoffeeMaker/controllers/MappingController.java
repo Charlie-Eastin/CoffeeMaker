@@ -135,4 +135,30 @@ public class MappingController {
         return "login";
     }
 
+    /**
+     * On a GET request to /customerIndex, the GET request provides a view to
+     * the customer's home page
+     *
+     * @param model
+     *            underlying UI model
+     * @return contents of the page
+     */
+    @GetMapping ( { "/customerIndex", "/" } )
+    public String customerIndexForm ( final Model model ) {
+        return "customerIndex";
+    }
+
+    /**
+     * On a GET request to /staffIndex, the GET request provides a view to the
+     * staff's home page
+     *
+     * @param model
+     *            underlying UI model
+     * @return contents of the page
+     */
+    @GetMapping ( { "/staffIndex", "/" } )
+    public String staffIndexForm ( final Model model ) {
+        return "staffIndex";
+    }
+
 }
