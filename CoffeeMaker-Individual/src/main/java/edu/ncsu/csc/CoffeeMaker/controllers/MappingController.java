@@ -122,4 +122,17 @@ public class MappingController {
         return "makecoffee";
     }
 
+    /**
+     * On a GET request to /login, the GET request provides a view to the client
+     * that allows them to log into the system
+     *
+     * @param model
+     *            underlying UI model
+     * @return contents of the page
+     */
+    @GetMapping ( { "/login", "/login.html" } )
+    public String loginForm ( final Model model ) {
+        return "login";
+    }
+
 }
