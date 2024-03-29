@@ -1,0 +1,48 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>Welcome to the CSC326 CoffeeMaker</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.js"></script>
+</head>
+<body ng-app="myApp" ng-controller="loginController">
+    <script>
+        angular.module('myApp', [])
+        .controller('loginController', function($scope, $http) {
+            $scope.user = {
+                username: '',
+                password: ''
+            };
+
+            $scope.login = function() {
+                $scope.success = false;
+                $scope.failure = false;
+                console.error($scope.user.username)
+                console.error($scope.user.password)
+
+                $http.post("/api/v1/userBackEndpoint", $scope.user).then(
+                    function(success) {
+                        $scope.success = true;
+                        $scope.failure = false;
+                    }, function(rejection) {
+                        $scope.success = false;
+                        $scope.failure = true;
+                        console.error("Error while trying to login");
+                    });
+            }
+        });
+    </script>
+
+    <h1>Coffee Maker</h1>
+    <h2>Enter Login Information Below</h2>
+
+    <label for="userName">Username</label>
+    <input type="text" ng-model="user.username" name="username" required="true" />
+    <br />
+    <label for="userPass">Password</label>
+    <input type="password" ng-model="user.password" name="password" required="true" />
+    <br />
+    <input type="submit" ng-click="login()" value="user login" class="btn btn-primary btn-sm" />
+    <br />
+</body>
+</html>
