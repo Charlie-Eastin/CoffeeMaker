@@ -17,6 +17,22 @@
             $scope.login = function() {
                 $scope.success = false;
                 $scope.failure = false;
+
+                // Check if username or password is empty
+                if (!$scope.user.username || !$scope.user.password) {
+                    if (!$scope.user.username) {
+                        $scope.usernameError = "Username is required.";
+                    }
+                    if (!$scope.user.password) {
+                        $scope.passwordError = "Password is required.";
+                    }
+                    return; // Prevent form submission if fields are not filled
+                }
+
+                // Clear any previous error messages
+                $scope.usernameError = "";
+                $scope.passwordError = "";
+                
                 console.error($scope.user.username)
                 console.error($scope.user.password)
 
@@ -37,10 +53,12 @@
     <h2>Enter Login Information Below</h2>
 
     <label for="userName">Username</label>
-    <input type="text" ng-model="user.username" name="username" required="true" />
+    <input type="text" ng-model="user.username" name="username" required />
+    <span style="color: red;">{{ usernameError }}</span> <!-- Error message for username -->
     <br />
     <label for="userPass">Password</label>
-    <input type="password" ng-model="user.password" name="password" required="true" />
+    <input type="password" ng-model="user.password" name="password" required />
+    <span style="color: red;">{{ passwordError }}</span> <!-- Error message for password -->
     <br />
     <input type="submit" ng-click="login()" value="user login" class="btn btn-primary btn-sm" />
     <br />
