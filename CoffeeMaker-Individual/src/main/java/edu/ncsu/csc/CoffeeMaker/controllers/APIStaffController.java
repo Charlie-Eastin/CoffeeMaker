@@ -14,19 +14,16 @@ import edu.ncsu.csc.CoffeeMaker.models.Inventory;
 import edu.ncsu.csc.CoffeeMaker.models.Recipe;
 import edu.ncsu.csc.CoffeeMaker.services.InventoryService;
 import edu.ncsu.csc.CoffeeMaker.services.RecipeService;
-import edu.ncsu.csc.CoffeeMaker.services.StaffService;
 
 @SuppressWarnings ( { "unchecked", "rawtypes" } )
 @RestController
 public class APIStaffController extends APIController {
-    private StaffService     staffService;
     private InventoryService inventoryService;
     private RecipeService    recipeService;
 
     @PutMapping ( BASE_PATH + "/staff/inventory" )
     public boolean updateInventory ( @RequestBody final List<Ingredient> ingredientList ) {
         try {
-
             final Inventory inventory = inventoryService.getInventory();
             inventory.setIngredients( ingredientList );
             inventoryService.save( inventory );

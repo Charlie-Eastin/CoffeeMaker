@@ -13,14 +13,11 @@ import edu.ncsu.csc.CoffeeMaker.services.RecipeService;
 @SuppressWarnings ( { "unchecked", "rawtypes" } )
 @RestController
 public class APICustomerController extends APIController {
-    private String           name;
-    private String           password;
-    private String           type;
     private InventoryService inventoryService;
     private RecipeService    recipeService;
     private CustomerService  customerService;
 
-    @PutMapping ( BASE_PATH + "/users/{name}" )
+    @PutMapping ( BASE_PATH + "/customers/users/{name}" )
     public boolean updateMoney ( @PathVariable ( "name" ) final String name, @RequestBody final int money ) {
         try {
             final Customer user = customerService.findByName( name );
