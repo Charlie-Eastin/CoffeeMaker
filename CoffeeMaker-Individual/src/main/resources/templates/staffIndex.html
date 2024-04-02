@@ -5,14 +5,21 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 </head>
 <body>
-	<h1>Staff Home</h1>
-	<h2>Available Options</h2>
-	<ul>
-		<li><a href="updateInventory.html">Update Inventory</a></li>
-		<li><a href="addrecipe.html">Add a Recipe</a></li>
-		<li><a href="editrecipe2.html">Edit Recipe</a></li>
-		<li><a href="deleterecipe.html">Delete Recipe</a></li>
-		<li><a href="login.html">[TEST] Login Screen</a>
+	<div ng-app="myApp" class="generic-container ng-cloak"
+		ng-controller="addRecipeCtrl as ctrl">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<span class="lead">Staff Home Page</span>
+			</div>
+			<li><a href="updateInventory.html">Update Inventory</a></li>
+			<li><a href="addrecipe.html">Add a Recipe</a></li>
+			<li><a href="editrecipe2.html">Edit Recipe</a></li>
+			<li><a href="deleterecipe.html">Delete Recipe</a></li>
+		</div>
+
+		<a href="/login">Logout</a>
+	</div>
+
 	</ul>
 </body>
 </html>
