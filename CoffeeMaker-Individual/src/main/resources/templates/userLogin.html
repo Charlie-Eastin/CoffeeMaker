@@ -1,0 +1,81 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>Welcome to the CSC326 CoffeeMaker</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.js"></script>
+<link rel="stylesheet" href="css/bootstrap.css" />
+<link rel="stylesheet" href="css/app.css" />
+</head>
+<body>
+    <script>
+        angular.module('myApp', [])
+        .controller('loginController',
+        		['$scope', '$location', '$http', function($scope, $location, $http) {
+            $scope.user = {
+                username: '',
+                password: ''
+            };
+
+            $scope.login = function() {
+                $scope.success = false;
+                $scope.failure = false;
+
+                // Check if username or password is empty
+                if (!$scope.user.username || !$scope.user.password) {
+                    if (!$scope.user.username) {
+                        $scope.usernameError = "Username is required.";
+                    }
+                    if (!$scope.user.password) {
+                        $scope.passwordError = "Password is required.";
+                    }
+                    return; // Prevent form submission if fields are not filled
+                }
+
+                // Clear any previous error messages
+                $scope.usernameError = "";
+                $scope.passwordError = "";
+                
+                console.error($scope.user.username)
+                console.error($scope.user.password)
+
+                $http.post("/api/v1/userBackEndpoint", $scope.user).then(
+                    function(success) {
+                        $scope.success = true;
+                        $scope.failure = false;
+                    }, function(rejection) {
+                        $scope.success = false;
+                        $scope.failure = true;
+                        console.error("Error while trying to login");
+                    });
+                $scope.navagate();
+            }
+            
+            $scope.navagate = function() {
+            	window.location.replace('/updateInventory.html');
+            }
+            
+        }]);
+    </script>
+
+	<div class="generic-container ng-cloak" ng-app="myApp" ng-controller="loginController">
+		<div class="form-actions floatCenter">
+	
+    		<h1>Coffee Maker</h1>
+
+    		<label for="userName">Username</label>
+    		<input type="text" ng-model="user.username" name="username" required />
+    		<span style="color: red;">{{ usernameError }}</span> <!-- Error message for username -->
+    		<br />
+    		<label for="userPass">Password</label>
+    		<input type="password" ng-model="user.password" name="password" required />
+    		<span style="color: red;">{{ passwordError }}</span> <!-- Error message for password -->
+    		<br />
+    		<input type="submit" ng-click="login()" value="Login" class="btn btn-primary btn-sm" />
+    		<br />
+    		
+    
+    	</div>
+    </div>
+</body>
+</html>

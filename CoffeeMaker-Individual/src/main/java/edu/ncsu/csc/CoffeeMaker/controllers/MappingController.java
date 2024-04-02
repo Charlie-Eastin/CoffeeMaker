@@ -123,18 +123,17 @@ public class MappingController {
     }
 
     /**
-     * On a GET request to /login, the GET request provides a view to the client
-     * that allows them to log into the system
+     * Handles a GET request to /userLogin, provides a view for the client to
+     * login to the system
      *
      * @param model
      *            underlying UI model
      * @return contents of the page
      */
-    @GetMapping ( { "/login", "/login.html" } )
-    public String loginForm ( final Model model ) {
-        return "login";
+    @GetMapping ( { "/userLogin", "/userLogin.html" } )
+    public String userLoginForm ( final Model model ) {
+        return "userLogin";
     }
-
     /**
      * On a GET request to /customerIndex, the GET request provides a view to
      * the customer's home page
