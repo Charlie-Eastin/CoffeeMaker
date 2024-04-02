@@ -133,7 +133,7 @@ public class MappingController {
     @GetMapping ( { "/userLogin", "/userLogin.html" } )
     public String userLoginForm ( final Model model ) {
         return "userLogin";
-  
+    }
     /**
      * On a GET request to /customerIndex, the GET request provides a view to
      * the customer's home page
