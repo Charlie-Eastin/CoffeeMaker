@@ -4,11 +4,14 @@
 <title>Welcome to the CSC326 CoffeeMaker</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.js"></script>
+<link rel="stylesheet" href="css/bootstrap.css" />
+<link rel="stylesheet" href="css/app.css" />
 </head>
-<body ng-app="myApp" ng-controller="loginController">
+<body>
     <script>
         angular.module('myApp', [])
-        .controller('loginController', function($scope, $http) {
+        .controller('loginController',
+        		['$scope', '$location', '$http', function($scope, $location, $http) {
             $scope.user = {
                 username: '',
                 password: ''
@@ -45,22 +48,34 @@
                         $scope.failure = true;
                         console.error("Error while trying to login");
                     });
+                $scope.navagate();
             }
-        });
+            
+            $scope.navagate = function() {
+            	window.location.replace('/updateInventory.html');
+            }
+            
+        }]);
     </script>
 
-    <h1>Coffee Maker</h1>
-    <h2>Enter Login Information Below</h2>
+	<div class="generic-container ng-cloak" ng-app="myApp" ng-controller="loginController">
+		<div class="form-actions floatCenter">
+	
+    		<h1>Coffee Maker</h1>
 
-    <label for="userName">Username</label>
-    <input type="text" ng-model="user.username" name="username" required />
-    <span style="color: red;">{{ usernameError }}</span> <!-- Error message for username -->
-    <br />
-    <label for="userPass">Password</label>
-    <input type="password" ng-model="user.password" name="password" required />
-    <span style="color: red;">{{ passwordError }}</span> <!-- Error message for password -->
-    <br />
-    <input type="submit" ng-click="login()" value="user login" class="btn btn-primary btn-sm" />
-    <br />
+    		<label for="userName">Username</label>
+    		<input type="text" ng-model="user.username" name="username" required />
+    		<span style="color: red;">{{ usernameError }}</span> <!-- Error message for username -->
+    		<br />
+    		<label for="userPass">Password</label>
+    		<input type="password" ng-model="user.password" name="password" required />
+    		<span style="color: red;">{{ passwordError }}</span> <!-- Error message for password -->
+    		<br />
+    		<input type="submit" ng-click="login()" value="Login" class="btn btn-primary btn-sm" />
+    		<br />
+    		
+    
+    	</div>
+    </div>
 </body>
 </html>
