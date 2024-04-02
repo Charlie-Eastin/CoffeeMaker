@@ -43,8 +43,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         final PasswordEncoder encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
         // Encode password and then store it in the details (So it is not stored
         // as plain text in memory).
-        final UserDetails user = User.withUsername( "user" ).password( encoder.encode( "password" ) ).roles( "USER" )
-                .build();
+        final UserDetails user = User.withUsername( "customer" ).password( encoder.encode( "password" ) )
+                .roles( "CUSTOMER" ).build();
         // Same for staff
         final UserDetails staff = User.withUsername( "staff" ).password( encoder.encode( "password" ) ).roles( "STAFF" )
                 .build();
