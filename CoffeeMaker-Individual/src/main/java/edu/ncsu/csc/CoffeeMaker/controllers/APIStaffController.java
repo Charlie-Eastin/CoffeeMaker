@@ -18,7 +18,7 @@ import edu.ncsu.csc.CoffeeMaker.services.UserService;
 
 @SuppressWarnings ( { "unchecked", "rawtypes" } )
 @RestController
-public class APIStaff extends APIController {
+public class APIStaffController extends APIController {
     private UserService      userService;
     private InventoryService inventoryService;
     private RecipeService    recipeService;
