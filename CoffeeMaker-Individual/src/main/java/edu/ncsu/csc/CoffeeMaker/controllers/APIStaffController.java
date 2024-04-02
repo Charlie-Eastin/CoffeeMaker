@@ -14,16 +14,16 @@ import edu.ncsu.csc.CoffeeMaker.models.Inventory;
 import edu.ncsu.csc.CoffeeMaker.models.Recipe;
 import edu.ncsu.csc.CoffeeMaker.services.InventoryService;
 import edu.ncsu.csc.CoffeeMaker.services.RecipeService;
-import edu.ncsu.csc.CoffeeMaker.services.UserService;
+import edu.ncsu.csc.CoffeeMaker.services.StaffService;
 
 @SuppressWarnings ( { "unchecked", "rawtypes" } )
 @RestController
 public class APIStaffController extends APIController {
-    private UserService      userService;
+    private StaffService     staffService;
     private InventoryService inventoryService;
     private RecipeService    recipeService;
 
-    @PutMapping ( BASE_PATH + "/inventory" )
+    @PutMapping ( BASE_PATH + "/staff/inventory" )
     public boolean updateInventory ( @RequestBody final List<Ingredient> ingredientList ) {
         try {
 
@@ -38,7 +38,7 @@ public class APIStaffController extends APIController {
         return true;
     }
 
-    @PostMapping ( BASE_PATH + "recipes/{name}" )
+    @PostMapping ( BASE_PATH + "/staff/recipes/{name}" )
     public boolean editRecipe ( @PathVariable ( "name" ) final String name, @RequestBody final int price,
             @RequestBody final List<Ingredient> ingredientList ) {
         try {
@@ -59,7 +59,7 @@ public class APIStaffController extends APIController {
         return true;
     }
 
-    @DeleteMapping ( BASE_PATH + "recipes/{name}" )
+    @DeleteMapping ( BASE_PATH + "/staff/recipes/{name}" )
     public boolean deleteRecipe ( @PathVariable ( "name" ) final String name ) {
         try {
             final Recipe recipe = recipeService.findByName( name );

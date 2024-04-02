@@ -2,9 +2,9 @@ package edu.ncsu.csc.CoffeeMaker.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import edu.ncsu.csc.CoffeeMaker.roles.User;
+import edu.ncsu.csc.CoffeeMaker.roles.Staff;
 
-public interface UserRepository extends JpaRepository<User, Long> {
+public interface StaffRepository extends JpaRepository<Staff, Long> {
     /**
      * Finds an Ingredient object with the provided name. Spring will generate
      * code to make this happen.
@@ -13,6 +13,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
      *            Name of the recipe
      * @return Found Ingredient, null if none.
      */
-    User findByName ( String name );
+    Staff findByName ( String name );
 
 }

@@ -6,23 +6,23 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Component;
 
-import edu.ncsu.csc.CoffeeMaker.repositories.UserRepository;
-import edu.ncsu.csc.CoffeeMaker.roles.User;
+import edu.ncsu.csc.CoffeeMaker.repositories.CustomerRepository;
+import edu.ncsu.csc.CoffeeMaker.roles.Customer;
 
 @Component
 @Transactional
-public class UserService extends Service<User, Long> {
+public class CustomerService extends Service<Customer, Long> {
 
     /**
      * IngredientRepository, to be autowired in by Spring and provide CRUD
      * operations on Ingredient model.
      */
     @Autowired
-    private UserRepository userRepository;
+    private CustomerRepository customerRepository;
 
     @Override
-    protected JpaRepository<User, Long> getRepository () {
-        return userRepository;
+    protected JpaRepository<Customer, Long> getRepository () {
+        return customerRepository;
     }
 
     /**
@@ -32,8 +32,8 @@ public class UserService extends Service<User, Long> {
      *            Name of the ingredient to find
      * @return found ingredient, null if none
      */
-    public User findByName ( final String name ) {
-        return userRepository.findByName( name );
+    public Customer findByName ( final String name ) {
+        return customerRepository.findByName( name );
     }
 
 }
