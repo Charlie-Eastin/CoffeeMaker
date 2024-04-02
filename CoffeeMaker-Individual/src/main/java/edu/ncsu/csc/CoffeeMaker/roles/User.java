@@ -1,6 +1,10 @@
 package edu.ncsu.csc.CoffeeMaker.roles;
 
-public class User {
+import java.io.Serializable;
+
+import edu.ncsu.csc.CoffeeMaker.models.DomainObject;
+
+public class User extends DomainObject {
     private String name;
     private String password;
     private String type;
@@ -23,5 +27,11 @@ public class User {
 
     public void setPassword ( final String password ) {
         this.password = password;
+    }
+
+    @Override
+    public Serializable getId () {
+        // TODO Auto-generated method stub
+        return null;
     }
 }
