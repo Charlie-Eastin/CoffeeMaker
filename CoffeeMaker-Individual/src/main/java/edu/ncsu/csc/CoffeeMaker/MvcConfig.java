@@ -4,9 +4,15 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+/**
+ * Spring Security configuration class for MVC webpages.
+ */
 @Configuration
 public class MvcConfig implements WebMvcConfigurer {
 
+    /**
+     * Add view controllers for login management.
+     */
     @Override
     public void addViewControllers ( final ViewControllerRegistry registry ) {
         registry.addViewController( "/addrecipe" ).setViewName( "addrecipe" );
