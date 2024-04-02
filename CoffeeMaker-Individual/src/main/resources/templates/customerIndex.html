@@ -1,14 +1,20 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-<title>Welcome to the CSC326 CoffeeMaker</title>
+<title>Customer Home</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 </head>
 <body>
-	<h1>Coffee Maker Customer</h1>
-	<h2>Available Options</h2>
-	<ul>
-		<li><a href="makecoffee.html">Make Coffee</a></li>
-	</ul>
+	<div ng-app="myApp" class="generic-container ng-cloak"
+		ng-controller="addRecipeCtrl as ctrl">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<span class="lead">Customer Home Page</span>
+			</div>
+			<li><a href="makecoffee.html">Make Order</a></li>
+		</div>
+
+		<a href="/userLogin.html">Logout</a>
+	</div>
 </body>
 </html>
