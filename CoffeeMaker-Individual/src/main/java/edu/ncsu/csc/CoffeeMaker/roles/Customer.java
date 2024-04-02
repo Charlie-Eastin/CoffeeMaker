@@ -1,6 +1,16 @@
 package edu.ncsu.csc.CoffeeMaker.roles;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+
+@Entity
 public class Customer extends User {
+
+    @Id
+    @GeneratedValue
+    private Long   id;
+
     private String name;
     private String password;
     private String type;
@@ -37,6 +47,20 @@ public class Customer extends User {
 
     public int getMoney () {
         return this.money;
+    }
+
+    public void setId ( final long id ) {
+        this.id = id;
+    }
+
+    /**
+     * Get the ID of the Recipe
+     *
+     * @return the ID
+     */
+    @Override
+    public Long getId () {
+        return id;
     }
 
 }
