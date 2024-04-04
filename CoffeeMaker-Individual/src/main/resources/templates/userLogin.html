@@ -29,7 +29,7 @@
 												password : ''
 											};
 										if (undefined != $scope.login) {
-											$scope.login.$setPristine(); // reset Form Im trying to reset the login error messages. Not quite sure
+												$scope.login.$setPristine(); // reset Form Im trying to reset the login error messages. Not quite sure
 										}
 									}	
 									
@@ -49,11 +49,11 @@
 				<div th:if="${param.error}" style="color: red">Invalid username and password.</div>
 				<div th:if="${param.logout}" style="color: red">You have been logged out.</div>
 				<div>
-					<label> User Name: <input type="text" name="username" />
+					<label> User Name: <input type="text" name="username" required/>
 					</label>
 				</div>
 				<div>
-					<label> Password: <input type="password" name="password" />
+					<label> Password: <input type="password" name="password" required/>
 					</label>
 				</div>
 				<div>

@@ -21,16 +21,16 @@
 								$http.get("/api/v1/role").then(function(response) {
 									$scope.role = response.data;
 									console.log($scope.role);
-									if ($scope.role == "customer") {
+									if (angular.equals($scope.role, "CUSTOMER")) {
 										$scope.staff = false;
 										$scope.customer = true;
 									}
-									else {
+									else if(angular.equals($scope.role, "STAFF" )){
 										$scope.staff = true;
 										$scope.customer = false;
 									}
 								}, function(rejection) {
-									console.error("Error while getting Inventory");
+									console.error("Error while getting role");
 								})
 							}
 							$scope.reset();
@@ -42,9 +42,9 @@
 			<h1>CoffeeMaker</h1>
 			--
 			<div class="panel-heading">
-				<span class="lead" style="font-size: 2rem">Available Options</span>
+				<span class="lead" style="font-size: 2rem">Available Options as {{ role }}</span>
 			</div>
-			<div ng-show="customer">
+			<div ng-show="staff">
 				<ul>
 					<li><a href="updateInventory.html" style="font-size: 1.5rem">Update Inventory</a></li>
 					<li><a href="addrecipe.html" style="font-size: 1.5rem">Add a Recipe</a></li>
@@ -52,7 +52,7 @@
 					<li><a href="deleterecipe.html" style="font-size: 1.5rem">Delete Recipe</a></li>
 				</ul>
 			</div>
-			<div ng-show="staff">
+			<div ng-show="customer">
 				<ul>
 					<li><a href="makecoffee.html" style="font-size: 1.5rem">Make Order</a></li>
 				</ul>
