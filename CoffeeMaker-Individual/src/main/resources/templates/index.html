@@ -17,9 +17,21 @@
 				[ '$scope', '$location', '$http',
 						function($scope, $location, $http) {
 							$scope.reset = function() {
-								//everything here works except for getting the user role :)
-								$scope.customer = $httpServletRequest.isUserInRole("CUSTOMER");
-								$scope.staff = $httpServletRequest.isUserInRole("STAFF")
+								//TODO: Verify fix for user role
+								$http.get("/api/v1/role").then(function(response) {
+									$scope.role = response.data;
+									console.log($scope.role);
+									if ($scope.role == "customer") {
+										$scope.customer = true;
+										$scope.staff = false;
+									}
+									else {
+										$scope.staff = true;
+										$scope.customer = false;
+									}
+								}, function(rejection) {
+									console.error("Error while getting Inventory");
+								})
 							}
 							$scope.reset();
 						} ]);
