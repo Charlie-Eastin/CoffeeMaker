@@ -2,6 +2,7 @@ package edu.ncsu.csc.CoffeeMaker.controllers;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,7 +19,10 @@ import edu.ncsu.csc.CoffeeMaker.services.RecipeService;
 @SuppressWarnings ( { "unchecked", "rawtypes" } )
 @RestController
 public class APIStaffController extends APIController {
+
+    @Autowired
     private InventoryService inventoryService;
+    @Autowired
     private RecipeService    recipeService;
 
     @PutMapping ( BASE_PATH + "/staff/inventory" )
