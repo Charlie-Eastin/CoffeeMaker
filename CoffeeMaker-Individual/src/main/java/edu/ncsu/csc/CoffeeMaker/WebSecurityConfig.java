@@ -44,10 +44,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         // Encode password and then store it in the details (So it is not stored
         // as plain text in memory).
         final UserDetails user = User.withUsername( "customer" ).password( encoder.encode( "password" ) )
-                .roles( "CUSTOMER" ).build();
+                .roles( "CUSTOMER" ).authorities( "CUSTOMER" ).build();
         // Same for staff
         final UserDetails staff = User.withUsername( "staff" ).password( encoder.encode( "password" ) ).roles( "STAFF" )
-                .build();
+                .authorities( "STAFF" ).build();
 
         // Store these IN MEMORY rather than in our database.
         return new InMemoryUserDetailsManager( user, staff );

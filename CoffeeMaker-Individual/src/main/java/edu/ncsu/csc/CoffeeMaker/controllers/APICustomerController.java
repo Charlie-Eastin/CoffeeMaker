@@ -62,7 +62,7 @@ public class APICustomerController extends APIController {
 
         final boolean isStaff = authentication.getAuthorities().stream()
                 .anyMatch( r -> r.getAuthority().equals( "STAFF" ) );
-
+        System.out.println( isStaff );
         if ( isStaff ) {
             return new ResponseEntity( gson.toJson( "STAFF" ), HttpStatus.OK );
         }
