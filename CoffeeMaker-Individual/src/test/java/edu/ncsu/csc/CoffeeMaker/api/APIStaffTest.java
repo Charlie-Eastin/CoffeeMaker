@@ -141,6 +141,12 @@ public class APIStaffTest {
 
         mvc.perform( post( String.format( "/api/v1/staff/recipes/random" ) ).contentType( MediaType.APPLICATION_JSON )
                 .content( TestUtils.asJsonString( recipe2 ) ) ).andExpect( status().isConflict() );
+
+        // Recipe with no ingredients should not be allowed.
+        final Recipe noIngredients = new Recipe();
+        noIngredients.setName( "Bad Recipe" );
+        mvc.perform( post( String.format( "/api/v1/staff/recipes/Mocha" ) ).contentType( MediaType.APPLICATION_JSON )
+                .content( TestUtils.asJsonString( noIngredients ) ) ).andExpect( status().isConflict() );
     }
 
     @Test
