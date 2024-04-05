@@ -11,7 +11,8 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
 import edu.ncsu.csc.CoffeeMaker.TestConfig;
-import edu.ncsu.csc.CoffeeMaker.services.InventoryService;
+import edu.ncsu.csc.CoffeeMaker.services.CustomerService;
+import edu.ncsu.csc.CoffeeMaker.services.StaffService;
 
 @ExtendWith ( SpringExtension.class )
 @EnableAutoConfiguration
@@ -19,11 +20,14 @@ import edu.ncsu.csc.CoffeeMaker.services.InventoryService;
 public class UsersTest {
 
     @Autowired
-    private InventoryService inventoryService;
+    private StaffService    staffService;
+    @Autowired
+    private CustomerService customerService;
 
     @BeforeEach
     public void setup () {
-
+        customerService.deleteAll();
+        staffService.deleteAll();
     }
 
     @Test
@@ -32,9 +36,13 @@ public class UsersTest {
         final Staff staff = new Staff();
         staff.setName( "John" );
         staff.setType( "STAFF" );
+        staff.setId( 1 );
+
+        staffService.save( staff );
 
         Assertions.assertEquals( "John", staff.getName() );
         Assertions.assertEquals( "STAFF", staff.getType() );
+        Assertions.assertEquals( 1, staff.getId() );
 
     }
 
@@ -45,10 +53,14 @@ public class UsersTest {
         customer.setName( "John" );
         customer.setType( "CUSTOMER" );
         customer.setMoney( 5 );
+        customer.setId( 2 );
+
+        customerService.save( customer );
 
         Assertions.assertEquals( "John", customer.getName() );
         Assertions.assertEquals( "CUSTOMER", customer.getType() );
         Assertions.assertEquals( 5, customer.getMoney() );
+        Assertions.assertEquals( 2, customer.getId() );
 
     }
 
@@ -58,9 +70,11 @@ public class UsersTest {
         final User user = new User();
         user.setName( "John" );
         user.setType( "USER" );
+        // user.setId( 3 );
 
         Assertions.assertEquals( "John", user.getName() );
         Assertions.assertEquals( "USER", user.getType() );
+        // Assertions.assertEquals( 3, user.getId() );
 
     }
 
