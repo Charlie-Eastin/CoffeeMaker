@@ -26,8 +26,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
      */
     @Override
     protected void configure ( final HttpSecurity http ) throws Exception {
-        http.authorizeRequests().antMatchers( "/home" ).permitAll().anyRequest().authenticated().and().formLogin()
-                .loginPage( "/login" ).permitAll().and().logout().permitAll();
+        http.authorizeRequests().antMatchers( "/css/app.css", "/css/bootstrap.css", "/css/bootstrap.css.map" )
+                .permitAll().anyRequest().authenticated().and().formLogin().loginPage( "/login" ).permitAll().and()
+                .logout().permitAll().and().csrf().disable();
     }
 
     /**
@@ -44,10 +45,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         // Encode password and then store it in the details (So it is not stored
         // as plain text in memory).
         final UserDetails user = User.withUsername( "customer" ).password( encoder.encode( "password" ) )
-                .roles( "CUSTOMER" ).build();
+                .roles( "CUSTOMER" ).authorities( "CUSTOMER" ).build();
         // Same for staff
         final UserDetails staff = User.withUsername( "staff" ).password( encoder.encode( "password" ) ).roles( "STAFF" )
-                .build();
+                .authorities( "STAFF" ).build();
 
         // Store these IN MEMORY rather than in our database.
         return new InMemoryUserDetailsManager( user, staff );
