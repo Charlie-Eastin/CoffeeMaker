@@ -16,6 +16,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
 import edu.ncsu.csc.CoffeeMaker.common.TestUtils;
 import edu.ncsu.csc.CoffeeMaker.models.Ingredient;
@@ -24,25 +26,29 @@ import edu.ncsu.csc.CoffeeMaker.models.Recipe;
 import edu.ncsu.csc.CoffeeMaker.services.InventoryService;
 import edu.ncsu.csc.CoffeeMaker.services.RecipeService;
 
-@ExtendWith ( SpringExtension.class )
 @SpringBootTest
 @AutoConfigureMockMvc
+@ExtendWith ( SpringExtension.class )
 public class APICoffeeTest {
 
-    @Autowired
-    private MockMvc          mvc;
+    private MockMvc               mvc;
 
     @Autowired
-    private RecipeService    service;
+    private WebApplicationContext context;
 
     @Autowired
-    private InventoryService iService;
+    private RecipeService         service;
+
+    @Autowired
+    private InventoryService      iService;
 
     /**
      * Sets up the tests.
      */
     @BeforeEach
     public void setup () {
+
+        mvc = MockMvcBuilders.webAppContextSetup( context ).build();
         service.deleteAll();
         iService.deleteAll();
 

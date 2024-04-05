@@ -12,6 +12,12 @@ body, .form-control {
 	margin-right: 18px;
 }
 
+.floatCenter {
+	text-align-last: center;
+
+
+}
+
 .has-error {
 	color: red;
 }

@@ -1,0 +1,66 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="https://www.thymeleaf.org"
+	xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+<title>Welcome to the CSC326 CoffeeMaker</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="stylesheet" href="css/bootstrap.css" />
+<link rel="stylesheet" href="css/app.css" />
+</head>
+<script
+	src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.js"></script>
+<body>
+	<script>
+		angular.module('myApp', []).controller(
+						'loginController',
+						[
+								'$scope',
+								'$location',
+								'$http',
+								function($scope, $location, $http) {
+									$scope.user = {
+										username : '',
+										password : ''
+									};
+									$scope.reset = function() {
+										$scope.user = {
+												username : '',
+												password : ''
+											};
+										if (undefined != $scope.login) {
+												$scope.login.$setPristine(); // reset Form Im trying to reset the login error messages. Not quite sure
+										}
+									}	
+									
+									$scope.reset();
+									//REDIRECTS SOMEHOW TO APP,CSS AFTER LOGIN
+									// FOR SOME REASON A MIME ERROR OCCURS WHERE THE STYLE DOESNT SHOW UP, SOMETIMES DOES SOMETIMES DOESNT
+									}]);
+	</script>
+
+	<div layout:fragment="content" class="generic-container ng-cloak"
+		ng-app="myApp" ng-controller="loginController">
+		<div class="form-actions floatCenter">
+
+			<h1>Coffee Maker</h1>
+
+			<form th:action="@{/login}" method="post" name="login">
+				<div th:if="${param.error}" style="color: red">Invalid username and password.</div>
+				<div th:if="${param.logout}" style="color: red">You have been logged out.</div>
+				<div>
+					<label> User Name: <input type="text" name="username" required/>
+					</label>
+				</div>
+				<div>
+					<label> Password: <input type="password" name="password" required/>
+					</label>
+				</div>
+				<div>
+					<input type="submit" value="Sign In" /> 
+				</div>
+			</form>
+		</div>
+	</div>
+</body>
+</html>
