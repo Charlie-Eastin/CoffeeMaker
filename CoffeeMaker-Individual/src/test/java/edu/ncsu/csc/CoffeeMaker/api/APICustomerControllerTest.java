@@ -1,5 +1,6 @@
 package edu.ncsu.csc.CoffeeMaker.api;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -51,6 +53,7 @@ public class APICustomerControllerTest {
 
     @Test
     @Transactional
+    @WithMockUser ( username = "customer", authorities = { "CUSTOMER" } )
     public void ensureIngredient () throws Exception {
         service.deleteAll();
 
@@ -67,6 +70,13 @@ public class APICustomerControllerTest {
 
         mvc.perform( put( "/api/v1/customers/users/John" ).contentType( MediaType.APPLICATION_JSON )
                 .content( TestUtils.asJsonString( 10 ) ) ).andExpect( status().isOk() );
+
+        mvc.perform( put( "/api/v1/customers/users/Random" ).contentType( MediaType.APPLICATION_JSON )
+                .content( TestUtils.asJsonString( 10 ) ) ).andExpect( status().isConflict() );
+
+        mvc.perform( get( "/api/v1/username" ) ).andReturn().getResponse().getContentAsString().contains( "customer" );
+
+        mvc.perform( get( "/api/v1/role" ) ).andReturn().getResponse().getContentAsString().contains( "CUSTOMER" );
 
     }
 
