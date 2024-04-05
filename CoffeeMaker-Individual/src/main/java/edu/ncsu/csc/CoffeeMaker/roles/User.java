@@ -14,7 +14,6 @@ public class User extends DomainObject {
     private Long   id;
 
     private String name;
-    private String password;
     private String type;
 
     public void setName ( final String name ) {
@@ -33,19 +32,10 @@ public class User extends DomainObject {
         return this.type;
     }
 
-    public void setPassword ( final String password ) {
-        this.password = password;
-    }
-
     public void setId ( final long id ) {
         this.id = id;
     }
 
-    /**
-     * Get the ID of the Recipe
-     *
-     * @return the ID
-     */
     @Override
     public Long getId () {
         return id;
