@@ -70,11 +70,11 @@ public class UsersTest {
         final User user = new User();
         user.setName( "John" );
         user.setType( "USER" );
-        // user.setId( 3 );
+        user.setId( 3 );
 
         Assertions.assertEquals( "John", user.getName() );
         Assertions.assertEquals( "USER", user.getType() );
-        // Assertions.assertEquals( 3, user.getId() );
+        Assertions.assertEquals( 3, user.getId() );
 
     }
 

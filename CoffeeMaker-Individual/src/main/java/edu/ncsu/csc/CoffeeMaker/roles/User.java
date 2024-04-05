@@ -1,7 +1,5 @@
 package edu.ncsu.csc.CoffeeMaker.roles;
 
-import java.io.Serializable;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -39,9 +37,8 @@ public class User extends DomainObject {
     }
 
     @Override
-    public Serializable getId () {
-        // TODO Auto-generated method stub
-        return null;
+    public Long getId () {
+        return id;
     }
 
 }
