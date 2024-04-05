@@ -12,7 +12,6 @@ public class Staff extends User {
     private Long   id;
 
     private String name;
-    private String password;
     private String type;
 
     @Override
@@ -36,10 +35,6 @@ public class Staff extends User {
     }
 
     @Override
-    public void setPassword ( final String password ) {
-        this.password = password;
-    }
-
     public void setId ( final long id ) {
         this.id = id;
     }

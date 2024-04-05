@@ -12,7 +12,6 @@ public class Customer extends User {
     private Long   id;
 
     private String name;
-    private String password;
     private String type;
     private int    money;
 
@@ -36,11 +35,6 @@ public class Customer extends User {
         return this.type;
     }
 
-    @Override
-    public void setPassword ( final String password ) {
-        this.password = password;
-    }
-
     public void setMoney ( final int money ) {
         this.money = money;
     }
@@ -49,6 +43,7 @@ public class Customer extends User {
         return this.money;
     }
 
+    @Override
     public void setId ( final long id ) {
         this.id = id;
     }
