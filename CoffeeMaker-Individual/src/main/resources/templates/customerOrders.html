@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="ISO-8859-1">
+<title>View Your Orders</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="stylesheet" href="css/bootstrap.css" />
+<link rel="stylesheet" href="css/app.css" />
+</head>
+<body>
+	<script th:inline="javascript">
+		/*<![CDATA[*/
+
+		var app = angular.module('myApp', []);
+		app.controller('customerOrdersCtrl', function($scope, $http, $q) {
+			
+		});
+
+		/*]]>*/
+	</script>
+	
+	<div layout:fragment="content" class="generic-container ng-cloak"
+		ng-app="myApp" ng-controller="customerOrdersCtrl">
+		<h1>Active Orders:</h1>
+		<table class="customerTable">
+			<thead>  
+        		<tr>  
+            		<th>Order #</th>  
+            		<th>Beverage</th>  
+            		<th>Status</th>    
+        		</tr>  
+    		</thead>  
+    		<tbody>  
+        		<tr>  
+            		<td>1</td>  
+            		<td>Latte</td>  
+            		<td>Complete</td>    
+        		</tr>  
+        		
+  				<tr>  
+            		<td>2</td>  
+            		<td>Mocha</td>  
+            		<td>Incomplete</td>    
+        		</tr>  
+        		
+        		<tr>  
+            		<td>3</td>  
+            		<td>Big Sippy Meal</td>  
+            		<td>Incomplete</td>   
+        		</tr>
+    		</tbody>
+		</table>
+		<br /> <a href="/index">Home</a>
+	</div>
+</body>
+</html>
