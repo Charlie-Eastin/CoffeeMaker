@@ -1,15 +1,8 @@
 package edu.ncsu.csc.CoffeeMaker.roles;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
-
-import edu.ncsu.csc.CoffeeMaker.models.Order;
 
 @Entity
 public class Customer extends User {
@@ -22,9 +15,6 @@ public class Customer extends User {
 	private String type;
 
 	private int money;
-
-	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-	private List<Order> orders = new ArrayList<>();
 
 	public void setMoney(final int money) {
 		this.money = money;
