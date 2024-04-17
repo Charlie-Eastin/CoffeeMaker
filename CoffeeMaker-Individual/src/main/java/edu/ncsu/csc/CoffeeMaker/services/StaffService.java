@@ -9,13 +9,16 @@ import org.springframework.stereotype.Component;
 import edu.ncsu.csc.CoffeeMaker.repositories.StaffRepository;
 import edu.ncsu.csc.CoffeeMaker.roles.Staff;
 
+/**
+ * Used to handle CRUD operations on the Staff model
+ */
 @Component
 @Transactional
 public class StaffService extends Service<Staff, Long> {
 
     /**
-     * IngredientRepository, to be autowired in by Spring and provide CRUD
-     * operations on Ingredient model.
+     * StaffRepository, to be autowired in by Spring and provide CRUD operations
+     * on Staff model.
      */
     @Autowired
     private StaffRepository staffRepository;
@@ -26,11 +29,11 @@ public class StaffService extends Service<Staff, Long> {
     }
 
     /**
-     * Find an ingredient with the provided name
+     * Find an staff with the provided name
      *
      * @param name
-     *            Name of the ingredient to find
-     * @return found ingredient, null if none
+     *            Name of the staff to find
+     * @return found staff, null if none
      */
     public Staff findByName ( final String name ) {
         return staffRepository.findByName( name );

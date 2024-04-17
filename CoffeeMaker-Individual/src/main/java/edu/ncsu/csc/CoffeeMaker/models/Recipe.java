@@ -34,6 +34,9 @@ public class Recipe extends DomainObject {
     @Min ( 0 )
     private Integer          price;
 
+    /**
+     * List of ingredients in the recipe
+     */
     @OneToMany ( cascade = CascadeType.ALL, fetch = FetchType.EAGER )
     private List<Ingredient> ingredients;
 
@@ -45,10 +48,25 @@ public class Recipe extends DomainObject {
         ingredients = new LinkedList<Ingredient>();
     }
 
+    /**
+     * Getter for the list of ingredients in the recipe
+     *
+     * @return the list of ingredients
+     */
     public List<Ingredient> getIngredients () {
         return ingredients;
     }
 
+    /**
+     * Adds an ingredient to the list of ingredients in the recipe
+     *
+     * @param ingredient
+     *            the ingredient to be added
+     * @return true if the ingredient was successfully added, false if the new
+     *         ingredient name matches an existing ingredient in the recipe
+     * @throws ConstraintViolationException
+     *             if the amount of the passed ingredient is less than 0
+     */
     public boolean addIngredient ( final Ingredient ingredient ) {
         if ( ingredient.getAmount() < 0 ) {
             throw new ConstraintViolationException( "test", null );
@@ -62,6 +80,11 @@ public class Recipe extends DomainObject {
         return true;
     }
 
+    /**
+     * Verifies that there aren't duplicate ingredient names in the recipe
+     *
+     * @return true if there aren't any duplicates, false if there are
+     */
     public boolean noDuplicates () {
         for ( int i = 0; i < ingredients.size(); i++ ) {
             for ( int j = 0; j < ingredients.size(); j++ ) {
@@ -73,6 +96,13 @@ public class Recipe extends DomainObject {
         return true;
     }
 
+    /**
+     * Sets the amount of an ingredient in the recipe to the amount of a passed
+     * in ingredient with the same name
+     *
+     * @param ingredient
+     *            the ingredient with the new amount information
+     */
     public void setIngredient ( final Ingredient ingredient ) {
         for ( int i = 0; i < ingredients.size(); i++ ) {
             if ( ingredients.get( i ).getName().equals( ingredient.getName() ) ) {
@@ -81,6 +111,16 @@ public class Recipe extends DomainObject {
         }
     }
 
+    /**
+     * Replaces the information in this recipe with the information in another
+     * passed recipe
+     *
+     * @param recipe
+     *            recipe object with the new recipe information
+     *
+     * @throws NullPointerExeption
+     *             if the passed recipe is null
+     */
     public void editRecipe ( final Recipe recipe ) {
         if ( recipe == null ) {
             throw new NullPointerException( "Recipe cannot be null" );

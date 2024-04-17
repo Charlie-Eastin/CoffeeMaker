@@ -19,12 +19,28 @@ import edu.ncsu.csc.CoffeeMaker.models.Recipe;
 import edu.ncsu.csc.CoffeeMaker.services.InventoryService;
 import edu.ncsu.csc.CoffeeMaker.services.RecipeService;
 
+/**
+ * This is the controller that holds the REST endpoints that handle CRUD
+ * operations for the Staff
+ *
+ * Spring will automatically convert all of the ResponseEntity and List results
+ * to JSON
+ */
 @SuppressWarnings ( { "unchecked", "rawtypes" } )
 @RestController
 public class APIStaffController extends APIController {
 
+    /**
+     * InventoryService object, to be autowired in by Spring to allow for
+     * manipulating the Inventory model
+     */
     @Autowired
     private InventoryService inventoryService;
+
+    /**
+     * RecipeService object, to be autowired in by Spring to allow for
+     * manipulating the Recipe models
+     */
     @Autowired
     private RecipeService    recipeService;
 

@@ -4,14 +4,22 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
+/**
+ * A model for the Staff entity in the CoffeeMaker. Represents the access and
+ * properties that a Staff using the CoffeeMaker system would have
+ */
 @Entity
 public class Staff extends User {
 
+    /** The ID of a staff member */
     @Id
     @GeneratedValue
     private Long   id;
 
+    /** The name of a staff member */
     private String name;
+
+    /** The type of user this is (STAFF) */
     private String type;
 
     @Override

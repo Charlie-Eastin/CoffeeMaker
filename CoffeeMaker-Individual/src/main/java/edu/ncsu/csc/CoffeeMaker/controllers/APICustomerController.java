@@ -19,16 +19,49 @@ import edu.ncsu.csc.CoffeeMaker.services.CustomerService;
 import edu.ncsu.csc.CoffeeMaker.services.InventoryService;
 import edu.ncsu.csc.CoffeeMaker.services.RecipeService;
 
+/**
+ * This is the controller that holds the REST endpoints that handle CRUD
+ * operations for the Customers
+ *
+ * Spring will automatically convert all of the ResponseEntity and List results
+ * to JSON
+ */
 @SuppressWarnings ( { "unchecked", "rawtypes" } )
 @RestController
 public class APICustomerController extends APIController {
+    /**
+     * InventoryService object, to be autowired in by Spring to allow for
+     * manipulating the Inventory model
+     */
     @Autowired
     private InventoryService inventoryService;
+
+    /**
+     * RecipeService object, to be autowired in by Spring to allow for
+     * manipulating the Recipe models
+     */
     @Autowired
     private RecipeService    recipeService;
+
+    /**
+     * CustomerService object, to be autowired in by Spring to allow for
+     * manipulating the Customer model
+     */
     @Autowired
     private CustomerService  customerService;
 
+    /**
+     * Updates a user's money amount to the given amount of money
+     *
+     * @param name
+     *            The username of the user who's money is being updated
+     * @param money
+     *            The amount of money to update to
+     * @return ResponseEntity indicating whether the money can be successfully
+     *         edited or not
+     * @throws Exception
+     *             if the money cannot be updated
+     */
     @PutMapping ( BASE_PATH + "/customers/users/{name}" )
     public ResponseEntity updateMoney ( @PathVariable ( "name" ) final String name, @RequestBody final int money )
             throws Exception {
@@ -40,11 +73,16 @@ public class APICustomerController extends APIController {
                     HttpStatus.OK );
         }
         catch ( final Exception e ) {
-            return new ResponseEntity( errorResponse( "Recipe cannot have duplicate ingredients" ),
-                    HttpStatus.CONFLICT );
+            return new ResponseEntity( errorResponse( "Money could not be updated" ), HttpStatus.CONFLICT );
         }
     }
 
+    /**
+     * Gets the current user's username
+     *
+     * @return ResponseEntity with the username and whether the username was
+     *         able to be retrieved
+     */
     @GetMapping ( BASE_PATH + "/username" )
     public ResponseEntity getUserName () {
         final Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -61,6 +99,11 @@ public class APICustomerController extends APIController {
         }
     }
 
+    /**
+     * Gets the role of the current user
+     *
+     * @return the role and whether the role was able to be retrieved
+     */
     @GetMapping ( BASE_PATH + "/role" )
     public ResponseEntity getUserRole () {
         final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

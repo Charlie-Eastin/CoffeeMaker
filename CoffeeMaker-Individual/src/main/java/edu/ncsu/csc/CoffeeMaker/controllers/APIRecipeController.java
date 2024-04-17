@@ -63,6 +63,17 @@ public class APIRecipeController extends APIController {
                 : new ResponseEntity( recipe, HttpStatus.OK );
     }
 
+    /**
+     * REST API method to replace a recipe with another given recipe, used to
+     * update a recipe
+     *
+     * @param name
+     *            the name of the recipe
+     * @param recipe
+     *            the recipe that will replace the old recipe
+     * @return ResponseEntity with whether or not the recipe was able to be
+     *         replaced
+     */
     @PostMapping ( BASE_PATH + "/recipes/{name}" )
     public ResponseEntity editRecipe ( @PathVariable ( "name" ) final String name, @RequestBody final Recipe recipe ) {
         if ( service.findByName( name ) == null ) {

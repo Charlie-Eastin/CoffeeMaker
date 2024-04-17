@@ -9,13 +9,16 @@ import org.springframework.stereotype.Component;
 import edu.ncsu.csc.CoffeeMaker.repositories.CustomerRepository;
 import edu.ncsu.csc.CoffeeMaker.roles.Customer;
 
+/**
+ * Used to handle CRUD operations to a Customer.
+ */
 @Component
 @Transactional
 public class CustomerService extends Service<Customer, Long> {
 
     /**
-     * IngredientRepository, to be autowired in by Spring and provide CRUD
-     * operations on Ingredient model.
+     * CustomerRepository, to be autowired in by Spring and provide CRUD
+     * operations on Customer model.
      */
     @Autowired
     private CustomerRepository customerRepository;
@@ -26,11 +29,11 @@ public class CustomerService extends Service<Customer, Long> {
     }
 
     /**
-     * Find an ingredient with the provided name
+     * Find a customer with the provided name
      *
      * @param name
-     *            Name of the ingredient to find
-     * @return found ingredient, null if none
+     *            Name of the customer to find
+     * @return found customer, null if none
      */
     public Customer findByName ( final String name ) {
         return customerRepository.findByName( name );
