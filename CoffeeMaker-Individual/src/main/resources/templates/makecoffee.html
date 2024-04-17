@@ -14,9 +14,12 @@
 
 		var app = angular.module('myApp', []);
 		app.controller('recipesCtrl', function($scope, $http, $q) {
-			$http.get("/api/v1/recipes").then(function(response) {
-				$scope.recipes = response.data;
-			});
+			
+			$scope.fetchRecipes = function() {
+				$http.get("/api/v1/recipes").then(function(response) {
+					$scope.recipes = response.data;
+				});
+			}
 
 			$scope.make = function() {
 				var amtPaid = $scope.amtPaid;
@@ -34,6 +37,18 @@
 						});
 
 			}
+			
+			//Modified version of code found here: 
+			//https://stackoverflow.com/questions/64448625/how-to-make-get-request-to-api-continuously
+			$scope.useEffect = function() {
+				const interval = setInterval(() => {
+					$scope.fetchRecipes();
+				}, 1000);
+				return () => clearInterval(interval);
+			}
+			
+			$scope.fetchRecipes();
+			$scope.useEffect();
 		});
 
 		/*]]>*/

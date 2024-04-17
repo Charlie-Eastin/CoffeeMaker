@@ -8,18 +8,56 @@
 <link rel="stylesheet" href="css/app.css" />
 </head>
 <body>
-	<script th:inline="javascript">
+
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.js"></script>
+
+	<script>
 		/*<![CDATA[*/
 
 		var app = angular.module('myApp', []);
 		app.controller('customerOrdersCtrl', function($scope, $http, $q) {
 			
+			$scope.customerUsername = {};
+			
+			//Sample Data
+			$scope.order1 = {
+				num: '1',
+				beverage: 'Latte',
+				status: 'Completed'
+			};
+			$scope.order2 = {
+					num: '2',
+					beverage: 'Mocha',
+					status: 'Incomplete'
+			};
+			$scope.order3 = {
+					num: '3',
+					beverage: 'The Juice',
+					status: 'Completed'
+			};
+			$scope.customerOrders = [];
+			$scope.customerOrders.push($scope.order1);
+			$scope.customerOrders.push($scope.order2);
+			$scope.customerOrders.push($scope.order3);
+			console.log($scope.customerOrders);
+			
+			//Gets the Username of the current user
+			$scope.fetchUsername = function(){
+				$http.get("/api/v1/username").then(
+					function(response) {
+						//console.log(response.data);
+						$scope.customerUsername = response.data;
+					}
+				);
+			}
+			
+			$scope.fetchUsername();
 		});
 
 		/*]]>*/
 	</script>
 	
-	<div layout:fragment="content" class="generic-container ng-cloak"
+	<div class="generic-container ng-cloak"
 		ng-app="myApp" ng-controller="customerOrdersCtrl">
 		<h1>Active Orders:</h1>
 		<table class="customerTable">
@@ -27,27 +65,24 @@
         		<tr>  
             		<th>Order #</th>  
             		<th>Beverage</th>  
-            		<th>Status</th>    
+            		<th>Status</th>   
         		</tr>  
     		</thead>  
     		<tbody>  
-        		<tr>  
-            		<td>1</td>  
-            		<td>Latte</td>  
-            		<td>Complete</td>    
-        		</tr>  
+    			<tr ng-repeat="order in customerOrders">
+    				<td >
+    					{{ order.num }}
+    				</td>
+    				<td >
+    					{{ order.beverage }}
+    				</td>
+    				<td >
+    					{{ order.status }}
+    				</td>
+    				<td><button type="button" >Pick-Up</button></td>
+    			</tr>
         		
-  				<tr>  
-            		<td>2</td>  
-            		<td>Mocha</td>  
-            		<td>Incomplete</td>    
-        		</tr>  
-        		
-        		<tr>  
-            		<td>3</td>  
-            		<td>Big Sippy Meal</td>  
-            		<td>Incomplete</td>   
-        		</tr>
+  				
     		</tbody>
 		</table>
 		<br /> <a href="/index">Home</a>
