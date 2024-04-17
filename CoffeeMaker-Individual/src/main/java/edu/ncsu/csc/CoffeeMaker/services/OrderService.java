@@ -39,8 +39,8 @@ public class OrderService extends Service<Order, Long> {
 	 *
 	 * @return the list of orders in repository
 	 */
-	List<Order> getOrders() {
-		return orderRepository.getOrders();
+	public List<Order> getOrders() {
+		return orderRepository.findAll();
 	}
 
 }

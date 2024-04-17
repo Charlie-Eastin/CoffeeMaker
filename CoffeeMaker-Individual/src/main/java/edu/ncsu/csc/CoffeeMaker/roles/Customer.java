@@ -1,62 +1,72 @@
 package edu.ncsu.csc.CoffeeMaker.roles;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
+
+import edu.ncsu.csc.CoffeeMaker.models.Order;
 
 @Entity
 public class Customer extends User {
 
-    @Id
-    @GeneratedValue
-    private Long   id;
+	@Id
+	@GeneratedValue
+	private Long id;
 
-    private String name;
-    private String type;
+	private String name;
+	private String type;
 
-    private int    money;
+	private int money;
 
-    public void setMoney ( final int money ) {
-        this.money = money;
-    }
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+	private List<Order> orders = new ArrayList<>();
 
-    public int getMoney () {
-        return this.money;
-    }
+	public void setMoney(final int money) {
+		this.money = money;
+	}
 
-    @Override
-    public void setName ( final String name ) {
-        this.name = name;
-    }
+	public int getMoney() {
+		return this.money;
+	}
 
-    @Override
-    public String getName () {
-        return this.name;
-    }
+	@Override
+	public void setName(final String name) {
+		this.name = name;
+	}
 
-    @Override
-    public void setType ( final String type ) {
-        this.type = type;
-    }
+	@Override
+	public String getName() {
+		return this.name;
+	}
 
-    @Override
-    public String getType () {
-        return this.type;
-    }
+	@Override
+	public void setType(final String type) {
+		this.type = type;
+	}
 
-    @Override
-    public void setId ( final long id ) {
-        this.id = id;
-    }
+	@Override
+	public String getType() {
+		return this.type;
+	}
 
-    /**
-     * Get the ID of the Recipe
-     *
-     * @return the ID
-     */
-    @Override
-    public Long getId () {
-        return id;
-    }
+	@Override
+	public void setId(final long id) {
+		this.id = id;
+	}
+
+	/**
+	 * Get the ID of the Recipe
+	 *
+	 * @return the ID
+	 */
+	@Override
+	public Long getId() {
+		return id;
+	}
 
 }
