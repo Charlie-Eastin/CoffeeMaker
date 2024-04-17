@@ -18,19 +18,32 @@ import edu.ncsu.csc.CoffeeMaker.models.Ingredient;
 import edu.ncsu.csc.CoffeeMaker.models.Recipe;
 import edu.ncsu.csc.CoffeeMaker.services.RecipeService;
 
+/**
+ * Test class to test the creation of recipes with ingredients
+ */
 @RunWith ( SpringRunner.class )
 @EnableAutoConfiguration
 @SpringBootTest ( classes = TestConfig.class )
 public class GenerateRecipeWithIngredients {
 
+    /**
+     * RecipeService object, to be autowired in by Spring to allow for
+     * manipulating the Recipe model
+     */
     @Autowired
     private RecipeService recipeService;
 
+    /**
+     * Sets up the each test by clearing the database
+     */
     @Before
     public void setup () {
         recipeService.deleteAll();
     }
 
+    /**
+     * Creates recipes and tests that ingredients can be added to them
+     */
     @Test
     @Transactional
     public void createRecipe () {
