@@ -21,17 +21,17 @@
 			
 			//Sample Data
 			$scope.order1 = {
-				num: '1',
+				num: 1,
 				beverage: 'Latte',
 				status: 'Completed'
 			};
 			$scope.order2 = {
-					num: '2',
+					num: 2,
 					beverage: 'Mocha',
 					status: 'Incomplete'
 			};
 			$scope.order3 = {
-					num: '3',
+					num: 3,
 					beverage: 'The Juice',
 					status: 'Completed'
 			};
@@ -49,6 +49,24 @@
 						$scope.customerUsername = response.data;
 					}
 				);
+			}
+			
+			$scope.isCompleted = function(ord) {
+				if (ord.status == 'Completed') {
+					return true;
+				}
+				return false;
+			}
+			
+			$scope.pickUp = function(ord) {
+				$scope.incompletePickup = false;
+				
+				if (ord.status == 'Incomplete') {
+					$scope.incompletePickup = true;
+				} else {
+					const index = $scope.customerOrders.indexOf(ord);
+					$scope.customerOrders.splice(index, 1);
+				}
 			}
 			
 			$scope.fetchUsername();
@@ -69,7 +87,7 @@
         		</tr>  
     		</thead>  
     		<tbody>  
-    			<tr ng-repeat="order in customerOrders">
+    			<tr ng-repeat="order in customerOrders" ng-class="{'completeColor': isCompleted(order)}">
     				<td >
     					{{ order.num }}
     				</td>
@@ -79,12 +97,14 @@
     				<td >
     					{{ order.status }}
     				</td>
-    				<td><button type="button" >Pick-Up</button></td>
+    				<td><button type="button" ng-click="pickUp(order)">Pick-Up</button></td>
     			</tr>
         		
   				
     		</tbody>
 		</table>
+		<br>
+		<div ng-show="incompletePickup">Order is incomplete. Unable to pick up order.</div>
 		<br /> <a href="/index">Home</a>
 	</div>
 </body>
