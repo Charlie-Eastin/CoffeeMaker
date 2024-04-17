@@ -17,6 +17,7 @@ public class User extends DomainObject {
 
 	@Id
 	@GeneratedValue
+	// @JsonIgnore //ignores id for json serialize
 	private Long id;
 
 	private String name;

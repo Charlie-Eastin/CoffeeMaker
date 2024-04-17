@@ -6,8 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import edu.ncsu.csc.CoffeeMaker.models.Order;
@@ -56,7 +58,7 @@ public class APIOrderController extends APIController {
 	 *         error if it could not be
 	 */
 	@PostMapping(BASE_PATH + "/orders")
-	public ResponseEntity addOrder(int money, Recipe recipe) {
+	public ResponseEntity addOrder(int money, @RequestBody Recipe recipe) {
 
 //		if () {
 //            return new ResponseEntity( errorResponse( "ordererrmsg" ), HttpStatus.CONFLICT );
@@ -70,7 +72,7 @@ public class APIOrderController extends APIController {
 	}
 
 	@PutMapping(BASE_PATH + "/orders/{id}")
-	public ResponseEntity fufillOrder(Order order) {
+	public ResponseEntity fufillOrder(@PathVariable("id") final int id, @RequestBody Order order) {
 		// if status is picked up then delete from repository?
 
 		return new ResponseEntity(successResponse("Order status changed"), HttpStatus.OK);

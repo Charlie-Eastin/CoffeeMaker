@@ -1,52 +1,55 @@
 package edu.ncsu.csc.CoffeeMaker.roles;
 
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 public class Staff extends User {
 
-	@Id
-	@GeneratedValue
-	private Long id;
+//	@Id
+//	@GeneratedValue
+	// @JsonIgnore // ignores id for json serialize
+	// private Long id;
 
-	private String name;
-	private String type;
+	// private String name;
+	// private String type;
 
 	@Override
 	public void setName(final String name) {
-		this.name = name;
+		super.setName(name);
+
 	}
 
 	@Override
 	public String getName() {
-		return this.name;
+		return super.getName();
 	}
 
 	@Override
 	public void setType(final String type) {
-		this.type = type;
+		super.setType(type);
 	}
 
 	@Override
 	public String getType() {
-		return this.type;
+		return super.getType();
 	}
 
 	@Override
 	public void setId(final long id) {
-		this.id = id;
+		super.setId(id);
 	}
 
 	/**
-	 * Get the ID of the Recipe
+	 * Get the ID of the user
 	 *
 	 * @return the ID
 	 */
 	@Override
+	@JsonProperty("id")
 	public Long getId() {
-		return id;
+		return super.getId();
 	}
 
 }
