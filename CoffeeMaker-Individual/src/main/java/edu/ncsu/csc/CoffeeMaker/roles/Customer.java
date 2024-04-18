@@ -19,7 +19,7 @@ import edu.ncsu.csc.CoffeeMaker.models.Recipe;
 @Table ( name = "user" )
 public class Customer extends User {
 
-    @OneToMany ( cascade = CascadeType.ALL, fetch = FetchType.LAZY )
+    @OneToMany ( mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.LAZY )
     private final List<Order> orders = new ArrayList<>();
 
     @Min ( 0 )

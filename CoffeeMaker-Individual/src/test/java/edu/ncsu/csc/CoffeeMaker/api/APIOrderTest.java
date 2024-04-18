@@ -4,8 +4,6 @@ import static org.junit.Assert.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import javax.transaction.Transactional;
-
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -64,7 +62,6 @@ class APIOrderTest {
     }
 
     @Test
-    @Transactional
     public void testOrderAPI () throws Exception {
 
         orderService.deleteAll();

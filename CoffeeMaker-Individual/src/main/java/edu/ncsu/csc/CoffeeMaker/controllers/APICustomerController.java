@@ -108,15 +108,10 @@ public class APICustomerController extends APIController {
         try {
             final Customer customer = customerService.findByName( order.getCustomer().getName() );
             final Recipe recipe = recipeService.findById( order.getRecipe().getId() );
-            // customerService.delete( customer );
-            if ( customer.addOrder( customer.getMoney(), order.getRecipe() ) != true ) {
-                // customerService.save( customer ); // MIGHT BE CAUSING ISSUES
-                // WITH SAVING WRONG OBJECT
+            if ( customer.addOrder( customer.getMoney(), recipe ) != true ) {
                 return new ResponseEntity( errorResponse( "Customer does not have enough money" ),
                         HttpStatus.CONFLICT );
             }
-            final Order newOrder = new Order( recipe, customer );
-            orderService.save( newOrder );
             customerService.save( customer );
             return new ResponseEntity( successResponse( customer.getName() + "'s order was successfully put in" ),
                     HttpStatus.OK );
