@@ -1,7 +1,6 @@
 package edu.ncsu.csc.CoffeeMaker.services;
 
 import java.util.List;
-import java.util.Optional;
 
 import javax.transaction.Transactional;
 
@@ -12,13 +11,21 @@ import org.springframework.stereotype.Component;
 import edu.ncsu.csc.CoffeeMaker.models.Order;
 import edu.ncsu.csc.CoffeeMaker.repositories.OrderRepository;
 
+/**
+ * The OrderService is used to handle CRUD operations on the Order model. In
+ * addition to all functionality from `Service`, we also have functionality for
+ * retrieving all orders
+ *
+ * @author Grant Benson
+ *
+ */
 @Component
 @Transactional
 public class OrderService extends Service<Order, Long> {
 
     /**
-     * IngredientRepository, to be autowired in by Spring and provide CRUD
-     * operations on Ingredient model.
+     * RecipeRepository, to be autowired in by Spring and provide CRUD
+     * operations on Recipe model.
      */
     @Autowired
     private OrderRepository orderRepository;
@@ -29,25 +36,11 @@ public class OrderService extends Service<Order, Long> {
     }
 
     /**
-     * Find an ingredient with the provided name
      *
-     * @param name
-     *            Name of the ingredient to find
-     * @return found ingredient, null if none
+     * @return the list of orders in repository
      */
     public List<Order> getOrders () {
         return orderRepository.findAll();
-    }
-
-    /**
-     * Find an ingredient with the provided name
-     *
-     * @param name
-     *            Name of the ingredient to find
-     * @return found ingredient, null if none
-     */
-    public Optional<Order> getOrder ( final long id ) {
-        return orderRepository.findById( id );
     }
 
 }

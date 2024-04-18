@@ -3,8 +3,9 @@ package edu.ncsu.csc.CoffeeMaker.roles;
 import java.util.List;
 
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.validation.constraints.Min;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import edu.ncsu.csc.CoffeeMaker.models.Order;
 import edu.ncsu.csc.CoffeeMaker.models.Recipe;
@@ -12,59 +13,56 @@ import edu.ncsu.csc.CoffeeMaker.models.Recipe;
 @Entity
 public class Customer extends User {
 
-    @Id
-    @GeneratedValue
-    private Long        id;
-
     private String      name;
 
     private String      type;
 
-    private int         money;
-
     private List<Order> orders;
+    @Min ( 0 )
+    private Integer     money;
 
-    public void setMoney ( final int money ) {
+    public void setMoney ( final Integer money ) {
         this.money = money;
     }
 
-    public int getMoney () {
+    public Integer getMoney () {
         return this.money;
     }
 
     @Override
     public void setName ( final String name ) {
-        this.name = name;
+        super.setName( name );
     }
 
     @Override
     public String getName () {
-        return this.name;
+        return super.getName();
     }
 
     @Override
     public void setType ( final String type ) {
-        this.type = type;
+        super.setType( type );
     }
 
     @Override
     public String getType () {
-        return this.type;
+        return super.getType();
     }
 
     @Override
     public void setId ( final long id ) {
-        this.id = id;
+        super.setId( id );
     }
 
     /**
-     * Get the ID of the Recipe
+     * Get the ID of the user
      *
      * @return the ID
      */
     @Override
+    @JsonProperty ( "id" )
     public Long getId () {
-        return id;
+        return super.getId();
     }
 
     public boolean addOrder ( int money, final Recipe recipe ) {
@@ -78,7 +76,7 @@ public class Customer extends User {
 
     }
 
-    public boolean pickupOrder ( final long orderId ) {
+    public boolean pickupOrder ( final Long orderId ) {
         for ( int i = 0; i < orders.size(); i++ ) {
             final Order order = orders.get( i );
             if ( order.getId() == orderId ) {
