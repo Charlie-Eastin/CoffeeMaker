@@ -8,6 +8,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,7 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.google.gson.Gson;
 
 import edu.ncsu.csc.CoffeeMaker.models.Order;
-import edu.ncsu.csc.CoffeeMaker.models.Recipe;
 import edu.ncsu.csc.CoffeeMaker.roles.Customer;
 import edu.ncsu.csc.CoffeeMaker.services.CustomerService;
 import edu.ncsu.csc.CoffeeMaker.services.OrderService;
@@ -81,7 +81,8 @@ public class APICustomerController extends APIController {
             final Customer customer = order.getCustomer();
             customerService.delete( customer );
             if ( customer.pickupOrder( id ) != true ) {
-                customerService.save( customer ); // MIGHT BE CAUSING ISSUES WITH SAVING WRONG OBJECT
+                customerService.save( customer ); // MIGHT BE CAUSING ISSUES
+                                                  // WITH SAVING WRONG OBJECT
                 return new ResponseEntity( errorResponse( "Cannot pickup order" ), HttpStatus.CONFLICT );
 
             }
@@ -98,18 +99,18 @@ public class APICustomerController extends APIController {
         }
     }
 
-    @PutMapping ( BASE_PATH + "/orders" )
-    public ResponseEntity addOrder ( @RequestBody final int money, @RequestBody final Recipe recipe,
-            @RequestBody final String name ) {
+    @PostMapping ( BASE_PATH + "/orders" )
+    public ResponseEntity addOrder ( @RequestBody final Order order ) {
         try {
-            final Customer customer = customerService.findByName( name );
-            final Order order = new Order( recipe, customer );
+            final Customer customer = order.getCustomer();
             customerService.delete( customer );
-            if ( customer.addOrder( money, recipe ) != true ) {
-                customerService.save( customer ); // MIGHT BE CAUSING ISSUES WITH SAVING WRONG OBJECT
+            if ( customer.addOrder( customer.getMoney(), order.getRecipe() ) != true ) {
+                customerService.save( customer ); // MIGHT BE CAUSING ISSUES
+                                                  // WITH SAVING WRONG OBJECT
                 return new ResponseEntity( errorResponse( "Customer does not have enough money" ),
                         HttpStatus.CONFLICT );
             }
+
             orderService.save( order );
             customerService.save( customer );
             return new ResponseEntity( successResponse( customer.getName() + "'s order was successfully put in" ),

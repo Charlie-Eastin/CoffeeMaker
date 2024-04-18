@@ -1,8 +1,12 @@
 package edu.ncsu.csc.CoffeeMaker.roles;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.OneToMany;
 import javax.validation.constraints.Min;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -13,13 +17,11 @@ import edu.ncsu.csc.CoffeeMaker.models.Recipe;
 @Entity
 public class Customer extends User {
 
-    private String      name;
+    @OneToMany ( cascade = CascadeType.ALL, fetch = FetchType.LAZY )
+    private final List<Order> orders = new ArrayList<>();
 
-    private String      type;
-
-    private List<Order> orders;
     @Min ( 0 )
-    private Integer     money;
+    private Integer           money;
 
     public void setMoney ( final Integer money ) {
         this.money = money;
@@ -27,26 +29,6 @@ public class Customer extends User {
 
     public Integer getMoney () {
         return this.money;
-    }
-
-    @Override
-    public void setName ( final String name ) {
-        super.setName( name );
-    }
-
-    @Override
-    public String getName () {
-        return super.getName();
-    }
-
-    @Override
-    public void setType ( final String type ) {
-        super.setType( type );
-    }
-
-    @Override
-    public String getType () {
-        return super.getType();
     }
 
     @Override

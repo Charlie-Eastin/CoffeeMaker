@@ -13,7 +13,6 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import edu.ncsu.csc.CoffeeMaker.roles.Customer;
-import edu.ncsu.csc.CoffeeMaker.roles.User;
 
 @Entity
 @Table ( name = "orders" )
@@ -21,8 +20,9 @@ public class Order extends DomainObject {
     @Id
     @GeneratedValue
     private Long     id;
+
     @ManyToOne
-    @JoinColumn ( name = "user" )
+    @JoinColumn ( name = "customer" )
     private Customer customer;
 
     @OneToOne ( cascade = CascadeType.ALL, fetch = FetchType.EAGER )
@@ -53,7 +53,7 @@ public class Order extends DomainObject {
     /**
      * @return the user
      */
-    public User getUser () {
+    public Customer getCustomer () {
         return customer;
     }
 
@@ -61,7 +61,7 @@ public class Order extends DomainObject {
      * @param user
      *            the user to set
      */
-    public void setUser ( final Customer customer ) {
+    public void setCustomer ( final Customer customer ) {
         this.customer = customer;
     }
 
@@ -109,10 +109,6 @@ public class Order extends DomainObject {
     public String toString () {
         return "Ingredient [id=" + id + ", customer=" + customer.toString() + ", recipe=" + recipe.toString()
                 + ", status=" + status + "]";
-    }
-
-    public Customer getCustomer () {
-        return this.customer;
     }
 
 }
