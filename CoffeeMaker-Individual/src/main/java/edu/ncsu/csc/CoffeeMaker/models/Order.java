@@ -2,14 +2,13 @@ package edu.ncsu.csc.CoffeeMaker.models;
 
 import java.io.Serializable;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import edu.ncsu.csc.CoffeeMaker.roles.Customer;
@@ -18,14 +17,15 @@ import edu.ncsu.csc.CoffeeMaker.roles.Customer;
 @Table ( name = "orders" )
 public class Order extends DomainObject {
     @Id
-    @GeneratedValue
+    @GeneratedValue ( strategy = GenerationType.IDENTITY )
     private Long     id;
 
     @ManyToOne
     @JoinColumn ( name = "customer" )
     private Customer customer;
 
-    @OneToOne ( cascade = CascadeType.ALL, fetch = FetchType.EAGER )
+    @ManyToOne ( fetch = FetchType.LAZY )
+    @JoinColumn ( name = "recipe_id", nullable = false )
     private Recipe   recipe;
 
     private String   status;
@@ -37,6 +37,7 @@ public class Order extends DomainObject {
     public Order ( final Recipe recipe, final Customer customer ) {
         this.recipe = recipe;
         this.customer = customer;
+        this.status = "CREATED";
     }
 
     // /**

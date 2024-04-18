@@ -7,6 +7,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import javax.validation.constraints.Min;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -15,6 +16,7 @@ import edu.ncsu.csc.CoffeeMaker.models.Order;
 import edu.ncsu.csc.CoffeeMaker.models.Recipe;
 
 @Entity
+@Table ( name = "user" )
 public class Customer extends User {
 
     @OneToMany ( cascade = CascadeType.ALL, fetch = FetchType.LAZY )
@@ -47,11 +49,12 @@ public class Customer extends User {
         return super.getId();
     }
 
-    public boolean addOrder ( int money, final Recipe recipe ) {
-        if ( recipe.getPrice() > money ) {
+    public boolean addOrder ( final int money, final Recipe recipe ) {
+        if ( recipe.getPrice() <= money ) {
             final Order order = new Order( recipe, this );
-            money -= recipe.getPrice();
-            orders.add( order );
+            this.money -= recipe.getPrice();
+            this.orders.add( order );
+            order.setCustomer( this );
             return true;
         }
         return false;

@@ -24,72 +24,92 @@ import edu.ncsu.csc.CoffeeMaker.models.Ingredient;
 import edu.ncsu.csc.CoffeeMaker.models.Order;
 import edu.ncsu.csc.CoffeeMaker.models.Recipe;
 import edu.ncsu.csc.CoffeeMaker.roles.Customer;
+import edu.ncsu.csc.CoffeeMaker.services.CustomerService;
 import edu.ncsu.csc.CoffeeMaker.services.OrderService;
+import edu.ncsu.csc.CoffeeMaker.services.RecipeService;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@ExtendWith(SpringExtension.class)
+@ExtendWith ( SpringExtension.class )
 class APIOrderTest {
 
-	/**
-	 * MockMvc uses Spring's testing framework to handle requests to the REST API
-	 */
-	private MockMvc mvc;
+    /**
+     * MockMvc uses Spring's testing framework to handle requests to the REST
+     * API
+     */
+    private MockMvc               mvc;
 
-	@Autowired
-	private WebApplicationContext context;
+    @Autowired
+    private WebApplicationContext context;
 
-	@Autowired
-	private OrderService service;
+    @Autowired
+    private OrderService          orderService;
 
-	/**
-	 * Sets up the tests.
-	 */
-	@BeforeEach
-	public void setup() {
-		mvc = MockMvcBuilders.webAppContextSetup(context).build();
+    @Autowired
+    private RecipeService         recipeService;
 
-		service.deleteAll();
-	}
+    @Autowired
+    private CustomerService       customerService;
 
-	@Test
-	@Transactional
-	public void testOrderAPI() throws Exception {
+    /**
+     * Sets up the tests.
+     */
+    @BeforeEach
+    public void setup () {
+        mvc = MockMvcBuilders.webAppContextSetup( context ).build();
 
-		service.deleteAll();
+        orderService.deleteAll();
+        recipeService.deleteAll();
+        customerService.deleteAll();
+    }
 
-		Assertions.assertEquals(0, (int) service.count());
+    @Test
+    @Transactional
+    public void testOrderAPI () throws Exception {
 
-		// create recipe for order
-		final Recipe r1 = new Recipe();
-		r1.setName("Black Coffee");
-		r1.setPrice(1);
-		assertTrue(r1.addIngredient(new Ingredient("Coffee", 1)));
-		assertTrue(r1.addIngredient(new Ingredient("Milk", 0)));
-		assertTrue(r1.addIngredient(new Ingredient("Sugar", 0)));
-		assertTrue(r1.addIngredient(new Ingredient("Chocolate", 0)));
+        orderService.deleteAll();
+        recipeService.deleteAll();
+        customerService.deleteAll();
 
-//		final Staff staff = new Staff();
-//		staff.setName("John");
-//		staff.setType("STAFF");
-//		staff.setId(1);
+        Assertions.assertEquals( 0, (int) orderService.count() );
+        Assertions.assertEquals( 0, (int) recipeService.count() );
+        Assertions.assertEquals( 0, (int) customerService.count() );
 
-		final Customer customer = new Customer();
-		customer.setName("John");
-		customer.setType("CUSTOMER");
-		customer.setMoney(5);
-		customer.setId(2);
+        // create recipe for order
+        final Recipe r1 = new Recipe();
+        r1.setName( "Black Coffee" );
+        r1.setPrice( 1 );
+        assertTrue( r1.addIngredient( new Ingredient( "Coffee", 1 ) ) );
+        assertTrue( r1.addIngredient( new Ingredient( "Milk", 0 ) ) );
+        assertTrue( r1.addIngredient( new Ingredient( "Sugar", 0 ) ) );
+        assertTrue( r1.addIngredient( new Ingredient( "Chocolate", 0 ) ) );
 
-		final Order order = new Order(r1, customer);
+        recipeService.save( r1 );
 
-		Assertions.assertEquals(0, (int) service.count());
+        // final Staff staff = new Staff();
+        // staff.setName("John");
+        // staff.setType("STAFF");
+        // staff.setId(1);
 
-		mvc.perform(
-				post("/api/v1/orders").contentType(MediaType.APPLICATION_JSON).content(TestUtils.asJsonString(order)))
-				.andExpect(status().isOk());
+        final Customer customer = new Customer();
+        customer.setName( "John" );
+        customer.setType( "CUSTOMER" );
+        customer.setMoney( 5 );
+        customer.setId( 2 );
 
-		Assertions.assertEquals(1, (int) service.count());
+        customerService.save( customer );
 
-	}
+        final Order order = new Order( r1, customer );
+
+        Assertions.assertEquals( 0, (int) orderService.count() );
+
+        Assertions.assertEquals( 1, (int) customerService.count() );
+
+        mvc.perform( post( "/api/v1/orders" ).contentType( MediaType.APPLICATION_JSON )
+                .content( TestUtils.asJsonString( order ) ) ).andExpect( status().isOk() );
+
+        Assertions.assertEquals( 1, (int) orderService.count() );
+
+    }
 
 }

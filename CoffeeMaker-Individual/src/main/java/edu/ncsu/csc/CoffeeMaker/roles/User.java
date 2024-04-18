@@ -11,14 +11,11 @@ public class User extends DomainObject {
 
     @Id
     @GeneratedValue
-    // @JsonIgnore //ignores id for json serialize
     private Long   id;
 
     private String name;
-    private String type;
 
-    // @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    // private List<Order> orders = new ArrayList<>();
+    private String type;
 
     public void setName ( final String name ) {
         this.name = name;

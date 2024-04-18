@@ -16,9 +16,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.google.gson.Gson;
 
 import edu.ncsu.csc.CoffeeMaker.models.Order;
+import edu.ncsu.csc.CoffeeMaker.models.Recipe;
 import edu.ncsu.csc.CoffeeMaker.roles.Customer;
 import edu.ncsu.csc.CoffeeMaker.services.CustomerService;
 import edu.ncsu.csc.CoffeeMaker.services.OrderService;
+import edu.ncsu.csc.CoffeeMaker.services.RecipeService;
 
 @SuppressWarnings ( { "unchecked", "rawtypes" } )
 @RestController
@@ -27,6 +29,8 @@ public class APICustomerController extends APIController {
     private OrderService    orderService;
     @Autowired
     private CustomerService customerService;
+    @Autowired
+    private RecipeService   recipeService;
 
     @PutMapping ( BASE_PATH + "/customers/users/{name}" )
     public ResponseEntity updateMoney ( @PathVariable ( "name" ) final String name, @RequestBody final int money )
@@ -102,21 +106,23 @@ public class APICustomerController extends APIController {
     @PostMapping ( BASE_PATH + "/orders" )
     public ResponseEntity addOrder ( @RequestBody final Order order ) {
         try {
-            final Customer customer = order.getCustomer();
-            customerService.delete( customer );
+            final Customer customer = customerService.findByName( order.getCustomer().getName() );
+            final Recipe recipe = recipeService.findById( order.getRecipe().getId() );
+            // customerService.delete( customer );
             if ( customer.addOrder( customer.getMoney(), order.getRecipe() ) != true ) {
-                customerService.save( customer ); // MIGHT BE CAUSING ISSUES
-                                                  // WITH SAVING WRONG OBJECT
+                // customerService.save( customer ); // MIGHT BE CAUSING ISSUES
+                // WITH SAVING WRONG OBJECT
                 return new ResponseEntity( errorResponse( "Customer does not have enough money" ),
                         HttpStatus.CONFLICT );
             }
-
-            orderService.save( order );
+            final Order newOrder = new Order( recipe, customer );
+            orderService.save( newOrder );
             customerService.save( customer );
             return new ResponseEntity( successResponse( customer.getName() + "'s order was successfully put in" ),
                     HttpStatus.OK );
         }
         catch ( final Exception e ) {
+            System.out.println( e.getMessage() );
             return new ResponseEntity( errorResponse( "Cannot pickup order" ), HttpStatus.CONFLICT );
         }
     }
