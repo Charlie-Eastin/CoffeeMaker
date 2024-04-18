@@ -51,6 +51,12 @@
 				);
 			}
 			
+			//TODO: Update when order's GET API endpoint is setup 
+			$scope.fetchOrders = function() {
+				
+			}
+			
+			//TODO: Update if needed
 			$scope.isCompleted = function(ord) {
 				if (ord.status == 'Completed') {
 					return true;
@@ -58,6 +64,7 @@
 				return false;
 			}
 			
+			//TODO: Update when order's POST API endpoint is setup
 			$scope.pickUp = function(ord) {
 				$scope.incompletePickup = false;
 				
@@ -69,7 +76,16 @@
 				}
 			}
 			
+			//Continuously calls the fetchOrders function
+			$scope.useEffect = function() {
+				const interval = setInterval(() => {
+					$scope.fetchOrders();
+				}, 1000);
+				return () => clearInterval(interval);
+			}
+			
 			$scope.fetchUsername();
+			$scope.fetchOrders();
 		});
 
 		/*]]>*/
