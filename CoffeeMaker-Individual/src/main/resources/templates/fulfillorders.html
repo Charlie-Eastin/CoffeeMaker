@@ -20,18 +20,12 @@
 				})
 			}	
 			$scope.success = false;
-			
-			$scope.order = {
-				id : 0,
-				beverage: '',
-				status: '',
-			};
             
 			$scope.make = function(order) {
 				$scope.success = false;
 				$scope.submissionFailure = false;
 				$scope.submissionSuccess = false;
-				if ($scope.order.status == "CREATED") {
+				if (order.status == "CREATED") {
 					$http.post("/api/v1/makecoffee/" + order.recipe.name).then(
 							function(response) {
 								$scope.submissionSuccess = true;
