@@ -40,19 +40,18 @@ public class APIOrderController extends APIController {
         return service.findAll();
     }
 
-    // /**
-    // * REST API method to provide POST access to the Order model. This is used
-    // * to create a new Order by automatically converting the JSON RequestBody
-    // * provided to a order object. Invalid JSON will fail.
-    // *
-    // * @param money
-    // * is the integer value payed
-    // * @param recipe
-    // * is the valid Recipe to be saved to order
-    // * @return ResponseEntity indicating success if the Order could be saved
-    // or
-    // * an error if it could not be
-    // */
+    /**
+     * REST API method to provide POST access to the Order model. This is used
+     * to create a new Order by automatically converting the JSON RequestBody
+     * provided to a order object. Invalid JSON will fail.
+     *
+     * @param money
+     *            is the integer value payed
+     * @param recipe
+     *            is the valid Recipe to be saved to order
+     * @return ResponseEntity indicating success if the Order could be saved or
+     *         an error if it could not be
+     */
     // @PostMapping ( BASE_PATH + "/orders" )
     // public ResponseEntity addOrder ( final int money, @RequestBody final
     // Recipe recipe ) {

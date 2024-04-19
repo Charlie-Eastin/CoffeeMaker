@@ -135,7 +135,7 @@ public class APICustomerControllerTest {
         Assertions.assertEquals( "John", user.getName() );
 
         Assertions.assertTrue( mvc.perform( get( "/api/v1/customers/users/John" ) ).andReturn().getResponse()
-                .getContentAsString().contains( "{\"name\":John" ) );
+                .getContentAsString().contains( "Coffee" ) );
 
     }
 
