@@ -19,6 +19,30 @@
 					$scope.orders = response.data;
 				})
 			}
+			//example orders
+			//Sample Data
+			$scope.order1 = {
+				num: 1,
+				beverage: 'Latte',
+				status: 'Completed',
+				user : 'Stan'
+			};
+			$scope.order2 = {
+					num: 2,
+					beverage: 'Mocha',
+					status: 'Incomplete',
+					user : 'Kate'
+			};
+			$scope.order3 = {
+					num: 3,
+					beverage: 'The Juice',
+					status: 'Completed',
+					user : 'LLama'
+			};
+			$scope.customerOrders = [];
+			$scope.customerOrders.push($scope.order1);
+			$scope.customerOrders.push($scope.order2);
+			$scope.customerOrders.push($scope.order3);
 			
 			$scope.success = false;
 			
@@ -94,32 +118,36 @@
 	<div layout:fragment="content" class="generic-container ng-cloak"
 		ng-app="myApp" ng-controller="ordersCtrl">
 		<h1>View Orders</h1>
-		<div>
+		<div class="formcontainer" id="ordersTable">
 			<ul>
-				<li ng-repeat="order in orders track by $index"
-					ng-model="$scope.order"><label>{{order.id}},{{order.name}},{{order.recipe}},{{order.status
-						<button type="button" id="completeButton"
-							ng-disabled="order.status==Ready" ng-click="make(order.name)"
-							class="btn btn-info btn-sm"
-							style="background-color: grey; color: black;">
-							Complete <strong style="font-weight: bold;">+</strong>
-						</button>
-						<button type="button" ng-click="removeOrder()"
-							class="btn btn-danger btn-sm"
-							style="background-color: transparent; border: 0px;">
-							<span class="fa-stack"> <i
-								class="fas fa-circle fa-stack-2x text-danger"></i> <i
-								class="fas fa-times fa-stack-1x fa-inverse"></i>
-							</span>
-						</button>
+				<li ng-repeat="order in customerOrders track by $index"
+					ng-model="$scope.order"><label>ID: {{order.num}},
+						User: {{order.user}}, Recipe: {{order.beverage}}, Status:
+						{{order.status}}
+						<div class="form-group col-md-12">
+							<div class="col-md-6">
+								<button type="button" id="completeButton"
+									ng-disabled="order.status==Ready" ng-click="make(order.name)"
+									class="btn btn-info btn-sm"
+									style="background-color: grey; color: black;">
+									Complete <strong style="font-weight: bold;">+</strong>
+								</button>
+								<button type="button" ng-click="delete()"
+									class="btn btn-danger btn-sm"
+									style="background-color: red; color: black;"> Delete
+									<span class="fa-stack"> <i
+										class="fas fa-circle fa-stack-2x text-danger"></i> <i
+										class="fas fa-times fa-stack-1x fa-inverse"></i>
+									</span>
+								</button>
+							</div>
+						</div>
 				</label></li>
 				<div ng-show="success">Successfully Completed Order</div>
 			</ul>
 			<div ng-show="submissionFailure">An error occurred: {{error}}</div>
-
-			<br /> <a href="/index">Home</a>
 		</div>
-
+		<br /> <a href="/index">Home</a>
 	</div>
 
 </body>

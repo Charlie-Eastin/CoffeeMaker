@@ -135,4 +135,17 @@ public class MappingController {
         return "userLogin";
     }
 
+    /**
+     * Handles a GET request to /userLogin, provides a view for the client to
+     * login to the system
+     *
+     * @param model
+     *            underlying UI model
+     * @return contents of the page
+     */
+    @GetMapping ( { "/fulfillorders", "/fulfillorders.html" } )
+    public String fulfillOrdersForm ( final Model model ) {
+        return "fulfillorders";
+    }
+
 }
