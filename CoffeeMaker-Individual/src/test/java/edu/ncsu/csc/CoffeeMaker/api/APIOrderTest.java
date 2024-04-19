@@ -95,14 +95,12 @@ class APIOrderTest {
 
         customerService.save( customer );
 
-        final Order order = new Order( r1, customer );
-
         Assertions.assertEquals( 0, (int) orderService.count() );
 
         Assertions.assertEquals( 1, (int) customerService.count() );
 
         mvc.perform( post( "/api/v1/John/orders" ).contentType( MediaType.APPLICATION_JSON )
-                .content( TestUtils.asJsonString( order ) ) ).andExpect( status().isOk() );
+                .content( TestUtils.asJsonString( r1 ) ) ).andExpect( status().isOk() );
 
         Assertions.assertEquals( 1, (int) orderService.count() );
 
@@ -139,12 +137,10 @@ class APIOrderTest {
 
         customerService.save( customer );
 
-        final Order order = new Order( r1, customer );
-
         Assertions.assertEquals( 0, (int) orderService.count() );
 
         mvc.perform( post( "/api/v1/John/orders" ).contentType( MediaType.APPLICATION_JSON )
-                .content( TestUtils.asJsonString( order ) ) ).andExpect( status().isOk() );
+                .content( TestUtils.asJsonString( r1 ) ) ).andExpect( status().isOk() );
 
         final Order order2 = orderService.findAll().get( 0 );
 

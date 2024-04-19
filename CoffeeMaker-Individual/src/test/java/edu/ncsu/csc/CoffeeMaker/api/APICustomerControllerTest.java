@@ -24,7 +24,6 @@ import org.springframework.web.context.WebApplicationContext;
 
 import edu.ncsu.csc.CoffeeMaker.common.TestUtils;
 import edu.ncsu.csc.CoffeeMaker.models.Ingredient;
-import edu.ncsu.csc.CoffeeMaker.models.Order;
 import edu.ncsu.csc.CoffeeMaker.models.Recipe;
 import edu.ncsu.csc.CoffeeMaker.roles.Customer;
 import edu.ncsu.csc.CoffeeMaker.services.CustomerService;
@@ -124,12 +123,10 @@ public class APICustomerControllerTest {
 
         service.save( customer );
 
-        final Order order = new Order( r1, customer );
-
         Assertions.assertEquals( 0, (int) orderService.count() );
 
         mvc.perform( post( "/api/v1/John/orders" ).contentType( MediaType.APPLICATION_JSON )
-                .content( TestUtils.asJsonString( order ) ) ).andExpect( status().isOk() );
+                .content( TestUtils.asJsonString( r1 ) ) ).andExpect( status().isOk() );
 
         final Customer user = service.findByName( "John" );
         Assertions.assertEquals( "John", user.getName() );

@@ -86,7 +86,8 @@ public class APICustomerController extends APIController {
     }
 
     @DeleteMapping ( BASE_PATH + "/orders/{id}" )
-    public ResponseEntity pickupOrder ( @PathVariable ( "id" ) final long id, @RequestBody final Customer customerOld ) {
+    public ResponseEntity pickupOrder ( @PathVariable ( "id" ) final long id,
+            @RequestBody final Customer customerOld ) {
         try {
             final Order order = orderService.findById( id );
             final Customer customer = customerService.findByName( customerOld.getName() );
@@ -106,10 +107,11 @@ public class APICustomerController extends APIController {
     }
 
     @PostMapping ( BASE_PATH + "/{name}/orders" )
-    public ResponseEntity addOrder ( @PathVariable ( "name" ) final String name, @RequestBody final Order order ) {
+    public ResponseEntity addOrder ( @PathVariable ( "name" ) final String name, @RequestBody final Recipe recipe ) {
         try {
             final Customer customer = customerService.findByName( name );
-            final Recipe recipe = recipeService.findById( order.getRecipe().getId() );
+            // final Recipe recipe = recipeService.findById(
+            // order.getRecipe().getId() );
             if ( customer.addOrder( customer.getMoney(), recipe ) != true ) {
                 return new ResponseEntity( errorResponse( "Customer does not have enough money" ),
                         HttpStatus.CONFLICT );
