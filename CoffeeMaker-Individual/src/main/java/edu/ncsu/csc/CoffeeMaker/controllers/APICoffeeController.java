@@ -5,7 +5,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import edu.ncsu.csc.CoffeeMaker.models.Inventory;
@@ -54,13 +53,13 @@ public class APICoffeeController extends APIController {
      * @return The change the customer is due if successful
      */
     @PostMapping ( BASE_PATH + "/makecoffee/{name}" )
-    public ResponseEntity makeCoffee ( @PathVariable ( "name" ) final String name, @RequestBody final int amtPaid ) {
+    public ResponseEntity makeCoffee ( @PathVariable ( "name" ) final String name ) {
         final Recipe recipe = recipeService.findByName( name );
         if ( recipe == null ) {
             return new ResponseEntity( errorResponse( "No recipe selected" ), HttpStatus.NOT_FOUND );
         }
 
-        final boolean success = makeCoffee( recipe, amtPaid );
+        final boolean success = makeCoffee( recipe );
         if ( success ) {
             return new ResponseEntity<String>( successResponse( "Success" ), HttpStatus.OK );
         }
@@ -80,7 +79,7 @@ public class APICoffeeController extends APIController {
      * @return change if there was enough money to make the coffee, throws
      *         exceptions if not
      */
-    public boolean makeCoffee ( final Recipe toPurchase, final int amtPaid ) {
+    public boolean makeCoffee ( final Recipe toPurchase ) {
         final Inventory inventory = inventoryService.getInventory();
 
         if ( toPurchase == null ) {
