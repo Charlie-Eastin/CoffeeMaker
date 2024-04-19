@@ -1,9 +1,8 @@
 package edu.ncsu.csc.CoffeeMaker.api;
 
 import static org.junit.Assert.assertTrue;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import javax.transaction.Transactional;
@@ -16,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -34,7 +32,7 @@ import edu.ncsu.csc.CoffeeMaker.services.RecipeService;
 @SpringBootTest
 @AutoConfigureMockMvc
 @ExtendWith ( SpringExtension.class )
-public class APICustomerControllerTest {
+class APIOrderTest {
 
     /**
      * MockMvc uses Spring's testing framework to handle requests to the REST
@@ -46,13 +44,13 @@ public class APICustomerControllerTest {
     private WebApplicationContext context;
 
     @Autowired
-    private CustomerService       service;
-
-    @Autowired
     private OrderService          orderService;
 
     @Autowired
     private RecipeService         recipeService;
+
+    @Autowired
+    private CustomerService       customerService;
 
     /**
      * Sets up the tests.
@@ -61,55 +59,22 @@ public class APICustomerControllerTest {
     public void setup () {
         mvc = MockMvcBuilders.webAppContextSetup( context ).build();
 
-        service.deleteAll();
         orderService.deleteAll();
         recipeService.deleteAll();
+        customerService.deleteAll();
     }
 
     @Test
     @Transactional
-    @WithMockUser ( username = "customer", authorities = { "CUSTOMER" } )
-    public void ensureIngredient () throws Exception {
-        service.deleteAll();
+    public void testAddOrderAPI () throws Exception {
+
         orderService.deleteAll();
         recipeService.deleteAll();
-
-        final Customer customer = new Customer();
-        customer.setName( "John" );
-        customer.setMoney( 5 );
-
-        service.save( customer );
+        customerService.deleteAll();
 
         Assertions.assertEquals( 0, (int) orderService.count() );
-
-        final Customer user = service.findByName( "John" );
-        Assertions.assertEquals( "John", user.getName() );
-
-        Assertions.assertEquals( 5, service.findByName( "John" ).getMoney() );
-
-        mvc.perform( put( "/api/v1/customers/users/John" ).contentType( MediaType.APPLICATION_JSON )
-                .content( TestUtils.asJsonString( 10 ) ) ).andExpect( status().isOk() );
-
-        mvc.perform( put( "/api/v1/customers/users/Random" ).contentType( MediaType.APPLICATION_JSON )
-                .content( TestUtils.asJsonString( 10 ) ) ).andExpect( status().isConflict() );
-
-        mvc.perform( get( "/api/v1/username" ) ).andReturn().getResponse().getContentAsString().contains( "customer" );
-
-        mvc.perform( get( "/api/v1/role" ) ).andReturn().getResponse().getContentAsString().contains( "CUSTOMER" );
-
-    }
-
-    @Test
-    @Transactional
-    public void getCustomer () throws Exception {
-        service.deleteAll();
-        orderService.deleteAll();
-        recipeService.deleteAll();
-
-        final Customer customer = new Customer();
-        customer.setName( "John" );
-        customer.setMoney( 5 );
-        customer.setType( "CUSTOMER" );
+        Assertions.assertEquals( 0, (int) recipeService.count() );
+        Assertions.assertEquals( 0, (int) customerService.count() );
 
         // create recipe for order
         final Recipe r1 = new Recipe();
@@ -122,7 +87,57 @@ public class APICustomerControllerTest {
 
         recipeService.save( r1 );
 
-        service.save( customer );
+        final Customer customer = new Customer();
+        customer.setName( "John" );
+        customer.setType( "CUSTOMER" );
+        customer.setMoney( 5 );
+        customer.setId( 2 );
+
+        customerService.save( customer );
+
+        final Order order = new Order( r1, customer );
+
+        Assertions.assertEquals( 0, (int) orderService.count() );
+
+        Assertions.assertEquals( 1, (int) customerService.count() );
+
+        mvc.perform( post( "/api/v1/John/orders" ).contentType( MediaType.APPLICATION_JSON )
+                .content( TestUtils.asJsonString( order ) ) ).andExpect( status().isOk() );
+
+        Assertions.assertEquals( 1, (int) orderService.count() );
+
+    }
+
+    @Test
+    @Transactional
+    public void TestPickupOrderAPI () throws Exception {
+
+        orderService.deleteAll();
+        recipeService.deleteAll();
+        customerService.deleteAll();
+
+        Assertions.assertEquals( 0, (int) orderService.count() );
+        Assertions.assertEquals( 0, (int) recipeService.count() );
+        Assertions.assertEquals( 0, (int) customerService.count() );
+
+        // create recipe for order
+        final Recipe r1 = new Recipe();
+        r1.setName( "Black Coffee" );
+        r1.setPrice( 1 );
+        assertTrue( r1.addIngredient( new Ingredient( "Coffee", 1 ) ) );
+        assertTrue( r1.addIngredient( new Ingredient( "Milk", 0 ) ) );
+        assertTrue( r1.addIngredient( new Ingredient( "Sugar", 0 ) ) );
+        assertTrue( r1.addIngredient( new Ingredient( "Chocolate", 0 ) ) );
+
+        recipeService.save( r1 );
+
+        final Customer customer = new Customer();
+        customer.setName( "John" );
+        customer.setType( "CUSTOMER" );
+        customer.setMoney( 5 );
+        customer.setId( 2 );
+
+        customerService.save( customer );
 
         final Order order = new Order( r1, customer );
 
@@ -131,11 +146,14 @@ public class APICustomerControllerTest {
         mvc.perform( post( "/api/v1/John/orders" ).contentType( MediaType.APPLICATION_JSON )
                 .content( TestUtils.asJsonString( order ) ) ).andExpect( status().isOk() );
 
-        final Customer user = service.findByName( "John" );
-        Assertions.assertEquals( "John", user.getName() );
+        final Order order2 = orderService.findAll().get( 0 );
 
-        Assertions.assertTrue( mvc.perform( get( "/api/v1/customers/users/John" ) ).andReturn().getResponse()
-                .getContentAsString().contains( "Coffee" ) );
+        Assertions.assertEquals( 1, (int) orderService.count() );
+
+        mvc.perform( delete( "/api/v1/orders/" + order2.getId() ).contentType( MediaType.APPLICATION_JSON )
+                .content( TestUtils.asJsonString( customer ) ) ).andExpect( status().isOk() );
+
+        Assertions.assertEquals( 0, (int) orderService.count() );
 
     }
 
