@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -78,22 +79,23 @@ public class APICustomerController extends APIController {
         return new ResponseEntity( gson.toJson( "CUSTOMER" ), HttpStatus.OK );
     }
 
-    @PutMapping ( BASE_PATH + "/orders/{id}" )
-    public ResponseEntity pickupOrder ( @PathVariable ( "id" ) final long id ) {
+    @GetMapping ( BASE_PATH + "/customers/users/{name}" )
+    public ResponseEntity getCustomer ( @PathVariable ( "name" ) final String name ) throws Exception {
+        final Customer user = customerService.findByName( name );
+        return new ResponseEntity( user, HttpStatus.OK );
+    }
+
+    @DeleteMapping ( BASE_PATH + "/orders/{id}" )
+    public ResponseEntity pickupOrder ( @PathVariable ( "id" ) final long id, @RequestBody final Customer customerOld ) {
         try {
             final Order order = orderService.findById( id );
-            final Customer customer = order.getCustomer();
-            customerService.delete( customer );
+            final Customer customer = customerService.findByName( customerOld.getName() );
             if ( customer.pickupOrder( id ) != true ) {
-                customerService.save( customer ); // MIGHT BE CAUSING ISSUES
-                                                  // WITH SAVING WRONG OBJECT
                 return new ResponseEntity( errorResponse( "Cannot pickup order" ), HttpStatus.CONFLICT );
 
             }
             customerService.save( customer );
             orderService.delete( order );
-            order.setStatus( "PICKEDUP" );
-            orderService.save( order );
             return new ResponseEntity( successResponse( customer.getName() + "'s order was successfully picked up" ),
                     HttpStatus.OK );
 
@@ -103,10 +105,10 @@ public class APICustomerController extends APIController {
         }
     }
 
-    @PostMapping ( BASE_PATH + "/orders" )
-    public ResponseEntity addOrder ( @RequestBody final Order order ) {
+    @PostMapping ( BASE_PATH + "/{name}/orders" )
+    public ResponseEntity addOrder ( @PathVariable ( "name" ) final String name, @RequestBody final Order order ) {
         try {
-            final Customer customer = customerService.findByName( order.getCustomer().getName() );
+            final Customer customer = customerService.findByName( name );
             final Recipe recipe = recipeService.findById( order.getRecipe().getId() );
             if ( customer.addOrder( customer.getMoney(), recipe ) != true ) {
                 return new ResponseEntity( errorResponse( "Customer does not have enough money" ),

@@ -18,17 +18,17 @@ import edu.ncsu.csc.CoffeeMaker.roles.Customer;
 public class Order extends DomainObject {
     @Id
     @GeneratedValue ( strategy = GenerationType.IDENTITY )
-    private Long     id;
+    private Long   id;
 
-    @ManyToOne
-    @JoinColumn ( name = "customer" )
-    private Customer customer;
+    // @ManyToOne
+    // @JoinColumn ( name = "customer" )
+    // private Customer customer;
 
     @ManyToOne ( fetch = FetchType.LAZY )
     @JoinColumn ( name = "recipe_id", nullable = false )
-    private Recipe   recipe;
+    private Recipe recipe;
 
-    private String   status;
+    private String status;
 
     public Order () {
 
@@ -36,7 +36,7 @@ public class Order extends DomainObject {
 
     public Order ( final Recipe recipe, final Customer customer ) {
         this.recipe = recipe;
-        this.customer = customer;
+        // this.customer = customer;
         this.status = "CREATED";
     }
 
@@ -54,17 +54,17 @@ public class Order extends DomainObject {
     /**
      * @return the user
      */
-    public Customer getCustomer () {
-        return customer;
-    }
+    // public Customer getCustomer () {
+    // return customer;
+    // }
 
-    /**
-     * @param user
-     *            the user to set
-     */
-    public void setCustomer ( final Customer customer ) {
-        this.customer = customer;
-    }
+    // /**
+    // * @param user
+    // * the user to set
+    // */
+    // public void setCustomer ( final Customer customer ) {
+    // this.customer = customer;
+    // }
 
     /**
      * @return the recipe
@@ -108,8 +108,7 @@ public class Order extends DomainObject {
 
     @Override
     public String toString () {
-        return "Ingredient [id=" + id + ", customer=" + customer.toString() + ", recipe=" + recipe.toString()
-                + ", status=" + status + "]";
+        return "Ingredient [id=" + id + ", recipe=" + recipe.toString() + ", status=" + status + "]";
     }
 
 }

@@ -1,8 +1,11 @@
 package edu.ncsu.csc.CoffeeMaker.api;
 
 import static org.junit.Assert.assertTrue;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import javax.transaction.Transactional;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -62,7 +65,8 @@ class APIOrderTest {
     }
 
     @Test
-    public void testOrderAPI () throws Exception {
+    @Transactional
+    public void testAddOrderAPI () throws Exception {
 
         orderService.deleteAll();
         recipeService.deleteAll();
@@ -83,11 +87,6 @@ class APIOrderTest {
 
         recipeService.save( r1 );
 
-        // final Staff staff = new Staff();
-        // staff.setName("John");
-        // staff.setType("STAFF");
-        // staff.setId(1);
-
         final Customer customer = new Customer();
         customer.setName( "John" );
         customer.setType( "CUSTOMER" );
@@ -102,10 +101,59 @@ class APIOrderTest {
 
         Assertions.assertEquals( 1, (int) customerService.count() );
 
-        mvc.perform( post( "/api/v1/orders" ).contentType( MediaType.APPLICATION_JSON )
+        mvc.perform( post( "/api/v1/John/orders" ).contentType( MediaType.APPLICATION_JSON )
                 .content( TestUtils.asJsonString( order ) ) ).andExpect( status().isOk() );
 
         Assertions.assertEquals( 1, (int) orderService.count() );
+
+    }
+
+    @Test
+    @Transactional
+    public void TestPickupOrderAPI () throws Exception {
+
+        orderService.deleteAll();
+        recipeService.deleteAll();
+        customerService.deleteAll();
+
+        Assertions.assertEquals( 0, (int) orderService.count() );
+        Assertions.assertEquals( 0, (int) recipeService.count() );
+        Assertions.assertEquals( 0, (int) customerService.count() );
+
+        // create recipe for order
+        final Recipe r1 = new Recipe();
+        r1.setName( "Black Coffee" );
+        r1.setPrice( 1 );
+        assertTrue( r1.addIngredient( new Ingredient( "Coffee", 1 ) ) );
+        assertTrue( r1.addIngredient( new Ingredient( "Milk", 0 ) ) );
+        assertTrue( r1.addIngredient( new Ingredient( "Sugar", 0 ) ) );
+        assertTrue( r1.addIngredient( new Ingredient( "Chocolate", 0 ) ) );
+
+        recipeService.save( r1 );
+
+        final Customer customer = new Customer();
+        customer.setName( "John" );
+        customer.setType( "CUSTOMER" );
+        customer.setMoney( 5 );
+        customer.setId( 2 );
+
+        customerService.save( customer );
+
+        final Order order = new Order( r1, customer );
+
+        Assertions.assertEquals( 0, (int) orderService.count() );
+
+        mvc.perform( post( "/api/v1/John/orders" ).contentType( MediaType.APPLICATION_JSON )
+                .content( TestUtils.asJsonString( order ) ) ).andExpect( status().isOk() );
+
+        final Order order2 = orderService.findAll().get( 0 );
+
+        Assertions.assertEquals( 1, (int) orderService.count() );
+
+        mvc.perform( delete( "/api/v1/orders/" + order2.getId() ).contentType( MediaType.APPLICATION_JSON )
+                .content( TestUtils.asJsonString( customer ) ) ).andExpect( status().isOk() );
+
+        Assertions.assertEquals( 0, (int) orderService.count() );
 
     }
 

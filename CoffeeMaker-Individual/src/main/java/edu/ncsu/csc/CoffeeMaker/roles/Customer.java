@@ -19,7 +19,7 @@ import edu.ncsu.csc.CoffeeMaker.models.Recipe;
 @Table ( name = "user" )
 public class Customer extends User {
 
-    @OneToMany ( mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.LAZY )
+    @OneToMany ( cascade = CascadeType.ALL, fetch = FetchType.LAZY )
     private final List<Order> orders = new ArrayList<>();
 
     @Min ( 0 )
@@ -38,6 +38,10 @@ public class Customer extends User {
         super.setId( id );
     }
 
+    public List<Order> getOrders () {
+        return orders;
+    }
+
     /**
      * Get the ID of the user
      *
@@ -54,7 +58,6 @@ public class Customer extends User {
             final Order order = new Order( recipe, this );
             this.money -= recipe.getPrice();
             this.orders.add( order );
-            order.setCustomer( this );
             return true;
         }
         return false;
