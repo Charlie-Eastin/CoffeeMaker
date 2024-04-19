@@ -25,7 +25,7 @@
 				$scope.success = false;
 				$scope.submissionFailure = false;
 				$scope.submissionSuccess = false;
-				if (order.status == "CREATED") {
+				if (order.status == "IN PROGRESS") {
 					$http.post("/api/v1/makecoffee/" + order.recipe.name).then(
 							function(response) {
 								$scope.submissionSuccess = true;
