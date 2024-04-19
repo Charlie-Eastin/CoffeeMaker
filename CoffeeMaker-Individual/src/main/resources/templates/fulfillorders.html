@@ -19,22 +19,28 @@
 					$scope.orders = response.data;
 				})
 			}
-
+			
+			$scope.success = false;
+			
 			$scope.order = {
-				num : 0,
+				id : 0,
 				beverage: '',
 				status: '',
 			};
 			
 			$scope.update = function(status) {
+				$scope.success = false;
 				$scope.order.status = status;
 				//put function for status updates
-				$http.put("/api/v1/orders" + $scope.order).then(function(response) {
-					
+				$http.put("/api/v1/orders" + $scope.order.id, $scope.order).then(function(response) {
+					$scope.get();
+					$scope.success = true;
 				}, function(errResponse) {
 					console.log(errResponse);
 					$scope.submissionFailure = true;
-					$scope.error = "Error while updating recipe";
+					$scope.get();
+					$scope.error = "Error while updating order status";
+					$scope.success = false;
 				})
 			}
 			
@@ -45,9 +51,11 @@
 	             	if ($scope.order.status != "PICKUP") {
 						$scope.update("CANCELED");
 					}
+					$scope.success = false;
 	            },
 	            function(rejection){
-	                console.error('Error while deleting recipe');                                
+	                console.error('Error while deleting order'); 
+					$scope.success = false;
 	             	// Update recipe list
 			        $http.get("/api/v1/recipes").then(function (response) {
 		  				$scope.recipes = response.data;
@@ -57,6 +65,7 @@
 			}
             
 			$scope.make = function(name) {
+				$scope.success = false;
 				var amtPaid = $scope.amtPaid;
 				$scope.submissionFailure = false;
 				$scope.submissionSuccess = false;
@@ -66,10 +75,12 @@
 								$scope.change = response.data.message;
 								$scope.submissionSuccess = true;
 								$scope.update("READY");
+								$scope.success = true;
 							}, function(errResponse) {
 								console.log(errResponse);
+								$scope.success = false;
 								$scope.submissionFailure = true;
-								$scope.error = "Error while making recipe";
+								$scope.error = "Error while making order";
 							});
 				}
 			}
@@ -102,6 +113,7 @@
 							</span>
 						</button>
 				</label></li>
+				<div ng-show="success">Successfully Completed Order</div>
 			</ul>
 			<div ng-show="submissionFailure">An error occurred: {{error}}</div>
 
