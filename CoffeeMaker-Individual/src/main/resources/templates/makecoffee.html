@@ -77,14 +77,12 @@
 		<h1>Coffee Recipes</h1>
 		<div>
 			<ul>
-				<li ng-repeat="recipe in recipes"><label>{{recipe.name}}
+				<li ng-repeat="recipe in recipes"><label>{{recipe.name}} | ${{recipe.price}}
 						<input type="radio" ng-model="$parent.name" name="name"
 						value="{{recipe}}" required="true" />
 				</label></li>
 			</ul>
-			<br /> <label for="amtPaid">Enter payment</label> <input type="text"
-				ng-model="amtPaid" name="amtPaid" required="true" /> <br /> <input
-				type="submit" ng-click="make()" value="Make Coffee"
+			<br /> <br /> <input type="submit" ng-click="make()" value="Place Order"
 				class="btn btn-primary btn-sm" /> <br />
 
 			<div ng-show="submissionSuccess" class="success">Coffee was

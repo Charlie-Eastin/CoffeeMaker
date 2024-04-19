@@ -36,7 +36,7 @@ public class Order extends DomainObject {
     public Order ( final Recipe recipe, final Customer customer ) {
         this.recipe = recipe;
         // this.customer = customer;
-        this.status = "CREATED";
+        this.status = "IN PROGRESS";
     }
 
     // /**
