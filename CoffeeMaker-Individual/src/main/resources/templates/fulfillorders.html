@@ -31,11 +31,13 @@
 								$scope.submissionSuccess = true;
 								$scope.success = true;
 								$http.put("/api/v1/orders/" + order.id);
+								$scope.get();
 							}, function(errResponse) {
 								console.log(errResponse);
 								$scope.success = false;
 								$scope.submissionFailure = true;
 								$scope.error = "Error while making order";
+								$scope.get();
 							});
 				}
 			}
