@@ -124,7 +124,7 @@ public class APICustomerController extends APIController {
                         HttpStatus.CONFLICT );
             }
             customerService.save( customer );
-            return new ResponseEntity( successResponse( customer.getName() + "'s order was successfully put in" ),
+            return new ResponseEntity<String>( successResponse( String.valueOf( customer.getMoney() ) ),
                     HttpStatus.OK );
         }
         catch ( final Exception e ) {

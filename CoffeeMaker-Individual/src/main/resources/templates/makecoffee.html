@@ -64,7 +64,6 @@
 			}
 			
 			$scope.fetchUsername();
-			
 			$scope.fetchRecipes();
 			$scope.useEffect();
 		});
@@ -88,7 +87,7 @@
 				class="btn btn-primary btn-sm" /> <br />
 
 			<div ng-show="submissionSuccess" class="success">Coffee was
-				made. Your change is {{change}}.</div>
+				made. You have ${{change}}.</div>
 
 			<div ng-show="submissionFailure">An error occurred: {{error}}</div>
 
