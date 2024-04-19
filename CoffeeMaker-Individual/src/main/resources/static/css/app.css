@@ -18,6 +18,21 @@ body, .form-control {
 
 }
 
+/* Source for horizontal table dividers and padding: https://www.w3schools.com/css/css_table_style.asp */
+th, td {
+	border-bottom: 1px solid #ddd;
+	padding: 15px;
+}
+
+.completeColor {
+	background-color: #42f5a4; 
+}
+
+.customerTable {
+	width: 66%;
+	font-size: 28px;
+}
+
 .has-error {
 	color: red;
 }
