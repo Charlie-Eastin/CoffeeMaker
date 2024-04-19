@@ -146,8 +146,9 @@ class APIOrderTest {
 
         Assertions.assertEquals( 1, (int) orderService.count() );
 
-        mvc.perform( delete( "/api/v1/orders/" + order2.getId() ).contentType( MediaType.APPLICATION_JSON )
-                .content( TestUtils.asJsonString( customer ) ) ).andExpect( status().isOk() );
+        mvc.perform( delete( "/api/v1/orders/" + order2.getId() + "/" + "John" )
+                .contentType( MediaType.APPLICATION_JSON ).content( TestUtils.asJsonString( customer ) ) )
+                .andExpect( status().isOk() );
 
         Assertions.assertEquals( 0, (int) orderService.count() );
 
