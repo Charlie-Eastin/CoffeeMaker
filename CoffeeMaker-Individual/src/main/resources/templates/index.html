@@ -1,18 +1,66 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="https://www.thymeleaf.org"
+	xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <head>
 <title>Welcome to the CSC326 CoffeeMaker</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="stylesheet" href="css/bootstrap.css" />
+<link rel="stylesheet" href="css/app.css" />
 </head>
+<script
+	src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.js"></script>
 <body>
-	<h1>Coffee Maker</h1>
-	<h2>Available Options</h2>
-	<ul>
-		<li><a href="updateInventory.html">Update Inventory</a></li>
-		<li><a href="addrecipe.html">Add a Recipe</a></li>
-		<li><a href="editrecipe2.html">Edit Recipe</a></li>
-		<li><a href="deleterecipe.html">Delete Recipe</a></li>
-		<li><a href="makecoffee.html">Make Coffee</a></li>
-	</ul>
+	<script>
+		angular.module('myApp', []).controller(
+				'indexController',
+				[ '$scope', '$location', '$http',
+						function($scope, $location, $http) {
+							$scope.reset = function() {
+								//TODO: Verify fix for user role
+								$http.get("/api/v1/role").then(function(response) {
+									$scope.role = response.data;
+									console.log($scope.role);
+									if (angular.equals($scope.role, "CUSTOMER")) {
+										$scope.staff = false;
+										$scope.customer = true;
+									}
+									else if(angular.equals($scope.role, "STAFF" )){
+										$scope.staff = true;
+										$scope.customer = false;
+									}
+								}, function(rejection) {
+									console.error("Error while getting role");
+								})
+							}
+							$scope.reset();
+						} ]);
+	</script>
+	<div layout:fragment="content" class="generic-container ng-cloak"
+		ng-app="myApp" ng-controller="indexController">
+		<div class="form-actions floatCenter">
+			<h1>CoffeeMaker</h1>
+			--
+			<div class="panel-heading">
+				<span class="lead" style="font-size: 2rem">Available Options as {{ role }}</span>
+			</div>
+			<div ng-show="staff">
+				<ul>
+					<li><a href="updateInventory.html" style="font-size: 1.5rem">Update Inventory</a></li>
+					<li><a href="addrecipe.html" style="font-size: 1.5rem">Add a Recipe</a></li>
+					<li><a href="editrecipe2.html" style="font-size: 1.5rem">Edit Recipe</a></li>
+					<li><a href="deleterecipe.html" style="font-size: 1.5rem">Delete Recipe</a></li>
+				</ul>
+			</div>
+			<div ng-show="customer">
+				<ul>
+					<li><a href="makecoffee.html" style="font-size: 1.5rem">Make Order</a></li>
+				</ul>
+			</div>
+		</div>
+		<form th:action="@{/logout}" method="post">
+			<input type="submit" value="Sign Out" />
+		</form>
+	</div>
 </body>
 </html>
