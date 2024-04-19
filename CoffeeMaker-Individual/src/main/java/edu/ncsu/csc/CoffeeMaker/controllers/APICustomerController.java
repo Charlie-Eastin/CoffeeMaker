@@ -109,7 +109,14 @@ public class APICustomerController extends APIController {
     @PostMapping ( BASE_PATH + "/{name}/orders" )
     public ResponseEntity addOrder ( @PathVariable ( "name" ) final String name, @RequestBody final Recipe recipe ) {
         try {
-            final Customer customer = customerService.findByName( name );
+            Customer customer = customerService.findByName( name );
+            if ( customer == null ) {
+                customer = new Customer();
+                customer.setName( name );
+                customer.setType( "CUSTOMER" );
+                customer.setMoney( 100 );
+            }
+
             // final Recipe recipe = recipeService.findById(
             // order.getRecipe().getId() );
             if ( customer.addOrder( customer.getMoney(), recipe ) != true ) {
@@ -122,7 +129,8 @@ public class APICustomerController extends APIController {
         }
         catch ( final Exception e ) {
             System.out.println( e.getMessage() );
-            return new ResponseEntity( errorResponse( "Cannot pickup order" ), HttpStatus.CONFLICT );
+            return new ResponseEntity( errorResponse( "Unable to make order" ), HttpStatus.CONFLICT );
         }
     }
+
 }
