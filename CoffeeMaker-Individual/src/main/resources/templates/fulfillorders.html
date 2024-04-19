@@ -72,8 +72,8 @@
 			$scope.removeOrder = function() {
 				$http.delete("/api/v1/orders" + $scope.order.id).then(function(response) {
 	             	$scope.get();
-	             	if ($scope.order.status != "PICKUP") {
-						$scope.update("CANCELED");
+	             	if ($scope.order.status != "Complete") {
+						$scope.update("Canceled");
 					}
 					$scope.success = false;
 	            },
@@ -93,12 +93,12 @@
 				var amtPaid = $scope.amtPaid;
 				$scope.submissionFailure = false;
 				$scope.submissionSuccess = false;
-				if ($scope.order.status == "NOTREADY") {
+				if ($scope.order.status == "Incomplete") {
 					$http.post("/api/v1/makecoffee/" + name, amtPaid).then(
 							function(response) {
 								$scope.change = response.data.message;
 								$scope.submissionSuccess = true;
-								$scope.update("READY");
+								$scope.update("Complete");
 								$scope.success = true;
 							}, function(errResponse) {
 								console.log(errResponse);
@@ -120,7 +120,7 @@
 		<h1>View Orders</h1>
 		<div class="formcontainer" id="ordersTable">
 			<ul>
-				<li ng-repeat="order in customerOrders track by $index"
+				<li ng-repeat="order in orders track by $index"
 					ng-model="$scope.order"><label>ID: {{order.num}},
 						User: {{order.user}}, Recipe: {{order.beverage}}, Status:
 						{{order.status}}
