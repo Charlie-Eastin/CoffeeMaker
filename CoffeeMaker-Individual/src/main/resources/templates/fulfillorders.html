@@ -18,9 +18,9 @@
 				$http.get("/api/v1/orders").then(function(response) {
 					$scope.orders = response.data;
 				})
-			}	
+			}
 			$scope.success = false;
-            
+
 			$scope.make = function(order) {
 				$scope.success = false;
 				$scope.submissionFailure = false;
@@ -41,8 +41,16 @@
 							});
 				}
 			}
-		$scope.get();
-		
+			
+			$scope.useEffect = function() {
+				const interval = setInterval(() => {
+					$scope.get();
+				}, 1000);
+				return () => clearInterval(interval);
+			}
+			
+			$scope.useEffect();
+
 		});
 
 		/*]]>*/
@@ -53,8 +61,8 @@
 		<h1>View Orders</h1>
 		<div class="formcontainer" id="ordersTable">
 			<ul>
-				<li ng-repeat="order in orders track by $index"
-					ng-model="$scope.order"><label>ID: {{order.id}},Recipe: {{order.recipe.name}}, Status:
+				<li ng-repeat="order in orders track by $index"><label>ID:
+						{{order.id}},Recipe: {{order.recipe.name}}, Status:
 						{{order.status}}
 						<div class="form-group col-md-12">
 							<div class="col-md-6">

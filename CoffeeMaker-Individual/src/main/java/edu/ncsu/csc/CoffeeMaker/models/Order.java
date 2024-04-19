@@ -3,12 +3,11 @@ package edu.ncsu.csc.CoffeeMaker.models;
 import java.io.Serializable;
 
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import edu.ncsu.csc.CoffeeMaker.roles.Customer;
@@ -24,7 +23,7 @@ public class Order extends DomainObject {
     // @JoinColumn ( name = "customer" )
     // private Customer customer;
 
-    @ManyToOne ( fetch = FetchType.LAZY )
+    @OneToOne
     @JoinColumn ( name = "recipe_id", nullable = false )
     private Recipe recipe;
 
