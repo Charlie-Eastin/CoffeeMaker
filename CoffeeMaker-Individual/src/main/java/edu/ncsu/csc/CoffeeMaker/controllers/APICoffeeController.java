@@ -60,16 +60,13 @@ public class APICoffeeController extends APIController {
             return new ResponseEntity( errorResponse( "No recipe selected" ), HttpStatus.NOT_FOUND );
         }
 
-        final int change = makeCoffee( recipe, amtPaid );
-        if ( change == amtPaid ) {
-            if ( amtPaid < recipe.getPrice() ) {
-                return new ResponseEntity( errorResponse( "Not enough money paid" ), HttpStatus.CONFLICT );
-            }
-            else {
-                return new ResponseEntity( errorResponse( "Not enough inventory" ), HttpStatus.CONFLICT );
-            }
+        final boolean success = makeCoffee( recipe, amtPaid );
+        if ( success ) {
+            return new ResponseEntity<String>( successResponse( "Success" ), HttpStatus.OK );
         }
-        return new ResponseEntity<String>( successResponse( String.valueOf( change ) ), HttpStatus.OK );
+        else {
+            return new ResponseEntity<String>( errorResponse( "Not enough ingredients" ), HttpStatus.OK );
+        }
 
     }
 
@@ -83,25 +80,16 @@ public class APICoffeeController extends APIController {
      * @return change if there was enough money to make the coffee, throws
      *         exceptions if not
      */
-    public int makeCoffee ( final Recipe toPurchase, final int amtPaid ) {
-        int change = amtPaid;
+    public boolean makeCoffee ( final Recipe toPurchase, final int amtPaid ) {
         final Inventory inventory = inventoryService.getInventory();
 
         if ( toPurchase == null ) {
             throw new IllegalArgumentException( "Recipe not found" );
         }
-        else if ( toPurchase.getPrice() <= amtPaid ) {
-            if ( inventory.useIngredients( toPurchase ) ) {
-                inventoryService.save( inventory );
-                change = amtPaid - toPurchase.getPrice();
-                return change;
-            }
-            else {
-                // not enough inventory
-                return change;
-            }
+        if ( inventory.useIngredients( toPurchase ) ) {
+            inventoryService.save( inventory );
+            return true;
         }
-        // not enough money
-        return change;
+        return false;
     }
 }
