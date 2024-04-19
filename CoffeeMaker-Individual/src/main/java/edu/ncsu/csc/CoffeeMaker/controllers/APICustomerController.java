@@ -85,15 +85,15 @@ public class APICustomerController extends APIController {
         return new ResponseEntity( user, HttpStatus.OK );
     }
 
-    @DeleteMapping ( BASE_PATH + "/orders/{id}" )
-    public ResponseEntity pickupOrder ( @PathVariable ( "id" ) final long id,
-            @RequestBody final Customer customerOld ) {
+    @DeleteMapping ( BASE_PATH + "/orders/{id}/{name}" )
+    public ResponseEntity pickupOrder ( @PathVariable ( "id" ) final String stringId,
+            @PathVariable ( "name" ) final String customerName ) {
         try {
+            final Long id = Long.parseLong( stringId );
             final Order order = orderService.findById( id );
-            final Customer customer = customerService.findByName( customerOld.getName() );
+            final Customer customer = customerService.findByName( customerName );
             if ( customer.pickupOrder( id ) != true ) {
                 return new ResponseEntity( errorResponse( "Cannot pickup order" ), HttpStatus.CONFLICT );
-
             }
             customerService.save( customer );
             orderService.delete( order );
@@ -102,7 +102,8 @@ public class APICustomerController extends APIController {
 
         }
         catch ( final Exception e ) {
-            return new ResponseEntity( errorResponse( "Cannot pickup order" ), HttpStatus.CONFLICT );
+            return new ResponseEntity( errorResponse( "Cannot pickup order | Something went wrong" ),
+                    HttpStatus.CONFLICT );
         }
     }
 

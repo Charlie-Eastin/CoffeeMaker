@@ -44,6 +44,7 @@
 				$scope.submissionSuccess = false;
 				$http.post("/api/v1/" + $scope.customerUsername + "/orders", name).then(
 						function(response) {
+							console.log(response);
 							$scope.change = response.data.message;
 							$scope.submissionSuccess = true;
 						}, function(errResponse) {
