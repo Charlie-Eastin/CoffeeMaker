@@ -14,6 +14,7 @@ public class User extends DomainObject {
     private Long   id;
 
     private String name;
+
     private String type;
 
     public void setName ( final String name ) {
