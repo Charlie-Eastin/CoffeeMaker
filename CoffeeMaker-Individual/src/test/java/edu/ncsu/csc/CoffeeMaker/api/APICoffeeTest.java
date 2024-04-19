@@ -77,26 +77,38 @@ public class APICoffeeTest {
         mvc.perform( post( String.format( "/api/v1/makecoffee/%s", name ) ).contentType( MediaType.APPLICATION_JSON )
                 .content( TestUtils.asJsonString( 60 ) ) ).andExpect( status().isOk() )
                 .andExpect( jsonPath( "$.message" ).value( "Success" ) );
+    }
+/*
+    @Test
+    @Transactional
+    public void testPurchaseBeverage2 () throws Exception {
+        /* Insufficient amount paid 
+
+        final String name = "Coffee";
+
+        mvc.perform( post( String.format( "/api/v1/makecoffee/%s", name ) ).contentType( MediaType.APPLICATION_JSON )
+                .content( TestUtils.asJsonString( 40 ) ) ).andExpect( status().is4xxClientError() )
+                .andExpect( jsonPath( "$.message" ).value( "Not enough money paid" ) );
 
     }
-    /*
-     * @Test
-     * @Transactional public void testPurchaseBeverage2 () throws Exception {
-     * Insufficient amount paid final String name = "Coffee"; mvc.perform( post(
-     * String.format( "/api/v1/makecoffee/%s", name ) ).contentType(
-     * MediaType.APPLICATION_JSON ) .content( TestUtils.asJsonString( 40 ) )
-     * ).andExpect( status().is4xxClientError() ) .andExpect( jsonPath(
-     * "$.message" ).value( "Not enough money paid" ) ); }
-     * @Test
-     * @Transactional public void testPurchaseBeverage3 () throws Exception {
-     * Insufficient inventory final Inventory ivt = iService.getInventory();
-     * iService.save( ivt ); ivt.setIngredient( "Coffee", 0 ); iService.save(
-     * ivt ); assertEquals( ivt.getIngredients().get( 1 ).getAmount(), 0 );
-     * final String name = "Coffee"; mvc.perform( post( String.format(
-     * "/api/v1/makecoffee/%s", name ) ).contentType( MediaType.APPLICATION_JSON
-     * ) .content( TestUtils.asJsonString( 50 ) ) ).andExpect(
-     * status().is4xxClientError() ) .andExpect( jsonPath( "$.message" ).value(
-     * "Not enough inventory" ) ); }
-     */
 
+    @Test
+    @Transactional
+    public void testPurchaseBeverage3 () throws Exception {
+        /* Insufficient inventory 
+
+        final Inventory ivt = iService.getInventory();
+        iService.save( ivt );
+        ivt.setIngredient( "Coffee", 0 );
+        iService.save( ivt );
+        assertEquals( ivt.getIngredients().get( 1 ).getAmount(), 0 );
+
+        final String name = "Coffee";
+
+        mvc.perform( post( String.format( "/api/v1/makecoffee/%s", name ) ).contentType( MediaType.APPLICATION_JSON )
+                .content( TestUtils.asJsonString( 50 ) ) ).andExpect( status().is4xxClientError() )
+                .andExpect( jsonPath( "$.message" ).value( "Not enough inventory" ) );
+
+    }
+*/
 }

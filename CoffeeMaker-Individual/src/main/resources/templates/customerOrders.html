@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="ISO-8859-1">
+<title>View Your Orders</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="stylesheet" href="css/bootstrap.css" />
+<link rel="stylesheet" href="css/app.css" />
+</head>
+<body>
+
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.js"></script>
+
+	<script>
+		/*<![CDATA[*/
+
+		var app = angular.module('myApp', []);
+		app.controller('customerOrdersCtrl', function($scope, $http, $q) {
+			
+			$scope.customerUsername = {};
+			
+			//Sample Data
+			$scope.order1 = {
+				num: 1,
+				beverage: 'Latte',
+				status: 'Completed'
+			};
+			$scope.order2 = {
+					num: 2,
+					beverage: 'Mocha',
+					status: 'Incomplete'
+			};
+			$scope.order3 = {
+					num: 3,
+					beverage: 'The Juice',
+					status: 'Completed'
+			};
+			$scope.customerOrders = [];
+			$scope.customerOrders.push($scope.order1);
+			$scope.customerOrders.push($scope.order2);
+			$scope.customerOrders.push($scope.order3);
+			console.log($scope.customerOrders);
+			
+			//Gets the Username of the current user
+			$scope.fetchUsername = function(){
+				$http.get("/api/v1/username").then(
+					function(response) {
+						//console.log(response.data);
+						$scope.customerUsername = response.data;
+					}
+				);
+			}
+			
+			//TODO: Update when order's GET API endpoint is setup 
+			$scope.fetchOrders = function() {
+				
+			}
+			
+			//TODO: Update if needed
+			$scope.isCompleted = function(ord) {
+				if (ord.status == 'Completed') {
+					return true;
+				}
+				return false;
+			}
+			
+			//TODO: Update when order's POST API endpoint is setup
+			$scope.pickUp = function(ord) {
+				$scope.incompletePickup = false;
+				
+				if (ord.status == 'Incomplete') {
+					$scope.incompletePickup = true;
+				} else {
+					const index = $scope.customerOrders.indexOf(ord);
+					$scope.customerOrders.splice(index, 1);
+				}
+			}
+			
+			//Continuously calls the fetchOrders function
+			$scope.useEffect = function() {
+				const interval = setInterval(() => {
+					$scope.fetchOrders();
+				}, 1000);
+				return () => clearInterval(interval);
+			}
+			
+			$scope.fetchUsername();
+			$scope.fetchOrders();
+		});
+
+		/*]]>*/
+	</script>
+	
+	<div class="generic-container ng-cloak"
+		ng-app="myApp" ng-controller="customerOrdersCtrl">
+		<h1>Active Orders:</h1>
+		<table class="customerTable">
+			<thead>  
+        		<tr>  
+            		<th>Order #</th>  
+            		<th>Beverage</th>  
+            		<th>Status</th>   
+        		</tr>  
+    		</thead>  
+    		<tbody>  
+    			<tr ng-repeat="order in customerOrders" ng-class="{'completeColor': isCompleted(order)}">
+    				<td >
+    					{{ order.num }}
+    				</td>
+    				<td >
+    					{{ order.beverage }}
+    				</td>
+    				<td >
+    					{{ order.status }}
+    				</td>
+    				<td><button type="button" ng-click="pickUp(order)">Pick-Up</button></td>
+    			</tr>
+        		
+  				
+    		</tbody>
+		</table>
+		<br>
+		<div ng-show="incompletePickup">Order is incomplete. Unable to pick up order.</div>
+		<br /> <a href="/index">Home</a>
+	</div>
+</body>
+</html>

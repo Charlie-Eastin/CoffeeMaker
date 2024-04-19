@@ -137,7 +137,7 @@ public class MappingController {
 
     /**
      * Handles a GET request to /userLogin, provides a view for the client to
-     * login to the system
+     * login to the system >>>>>>> origin/customer_order_pickup
      *
      * @param model
      *            underlying UI model
@@ -146,6 +146,15 @@ public class MappingController {
     @GetMapping ( { "/fulfillorders", "/fulfillorders.html" } )
     public String fulfillOrdersForm ( final Model model ) {
         return "fulfillorders";
+    }
+
+    /**
+     * Handles a GET request to /customerOrders, provides a view for a customer
+     * to see what orders they have placed and to pick up a ready order
+     */
+    @GetMapping ( { "/customerOrders", "/customerOrders.html" } )
+    public String customerOrdersForm ( final Model model ) {
+        return "customerOrders";
     }
 
 }

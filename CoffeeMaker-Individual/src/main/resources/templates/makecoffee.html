@@ -14,16 +14,35 @@
 
 		var app = angular.module('myApp', []);
 		app.controller('recipesCtrl', function($scope, $http, $q) {
-			$http.get("/api/v1/recipes").then(function(response) {
-				$scope.recipes = response.data;
-			});
+			
+			$scope.customerUsername;
+			
+			//Gets the Username of the current user
+			$scope.fetchUsername = function(){
+				$http.get("/api/v1/username").then(
+					function(response) {
+						//console.log(response.data);
+						$scope.customerUsername = response.data;
+						console.log(response);
+					}
+				);
+			}
+			
+			$scope.fetchRecipes = function() {
+				$http.get("/api/v1/recipes").then(function(response) {
+					$scope.recipes = response.data;
+				});
+			}
 
+			//TODO: Update when makeOrder API endpoint is setup
 			$scope.make = function() {
+				console.log($scope.customerUsername);
+				console.log($scope.name);
 				var amtPaid = $scope.amtPaid;
 				var name = $scope.name;
 				$scope.submissionFailure = false;
 				$scope.submissionSuccess = false;
-				$http.post("/api/v1/makecoffee/" + name, amtPaid).then(
+				$http.post("/api/v1/" + $scope.customerUsername + "/orders", name).then(
 						function(response) {
 							$scope.change = response.data.message;
 							$scope.submissionSuccess = true;
@@ -34,6 +53,20 @@
 						});
 
 			}
+			
+			//Modified version of code found here: 
+			//https://stackoverflow.com/questions/64448625/how-to-make-get-request-to-api-continuously
+			$scope.useEffect = function() {
+				const interval = setInterval(() => {
+					$scope.fetchRecipes();
+				}, 1000);
+				return () => clearInterval(interval);
+			}
+			
+			$scope.fetchUsername();
+			
+			$scope.fetchRecipes();
+			$scope.useEffect();
 		});
 
 		/*]]>*/
@@ -46,7 +79,7 @@
 			<ul>
 				<li ng-repeat="recipe in recipes"><label>{{recipe.name}}
 						<input type="radio" ng-model="$parent.name" name="name"
-						value="{{recipe.name}}" required="true" />
+						value="{{recipe}}" required="true" />
 				</label></li>
 			</ul>
 			<br /> <label for="amtPaid">Enter payment</label> <input type="text"
