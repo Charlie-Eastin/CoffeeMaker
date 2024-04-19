@@ -1,6 +1,5 @@
 package edu.ncsu.csc.CoffeeMaker.api;
 
-import static org.junit.Assert.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -78,7 +77,6 @@ public class APICoffeeTest {
         mvc.perform( post( String.format( "/api/v1/makecoffee/%s", name ) ).contentType( MediaType.APPLICATION_JSON )
                 .content( TestUtils.asJsonString( 60 ) ) ).andExpect( status().isOk() )
                 .andExpect( jsonPath( "$.message" ).value( "Success" ) );
-
     }
 /*
     @Test
