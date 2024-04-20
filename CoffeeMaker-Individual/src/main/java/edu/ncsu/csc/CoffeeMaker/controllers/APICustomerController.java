@@ -39,8 +39,18 @@ public class APICustomerController extends APIController {
      */
     @Autowired
     private OrderService    orderService;
+
+    /**
+     * CustomerService object, to be autowired in by Spring to allow for
+     * manipulating the customer model
+     */
     @Autowired
     private CustomerService customerService;
+
+    /**
+     * RecipeService object, to be autowired in by Spring to allow for
+     * manipulating the recipe model
+     */
     @Autowired
     private RecipeService   recipeService;
 
@@ -112,12 +122,33 @@ public class APICustomerController extends APIController {
         return new ResponseEntity( gson.toJson( "CUSTOMER" ), HttpStatus.OK );
     }
 
+    /**
+     * REST API endpoint for getting the customer object (with all customer
+     * information except password) when given a customer's name
+     *
+     * @param name
+     *            the name of a customer
+     * @return ResponseEntity with a customer's information
+     * @throws Exception
+     *             unknown
+     */
     @GetMapping ( BASE_PATH + "/customers/users/{name}" )
     public ResponseEntity getCustomer ( @PathVariable ( "name" ) final String name ) throws Exception {
         final Customer user = customerService.findByName( name );
         return new ResponseEntity( user, HttpStatus.OK );
     }
 
+    /**
+     * Provides DELETE access to a customer's order given the id of the order
+     * and the name of the customer. Used when a customer picks up an order and
+     * it no longer needs to be in the system
+     *
+     * @param stringId
+     *            the id of the order
+     * @param customerName
+     *            the name of the customer who's order is being deleted
+     * @return ResponseEntity with whether or not the request was successful
+     */
     @DeleteMapping ( BASE_PATH + "/orders/{id}/{name}" )
     public ResponseEntity pickupOrder ( @PathVariable ( "id" ) final String stringId,
             @PathVariable ( "name" ) final String customerName ) {
@@ -125,7 +156,7 @@ public class APICustomerController extends APIController {
             final Long id = Long.parseLong( stringId );
             final Order order = orderService.findById( id );
             final Customer customer = customerService.findByName( customerName );
-            if ( customer.pickupOrder( id ) != true ) {
+            if ( !customer.pickupOrder( id ) ) {
                 return new ResponseEntity( errorResponse( "Cannot pickup order" ), HttpStatus.CONFLICT );
             }
             customerService.save( customer );
@@ -140,6 +171,18 @@ public class APICustomerController extends APIController {
         }
     }
 
+    /**
+     * Provides POST access for an order - will create an order in the database
+     * given a name of the user who made the order, and a recipe associated with
+     * the order
+     *
+     * @param name
+     *            name of the customer who made the order
+     * @param recipe
+     *            a recipe object associated with the order
+     * @return ResponseEntity detailing whether or not the request was
+     *         successful
+     */
     @PostMapping ( BASE_PATH + "/{name}/orders" )
     public ResponseEntity addOrder ( @PathVariable ( "name" ) final String name, @RequestBody final Recipe recipe ) {
         try {
@@ -153,7 +196,7 @@ public class APICustomerController extends APIController {
 
             // final Recipe recipe = recipeService.findById(
             // order.getRecipe().getId() );
-            if ( customer.addOrder( customer.getMoney(), recipe ) != true ) {
+            if ( !customer.addOrder( customer.getMoney(), recipe ) ) {
                 return new ResponseEntity( errorResponse( "Customer does not have enough money" ),
                         HttpStatus.CONFLICT );
             }

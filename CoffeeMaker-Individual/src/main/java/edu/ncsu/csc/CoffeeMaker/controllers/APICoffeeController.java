@@ -48,8 +48,6 @@ public class APICoffeeController extends APIController {
      *
      * @param name
      *            recipe name
-     * @param amtPaid
-     *            amount paid
      * @return The change the customer is due if successful
      */
     @PostMapping ( BASE_PATH + "/makecoffee/{name}" )
@@ -74,8 +72,6 @@ public class APICoffeeController extends APIController {
      *
      * @param toPurchase
      *            recipe that we want to make
-     * @param amtPaid
-     *            money that the user has given the machine
      * @return change if there was enough money to make the coffee, throws
      *         exceptions if not
      */

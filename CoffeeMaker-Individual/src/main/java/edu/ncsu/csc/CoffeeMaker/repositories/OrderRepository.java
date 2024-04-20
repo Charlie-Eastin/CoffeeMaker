@@ -16,19 +16,20 @@ import edu.ncsu.csc.CoffeeMaker.models.Order;
  */
 public interface OrderRepository extends JpaRepository<Order, Long> {
 
-	/**
-	 *
-	 * @return the list of orders in repository
-	 */
-	// query that selects all instances of the Order entity from the database
-	@Query("SELECT o FROM Order o")
-	List<Order> getOrders();
+    /**
+     * Gets a list of all the orders in the database
+     *
+     * @return the list of orders in repository
+     */
+    // query that selects all instances of the Order entity from the database
+    @Query ( "SELECT o FROM Order o" )
+    List<Order> getOrders ();
 
-//	/**
-//	 *
-//	 * @param user affiliated with order
-//	 * @return list of orders associated with user
-//	 */
-//	List<Order> findByUser(User user);
+    // /**
+    // *
+    // * @param user affiliated with order
+    // * @return list of orders associated with user
+    // */
+    // List<Order> findByUser(User user);
 
 }

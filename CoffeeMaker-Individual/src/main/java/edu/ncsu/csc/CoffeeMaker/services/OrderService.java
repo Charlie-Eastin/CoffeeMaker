@@ -36,6 +36,7 @@ public class OrderService extends Service<Order, Long> {
     }
 
     /**
+     * Gets a list of every order in the database
      *
      * @return the list of orders in repository
      */

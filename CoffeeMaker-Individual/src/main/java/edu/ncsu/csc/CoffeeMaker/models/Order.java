@@ -10,11 +10,18 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-import edu.ncsu.csc.CoffeeMaker.roles.Customer;
-
+/**
+ * An Order for CoffeeMaker. The customer makes an order, the staff can complete
+ * the order and the customer picks up the order. Each customer has a list of
+ * orders associated with it.
+ */
 @Entity
 @Table ( name = "orders" )
 public class Order extends DomainObject {
+
+    /**
+     * The order's ID
+     */
     @Id
     @GeneratedValue ( strategy = GenerationType.IDENTITY )
     private Long   id;
@@ -23,17 +30,32 @@ public class Order extends DomainObject {
     // @JoinColumn ( name = "customer" )
     // private Customer customer;
 
+    /**
+     * The Order's recipe
+     */
     @OneToOne
     @JoinColumn ( name = "recipe_id", nullable = false )
     private Recipe recipe;
 
+    /**
+     * The status of the order (IN PROGRESS or COMPLETE)
+     */
     private String status;
 
+    /**
+     * Constructor for an order with fields
+     */
     public Order () {
 
     }
 
-    public Order ( final Recipe recipe, final Customer customer ) {
+    /**
+     * Order constructor with fields
+     *
+     * @param recipe
+     *            the order's recipe
+     */
+    public Order ( final Recipe recipe ) {
         this.recipe = recipe;
         // this.customer = customer;
         this.status = "IN PROGRESS";
@@ -50,9 +72,6 @@ public class Order extends DomainObject {
     // this.status = status;
     // }
 
-    /**
-     * @return the user
-     */
     // public Customer getCustomer () {
     // return customer;
     // }
@@ -66,6 +85,8 @@ public class Order extends DomainObject {
     // }
 
     /**
+     * Getter for recipe
+     *
      * @return the recipe
      */
     public Recipe getRecipe () {
@@ -73,6 +94,8 @@ public class Order extends DomainObject {
     }
 
     /**
+     * Setter for recipe
+     *
      * @param recipe
      *            the recipe to set
      */
@@ -81,6 +104,8 @@ public class Order extends DomainObject {
     }
 
     /**
+     * Getter for status
+     *
      * @return the status
      */
     public String getStatus () {
@@ -88,6 +113,8 @@ public class Order extends DomainObject {
     }
 
     /**
+     * Setter for status
+     *
      * @param status
      *            the status to set
      */

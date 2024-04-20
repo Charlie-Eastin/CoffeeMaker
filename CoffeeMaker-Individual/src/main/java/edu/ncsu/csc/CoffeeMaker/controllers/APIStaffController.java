@@ -45,6 +45,11 @@ public class APIStaffController extends APIController {
      */
     @Autowired
     private RecipeService    recipeService;
+
+    /**
+     * OrderService object, to be autowired in by Spring to allow for
+     * manipulating the Order models
+     */
     @Autowired
     private OrderService     orderService;
 
@@ -162,6 +167,14 @@ public class APIStaffController extends APIController {
         return new ResponseEntity( successResponse( name + " was deleted successfully" ), HttpStatus.OK );
     }
 
+    /**
+     * Provides PUT access to an order allowing staff to change the status of an
+     * order from IN PROGRESS to COMPLETE
+     *
+     * @param id
+     *            the id of the order to change
+     * @return ResponseEntity detailing whether the request was successful
+     */
     @PutMapping ( BASE_PATH + "/orders/{id}" )
     public ResponseEntity fufillOrder ( @PathVariable ( "id" ) final Long id ) {
         // if status is picked up then delete from repository?
