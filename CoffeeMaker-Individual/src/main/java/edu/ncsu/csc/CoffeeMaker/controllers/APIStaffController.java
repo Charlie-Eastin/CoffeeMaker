@@ -15,8 +15,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import edu.ncsu.csc.CoffeeMaker.models.Ingredient;
 import edu.ncsu.csc.CoffeeMaker.models.Inventory;
+import edu.ncsu.csc.CoffeeMaker.models.Order;
 import edu.ncsu.csc.CoffeeMaker.models.Recipe;
 import edu.ncsu.csc.CoffeeMaker.services.InventoryService;
+import edu.ncsu.csc.CoffeeMaker.services.OrderService;
 import edu.ncsu.csc.CoffeeMaker.services.RecipeService;
 
 /**
@@ -43,6 +45,8 @@ public class APIStaffController extends APIController {
      */
     @Autowired
     private RecipeService    recipeService;
+    @Autowired
+    private OrderService     orderService;
 
     /**
      * REST API endpoint to provide GET access to the CoffeeMaker's singleton
@@ -156,6 +160,16 @@ public class APIStaffController extends APIController {
         recipeService.delete( recipe );
 
         return new ResponseEntity( successResponse( name + " was deleted successfully" ), HttpStatus.OK );
+    }
+
+    @PutMapping ( BASE_PATH + "/orders/{id}" )
+    public ResponseEntity fufillOrder ( @PathVariable ( "id" ) final Long id ) {
+        // if status is picked up then delete from repository?
+        final Order order = orderService.findById( id );
+        order.setStatus( "COMPLETE" );
+        orderService.save( order );
+
+        return new ResponseEntity( successResponse( "Order status changed" ), HttpStatus.OK );
     }
 
 }

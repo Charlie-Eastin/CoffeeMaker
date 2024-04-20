@@ -7,8 +7,10 @@ import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import javax.validation.ConstraintViolationException;
 import javax.validation.constraints.Min;
 
@@ -20,11 +22,12 @@ import javax.validation.constraints.Min;
  * @author Kai Presler-Marshall
  */
 @Entity
+@Table ( name = "recipe" )
 public class Recipe extends DomainObject {
 
     /** Recipe id */
     @Id
-    @GeneratedValue
+    @GeneratedValue ( strategy = GenerationType.IDENTITY )
     private Long             id;
 
     /** Recipe name */

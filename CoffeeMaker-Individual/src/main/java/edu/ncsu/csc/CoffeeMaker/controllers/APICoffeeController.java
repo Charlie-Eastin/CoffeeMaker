@@ -5,7 +5,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import edu.ncsu.csc.CoffeeMaker.models.Inventory;
@@ -54,22 +53,19 @@ public class APICoffeeController extends APIController {
      * @return The change the customer is due if successful
      */
     @PostMapping ( BASE_PATH + "/makecoffee/{name}" )
-    public ResponseEntity makeCoffee ( @PathVariable ( "name" ) final String name, @RequestBody final int amtPaid ) {
+    public ResponseEntity makeCoffee ( @PathVariable ( "name" ) final String name ) {
         final Recipe recipe = recipeService.findByName( name );
         if ( recipe == null ) {
             return new ResponseEntity( errorResponse( "No recipe selected" ), HttpStatus.NOT_FOUND );
         }
 
-        final int change = makeCoffee( recipe, amtPaid );
-        if ( change == amtPaid ) {
-            if ( amtPaid < recipe.getPrice() ) {
-                return new ResponseEntity( errorResponse( "Not enough money paid" ), HttpStatus.CONFLICT );
-            }
-            else {
-                return new ResponseEntity( errorResponse( "Not enough inventory" ), HttpStatus.CONFLICT );
-            }
+        final boolean success = makeCoffee( recipe );
+        if ( success ) {
+            return new ResponseEntity<String>( successResponse( "Success" ), HttpStatus.OK );
         }
-        return new ResponseEntity<String>( successResponse( String.valueOf( change ) ), HttpStatus.OK );
+        else {
+            return new ResponseEntity<String>( errorResponse( "Not enough ingredients" ), HttpStatus.OK );
+        }
 
     }
 
@@ -83,25 +79,16 @@ public class APICoffeeController extends APIController {
      * @return change if there was enough money to make the coffee, throws
      *         exceptions if not
      */
-    public int makeCoffee ( final Recipe toPurchase, final int amtPaid ) {
-        int change = amtPaid;
+    public boolean makeCoffee ( final Recipe toPurchase ) {
         final Inventory inventory = inventoryService.getInventory();
 
         if ( toPurchase == null ) {
             throw new IllegalArgumentException( "Recipe not found" );
         }
-        else if ( toPurchase.getPrice() <= amtPaid ) {
-            if ( inventory.useIngredients( toPurchase ) ) {
-                inventoryService.save( inventory );
-                change = amtPaid - toPurchase.getPrice();
-                return change;
-            }
-            else {
-                // not enough inventory
-                return change;
-            }
+        if ( inventory.useIngredients( toPurchase ) ) {
+            inventoryService.save( inventory );
+            return true;
         }
-        // not enough money
-        return change;
+        return false;
     }
 }

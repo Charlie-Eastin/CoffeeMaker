@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>View Recipes</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="stylesheet" href="css/bootstrap.css" />
+<link rel="stylesheet" href="css/app.css" />
+</head>
+<script
+	src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+<body>
+	<script th:inline="javascript">
+		/*<![CDATA[*/
+
+		var app = angular.module('myApp', []);
+		app.controller('ordersCtrl', function($scope, $http, $q) {
+			$scope.get = function() {
+				$http.get("/api/v1/orders").then(function(response) {
+					$scope.orders = response.data;
+				})
+			}
+			$scope.success = false;
+
+			$scope.make = function(order) {
+				$scope.success = false;
+				$scope.submissionFailure = false;
+				$scope.submissionSuccess = false;
+				if (order.status == "IN PROGRESS") {
+					$http.post("/api/v1/makecoffee/" + order.recipe.name).then(
+							function(response) {
+								$scope.submissionSuccess = true;
+								$scope.success = true;
+								$http.put("/api/v1/orders/" + order.id);
+								$scope.get();
+							}, function(errResponse) {
+								console.log(errResponse);
+								$scope.success = false;
+								$scope.submissionFailure = true;
+								$scope.error = "Error while making order";
+								$scope.get();
+							});
+				}
+			}
+			
+			$scope.useEffect = function() {
+				const interval = setInterval(() => {
+					$scope.get();
+				}, 1000);
+				return () => clearInterval(interval);
+			}
+			
+			$scope.useEffect();
+
+		});
+
+		/*]]>*/
+	</script>
+
+	<div layout:fragment="content" class="generic-container ng-cloak"
+		ng-app="myApp" ng-controller="ordersCtrl">
+		<h1>View Orders</h1>
+		<div class="formcontainer" id="ordersTable">
+			<ul>
+				<li ng-repeat="order in orders track by $index"><label>ID:
+						{{order.id}},Recipe: {{order.recipe.name}}, Status:
+						{{order.status}}
+						<div class="form-group col-md-12">
+							<div class="col-md-6">
+								<button type="button" id="completeButton"
+									ng-disabled="order.status!='IN PROGRESS'" ng-click="make(order)"
+									class="btn btn-info btn-sm"
+									style="background-color: grey; color: black;">
+									Complete <strong style="font-weight: bold;">+</strong>
+								</button>
+							</div>
+						</div>
+				</label></li>
+				<div ng-show="success">Successfully Completed Order</div>
+			</ul>
+			<div ng-show="submissionFailure">An error occurred: {{error}}</div>
+		</div>
+		<br /> <a href="/index">Home</a>
+	</div>
+
+</body>
+</html>

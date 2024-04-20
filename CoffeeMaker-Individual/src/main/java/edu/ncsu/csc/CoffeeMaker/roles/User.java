@@ -20,7 +20,6 @@ public class User extends DomainObject {
     /** Name of the user */
     private String name;
 
-    /** What type of user this is */
     private String type;
 
     /**

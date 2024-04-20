@@ -1,82 +1,83 @@
 package edu.ncsu.csc.CoffeeMaker.roles;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.FetchType;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.validation.constraints.Min;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import edu.ncsu.csc.CoffeeMaker.models.Order;
+import edu.ncsu.csc.CoffeeMaker.models.Recipe;
 
 /**
  * A model for the Customer entity in the CoffeeMaker. Represents the access and
  * properties that a customer using the CoffeeMaker system would have
  */
 @Entity
+@Table ( name = "user" )
 public class Customer extends User {
 
-    /** ID for the customer */
-    @Id
-    @GeneratedValue
-    private Long   id;
+    @OneToMany ( cascade = CascadeType.ALL, fetch = FetchType.LAZY )
+    private final List<Order> orders = new ArrayList<>();
 
-    /** Name of the customer */
-    private String name;
+    @Min ( 0 )
+    private Integer           money;
 
-    /** What type of user this is (Customer) */
-    private String type;
-
-    /** The amount of money that the customer has */
-    private int    money;
-
-    /**
-     * Setter for money field
-     *
-     * @param money
-     *            the amount of money to set
-     */
-    public void setMoney ( final int money ) {
+    public void setMoney ( final Integer money ) {
         this.money = money;
     }
 
-    /**
-     * Getter for the money field
-     *
-     * @return money
-     */
-    public int getMoney () {
+    public Integer getMoney () {
         return this.money;
     }
 
     @Override
-    public void setName ( final String name ) {
-        this.name = name;
-    }
-
-    @Override
-    public String getName () {
-        return this.name;
-    }
-
-    @Override
-    public void setType ( final String type ) {
-        this.type = type;
-    }
-
-    @Override
-    public String getType () {
-        return this.type;
-    }
-
-    @Override
     public void setId ( final long id ) {
-        this.id = id;
+        super.setId( id );
+    }
+
+    public List<Order> getOrders () {
+        return orders;
     }
 
     /**
-     * Get the ID of the Recipe
+     * Get the ID of the user
      *
      * @return the ID
      */
     @Override
+    @JsonProperty ( "id" )
     public Long getId () {
-        return id;
+        return super.getId();
+    }
+
+    public boolean addOrder ( final int money, final Recipe recipe ) {
+        if ( recipe.getPrice() <= money ) {
+            final Order order = new Order( recipe, this );
+            this.money -= recipe.getPrice();
+            this.orders.add( order );
+            return true;
+        }
+        return false;
+
+    }
+
+    public boolean pickupOrder ( final Long orderId ) {
+        for ( int i = 0; i < orders.size(); i++ ) {
+            final Order order = orders.get( i );
+            if ( order.getId() == orderId ) {
+                orders.remove( i );
+                return true;
+            }
+        }
+        return false;
+
     }
 
 }
