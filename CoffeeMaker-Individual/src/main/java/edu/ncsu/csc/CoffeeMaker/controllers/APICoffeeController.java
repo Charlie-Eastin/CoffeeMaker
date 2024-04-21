@@ -62,7 +62,7 @@ public class APICoffeeController extends APIController {
             return new ResponseEntity<String>( successResponse( "Success" ), HttpStatus.OK );
         }
         else {
-            return new ResponseEntity<String>( errorResponse( "Not enough ingredients" ), HttpStatus.OK );
+            return new ResponseEntity<String>( errorResponse( "Not enough inventory" ), HttpStatus.CONFLICT );
         }
 
     }

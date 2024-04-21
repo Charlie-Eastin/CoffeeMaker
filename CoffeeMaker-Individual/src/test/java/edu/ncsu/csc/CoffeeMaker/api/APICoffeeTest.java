@@ -1,5 +1,6 @@
 package edu.ncsu.csc.CoffeeMaker.api;
 
+import static org.junit.Assert.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -82,37 +83,29 @@ public class APICoffeeTest {
                 .content( TestUtils.asJsonString( 60 ) ) ).andExpect( status().isOk() )
                 .andExpect( jsonPath( "$.message" ).value( "Success" ) );
     }
-/*
+
     @Test
     @Transactional
     public void testPurchaseBeverage2 () throws Exception {
-        /* Insufficient amount paid 
-
-        final String name = "Coffee";
-
+        /* Recipe not found */
+        final String name = "None";
         mvc.perform( post( String.format( "/api/v1/makecoffee/%s", name ) ).contentType( MediaType.APPLICATION_JSON )
                 .content( TestUtils.asJsonString( 40 ) ) ).andExpect( status().is4xxClientError() )
-                .andExpect( jsonPath( "$.message" ).value( "Not enough money paid" ) );
-
+                .andExpect( jsonPath( "$.message" ).value( "No recipe selected" ) );
     }
 
     @Test
     @Transactional
     public void testPurchaseBeverage3 () throws Exception {
-        /* Insufficient inventory 
-
+        /* Insufficient inventory */
         final Inventory ivt = iService.getInventory();
         iService.save( ivt );
         ivt.setIngredient( "Coffee", 0 );
         iService.save( ivt );
         assertEquals( ivt.getIngredients().get( 1 ).getAmount(), 0 );
-
         final String name = "Coffee";
-
         mvc.perform( post( String.format( "/api/v1/makecoffee/%s", name ) ).contentType( MediaType.APPLICATION_JSON )
                 .content( TestUtils.asJsonString( 50 ) ) ).andExpect( status().is4xxClientError() )
                 .andExpect( jsonPath( "$.message" ).value( "Not enough inventory" ) );
-
     }
-*/
 }
