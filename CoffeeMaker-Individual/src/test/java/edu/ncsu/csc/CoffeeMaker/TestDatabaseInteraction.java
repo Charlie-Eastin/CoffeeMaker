@@ -20,11 +20,19 @@ import edu.ncsu.csc.CoffeeMaker.models.Ingredient;
 import edu.ncsu.csc.CoffeeMaker.models.Recipe;
 import edu.ncsu.csc.CoffeeMaker.services.RecipeService;
 
+/**
+ * Class to test the interaction between the different items in the database
+ */
 @ExtendWith ( SpringExtension.class )
 @EnableAutoConfiguration
 @SpringBootTest ( classes = TestConfig.class )
 
 public class TestDatabaseInteraction {
+
+    /**
+     * RecipeService object, to be autowired in by Spring to allow for
+     * manipulating the Recipe model
+     */
     @Autowired
     private RecipeService recipeService;
 
@@ -187,6 +195,11 @@ public class TestDatabaseInteraction {
         assertEquals( 0, dbRecipes.size() );
     }
 
+    /**
+     * Tests the findByID method in recipeService by saving a recipe to the
+     * database and ensuring the correct recipe is retrieved when searching by
+     * ID
+     */
     @Test
     @Transactional
     public void testFindByID () {

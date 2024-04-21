@@ -25,6 +25,7 @@ public class Inventory extends DomainObject {
     @GeneratedValue
     private Long     id;
 
+    /** List containing all the ingredients in the inventory */
     @OneToMany ( cascade = CascadeType.ALL, fetch = FetchType.EAGER )
     List<Ingredient> ingredients;
 
@@ -37,25 +38,32 @@ public class Inventory extends DomainObject {
     }
 
     /**
-     * Use this to create inventory with specified amts.
+     * Constructor for inventory with a list of ingredients.
      *
-     * @param coffee
-     *            amt of coffee
-     * @param milk
-     *            amt of milk
-     * @param sugar
-     *            amt of sugar
-     * @param chocolate
-     *            amt of chocolate
+     * @param list
+     *            initial list of ingredients
      */
     public Inventory ( final List<Ingredient> list ) {
         ingredients = new LinkedList<Ingredient>( list );
     }
 
+    /**
+     * Sets an amount of a given ingredient in the inventory to a given amount
+     *
+     * @param id
+     *            The id of the ingredient
+     * @param amount
+     *            The amount the ingredient is set to
+     */
     public void setAmount ( final int id, final int amount ) {
         this.ingredients.get( id ).setAmount( amount );
     }
 
+    /**
+     * Getter for the list of ingredients
+     *
+     * @return ingredient list
+     */
     public List<Ingredient> getIngredients () {
         return ingredients;
     }
@@ -100,7 +108,7 @@ public class Inventory extends DomainObject {
                     }
                 }
             }
-            if ( found == false ) {
+            if ( !found ) {
                 return false;
             }
         }
@@ -159,7 +167,7 @@ public class Inventory extends DomainObject {
                     continue;
                 }
             }
-            if ( found == false ) {
+            if ( !found ) {
                 ingredients.add( list.get( i ) );
             }
         }
@@ -167,6 +175,15 @@ public class Inventory extends DomainObject {
         return true;
     }
 
+    /**
+     * Setter for the ingredient list
+     *
+     * @param ingredients
+     *            list of ingredients
+     * @throws IllegalArgumentException
+     *             if the passed list of ingredients has any ingredients with
+     *             the same name
+     */
     public void setIngredients ( final List<Ingredient> ingredients ) {
         for ( int i = 0; i < ingredients.size(); i++ ) {
             for ( int j = 0; j < ingredients.size(); j++ ) {
@@ -179,11 +196,15 @@ public class Inventory extends DomainObject {
     }
 
     /**
-     * Adds an ingredient to the inventory.
+     * Adds an ingredient to the inventory. If the ingredient already exists, it
+     * just updates the amount of the ingredient instead
      *
      * @param name
+     *            name of the ingredient to add
      * @param amount
-     * @return
+     *            amount of the ingredient to add
+     * @return true if the ingredient is successfully added, false if the amount
+     *         is less than 0
      */
     public boolean setIngredient ( final String name, final int amount ) {
 

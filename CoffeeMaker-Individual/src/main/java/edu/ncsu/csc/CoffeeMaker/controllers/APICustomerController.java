@@ -23,16 +23,49 @@ import edu.ncsu.csc.CoffeeMaker.services.CustomerService;
 import edu.ncsu.csc.CoffeeMaker.services.OrderService;
 import edu.ncsu.csc.CoffeeMaker.services.RecipeService;
 
+/**
+ * This is the controller that holds the REST endpoints that handle CRUD
+ * operations for the Customers
+ *
+ * Spring will automatically convert all of the ResponseEntity and List results
+ * to JSON
+ */
 @SuppressWarnings ( { "unchecked", "rawtypes" } )
 @RestController
 public class APICustomerController extends APIController {
+    /**
+     * InventoryService object, to be autowired in by Spring to allow for
+     * manipulating the Inventory model
+     */
     @Autowired
     private OrderService    orderService;
+
+    /**
+     * CustomerService object, to be autowired in by Spring to allow for
+     * manipulating the customer model
+     */
     @Autowired
     private CustomerService customerService;
+
+    /**
+     * RecipeService object, to be autowired in by Spring to allow for
+     * manipulating the recipe model
+     */
     @Autowired
     private RecipeService   recipeService;
 
+    /**
+     * Updates a user's money amount to the given amount of money
+     *
+     * @param name
+     *            The username of the user who's money is being updated
+     * @param money
+     *            The amount of money to update to
+     * @return ResponseEntity indicating whether the money can be successfully
+     *         edited or not
+     * @throws Exception
+     *             if the money cannot be updated
+     */
     @PutMapping ( BASE_PATH + "/customers/users/{name}" )
     public ResponseEntity updateMoney ( @PathVariable ( "name" ) final String name, @RequestBody final int money )
             throws Exception {
@@ -44,11 +77,16 @@ public class APICustomerController extends APIController {
                     HttpStatus.OK );
         }
         catch ( final Exception e ) {
-            return new ResponseEntity( errorResponse( "Recipe cannot have duplicate ingredients" ),
-                    HttpStatus.CONFLICT );
+            return new ResponseEntity( errorResponse( "Money could not be updated" ), HttpStatus.CONFLICT );
         }
     }
 
+    /**
+     * Gets the current user's username
+     *
+     * @return ResponseEntity with the username and whether the username was
+     *         able to be retrieved
+     */
     @GetMapping ( BASE_PATH + "/username" )
     public ResponseEntity getUserName () {
         final Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -65,6 +103,11 @@ public class APICustomerController extends APIController {
         }
     }
 
+    /**
+     * Gets the role of the current user
+     *
+     * @return the role and whether the role was able to be retrieved
+     */
     @GetMapping ( BASE_PATH + "/role" )
     public ResponseEntity getUserRole () {
         final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -79,12 +122,33 @@ public class APICustomerController extends APIController {
         return new ResponseEntity( gson.toJson( "CUSTOMER" ), HttpStatus.OK );
     }
 
+    /**
+     * REST API endpoint for getting the customer object (with all customer
+     * information except password) when given a customer's name
+     *
+     * @param name
+     *            the name of a customer
+     * @return ResponseEntity with a customer's information
+     * @throws Exception
+     *             unknown
+     */
     @GetMapping ( BASE_PATH + "/customers/users/{name}" )
     public ResponseEntity getCustomer ( @PathVariable ( "name" ) final String name ) throws Exception {
         final Customer user = customerService.findByName( name );
         return new ResponseEntity( user, HttpStatus.OK );
     }
 
+    /**
+     * Provides DELETE access to a customer's order given the id of the order
+     * and the name of the customer. Used when a customer picks up an order and
+     * it no longer needs to be in the system
+     *
+     * @param stringId
+     *            the id of the order
+     * @param customerName
+     *            the name of the customer who's order is being deleted
+     * @return ResponseEntity with whether or not the request was successful
+     */
     @DeleteMapping ( BASE_PATH + "/orders/{id}/{name}" )
     public ResponseEntity pickupOrder ( @PathVariable ( "id" ) final String stringId,
             @PathVariable ( "name" ) final String customerName ) {
@@ -92,7 +156,7 @@ public class APICustomerController extends APIController {
             final Long id = Long.parseLong( stringId );
             final Order order = orderService.findById( id );
             final Customer customer = customerService.findByName( customerName );
-            if ( customer.pickupOrder( id ) != true ) {
+            if ( !customer.pickupOrder( id ) ) {
                 return new ResponseEntity( errorResponse( "Cannot pickup order" ), HttpStatus.CONFLICT );
             }
             customerService.save( customer );
@@ -107,6 +171,18 @@ public class APICustomerController extends APIController {
         }
     }
 
+    /**
+     * Provides POST access for an order - will create an order in the database
+     * given a name of the user who made the order, and a recipe associated with
+     * the order
+     *
+     * @param name
+     *            name of the customer who made the order
+     * @param recipe
+     *            a recipe object associated with the order
+     * @return ResponseEntity detailing whether or not the request was
+     *         successful
+     */
     @PostMapping ( BASE_PATH + "/{name}/orders" )
     public ResponseEntity addOrder ( @PathVariable ( "name" ) final String name, @RequestBody final Recipe recipe ) {
         try {
@@ -120,7 +196,7 @@ public class APICustomerController extends APIController {
 
             // final Recipe recipe = recipeService.findById(
             // order.getRecipe().getId() );
-            if ( customer.addOrder( customer.getMoney(), recipe ) != true ) {
+            if ( !customer.addOrder( customer.getMoney(), recipe ) ) {
                 return new ResponseEntity( errorResponse( "Customer does not have enough money" ),
                         HttpStatus.CONFLICT );
             }

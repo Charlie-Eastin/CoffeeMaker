@@ -111,4 +111,40 @@ public class MappingControllerTest {
 
     }
 
+    /**
+     * Tests a get request to controller
+     *
+     * @throws Exception
+     */
+    @Test
+    @Transactional
+    public void testFulfillOrders () throws Exception {
+        mvc.perform( get( "/fulfillorders" ) ).andExpect( status().isOk() );
+
+    }
+
+    /**
+     * Tests a get request to controller
+     *
+     * @throws Exception
+     */
+    @Test
+    @Transactional
+    public void testUserLogin () throws Exception {
+        mvc.perform( get( "/login" ) ).andExpect( status().isOk() );
+
+    }
+
+    /**
+     * Tests a get request to controller
+     *
+     * @throws Exception
+     */
+    @Test
+    @Transactional
+    public void testCustomerOrders () throws Exception {
+        mvc.perform( get( "/customerOrders" ) ).andExpect( status().isOk() );
+
+    }
+
 }

@@ -72,7 +72,7 @@ public class APIIngredientController extends APIController {
      * used to create a new Ingredient by automatically converting the JSON
      * RequestBody provided to an Ingredient object. Invalid JSON will fail.
      *
-     * @param recipe
+     * @param ingredient
      *            The valid Ingredient to be saved.
      * @return ResponseEntity indicating success if the Ingredient could be
      *         saved to the inventory, or an error if it could not be

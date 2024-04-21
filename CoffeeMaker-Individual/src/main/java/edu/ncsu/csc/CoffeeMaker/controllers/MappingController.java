@@ -151,6 +151,10 @@ public class MappingController {
     /**
      * Handles a GET request to /customerOrders, provides a view for a customer
      * to see what orders they have placed and to pick up a ready order
+     *
+     * @param model
+     *            underlying UI model
+     * @return contents of the page
      */
     @GetMapping ( { "/customerOrders", "/customerOrders.html" } )
     public String customerOrdersForm ( final Model model ) {

@@ -21,14 +21,35 @@ import edu.ncsu.csc.CoffeeMaker.services.InventoryService;
 import edu.ncsu.csc.CoffeeMaker.services.OrderService;
 import edu.ncsu.csc.CoffeeMaker.services.RecipeService;
 
+/**
+ * This is the controller that holds the REST endpoints that handle CRUD
+ * operations for the Staff
+ *
+ * Spring will automatically convert all of the ResponseEntity and List results
+ * to JSON
+ */
 @SuppressWarnings ( { "unchecked", "rawtypes" } )
 @RestController
 public class APIStaffController extends APIController {
 
+    /**
+     * InventoryService object, to be autowired in by Spring to allow for
+     * manipulating the Inventory model
+     */
     @Autowired
     private InventoryService inventoryService;
+
+    /**
+     * RecipeService object, to be autowired in by Spring to allow for
+     * manipulating the Recipe models
+     */
     @Autowired
     private RecipeService    recipeService;
+
+    /**
+     * OrderService object, to be autowired in by Spring to allow for
+     * manipulating the Order models
+     */
     @Autowired
     private OrderService     orderService;
 
@@ -146,6 +167,14 @@ public class APIStaffController extends APIController {
         return new ResponseEntity( successResponse( name + " was deleted successfully" ), HttpStatus.OK );
     }
 
+    /**
+     * Provides PUT access to an order allowing staff to change the status of an
+     * order from IN PROGRESS to COMPLETE
+     *
+     * @param id
+     *            the id of the order to change
+     * @return ResponseEntity detailing whether the request was successful
+     */
     @PutMapping ( BASE_PATH + "/orders/{id}" )
     public ResponseEntity fufillOrder ( @PathVariable ( "id" ) final Long id ) {
         // if status is picked up then delete from repository?

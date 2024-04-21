@@ -39,6 +39,10 @@ public class APIRecipeTest {
     @Autowired
     private WebApplicationContext context;
 
+    /**
+     * RecipeService object, to be autowired in by Spring to allow for
+     * manipulating the Recipe model
+     */
     @Autowired
     private RecipeService         service;
 
